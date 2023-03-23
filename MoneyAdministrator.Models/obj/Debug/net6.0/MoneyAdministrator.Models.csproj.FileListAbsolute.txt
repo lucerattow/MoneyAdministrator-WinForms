@@ -1,0 +1,12 @@
+E:\.Mega\Desarrollo\Repositorios\C#\.Windows Forms\MoneyAdministrator\MoneyAdministrator.Models\bin\Debug\net6.0\MoneyAdministrator.Models.deps.json
+E:\.Mega\Desarrollo\Repositorios\C#\.Windows Forms\MoneyAdministrator\MoneyAdministrator.Models\bin\Debug\net6.0\MoneyAdministrator.Models.dll
+E:\.Mega\Desarrollo\Repositorios\C#\.Windows Forms\MoneyAdministrator\MoneyAdministrator.Models\bin\Debug\net6.0\MoneyAdministrator.Models.pdb
+E:\.Mega\Desarrollo\Repositorios\C#\.Windows Forms\MoneyAdministrator\MoneyAdministrator.Models\obj\Debug\net6.0\MoneyAdministrator.Models.csproj.AssemblyReference.cache
+E:\.Mega\Desarrollo\Repositorios\C#\.Windows Forms\MoneyAdministrator\MoneyAdministrator.Models\obj\Debug\net6.0\MoneyAdministrator.Models.GeneratedMSBuildEditorConfig.editorconfig
+E:\.Mega\Desarrollo\Repositorios\C#\.Windows Forms\MoneyAdministrator\MoneyAdministrator.Models\obj\Debug\net6.0\MoneyAdministrator.Models.AssemblyInfoInputs.cache
+E:\.Mega\Desarrollo\Repositorios\C#\.Windows Forms\MoneyAdministrator\MoneyAdministrator.Models\obj\Debug\net6.0\MoneyAdministrator.Models.AssemblyInfo.cs
+E:\.Mega\Desarrollo\Repositorios\C#\.Windows Forms\MoneyAdministrator\MoneyAdministrator.Models\obj\Debug\net6.0\MoneyAdministrator.Models.csproj.CoreCompileInputs.cache
+E:\.Mega\Desarrollo\Repositorios\C#\.Windows Forms\MoneyAdministrator\MoneyAdministrator.Models\obj\Debug\net6.0\MoneyAdministrator.Models.dll
+E:\.Mega\Desarrollo\Repositorios\C#\.Windows Forms\MoneyAdministrator\MoneyAdministrator.Models\obj\Debug\net6.0\refint\MoneyAdministrator.Models.dll
+E:\.Mega\Desarrollo\Repositorios\C#\.Windows Forms\MoneyAdministrator\MoneyAdministrator.Models\obj\Debug\net6.0\MoneyAdministrator.Models.pdb
+E:\.Mega\Desarrollo\Repositorios\C#\.Windows Forms\MoneyAdministrator\MoneyAdministrator.Models\obj\Debug\net6.0\ref\MoneyAdministrator.Models.dll

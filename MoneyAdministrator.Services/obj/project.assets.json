@@ -1,11 +1,49 @@
 {
   "version": 3,
   "targets": {
-    "net6.0": {}
+    "net6.0": {
+      "MoneyAdministrator.DataAccess/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "MoneyAdministrator.Models": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/MoneyAdministrator.DataAccess.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/MoneyAdministrator.DataAccess.dll": {}
+        }
+      },
+      "MoneyAdministrator.Models/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "compile": {
+          "bin/placeholder/MoneyAdministrator.Models.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/MoneyAdministrator.Models.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "MoneyAdministrator.DataAccess/1.0.0": {
+      "type": "project",
+      "path": "../MoneyAdministrator.DataAccess/MoneyAdministrator.DataAccess.csproj",
+      "msbuildProject": "../MoneyAdministrator.DataAccess/MoneyAdministrator.DataAccess.csproj"
+    },
+    "MoneyAdministrator.Models/1.0.0": {
+      "type": "project",
+      "path": "../MoneyAdministrator.Models/MoneyAdministrator.Models.csproj",
+      "msbuildProject": "../MoneyAdministrator.Models/MoneyAdministrator.Models.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net6.0": []
+    "net6.0": [
+      "MoneyAdministrator.DataAccess >= 1.0.0",
+      "MoneyAdministrator.Models >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\lucas\\.nuget\\packages\\": {}
@@ -33,7 +71,14 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "E:\\.Mega\\Desarrollo\\Repositorios\\C#\\.Windows Forms\\MoneyAdministrator\\MoneyAdministrator.DataAccess\\MoneyAdministrator.DataAccess.csproj": {
+              "projectPath": "E:\\.Mega\\Desarrollo\\Repositorios\\C#\\.Windows Forms\\MoneyAdministrator\\MoneyAdministrator.DataAccess\\MoneyAdministrator.DataAccess.csproj"
+            },
+            "E:\\.Mega\\Desarrollo\\Repositorios\\C#\\.Windows Forms\\MoneyAdministrator\\MoneyAdministrator.Models\\MoneyAdministrator.Models.csproj": {
+              "projectPath": "E:\\.Mega\\Desarrollo\\Repositorios\\C#\\.Windows Forms\\MoneyAdministrator\\MoneyAdministrator.Models\\MoneyAdministrator.Models.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

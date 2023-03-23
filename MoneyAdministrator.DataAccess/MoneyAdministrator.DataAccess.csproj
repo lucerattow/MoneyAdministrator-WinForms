@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MoneyAdministrator.Models\MoneyAdministrator.Models.csproj" />
+  </ItemGroup>
+
 </Project>
