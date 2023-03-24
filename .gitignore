@@ -1,0 +1,25 @@
+# Archivos y carpetas generados por Visual Studio
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.sln.ide/
+
+# Carpetas de compilación
+**/bin/
+**/obj/
+
+# Archivos de Respaldo
+*_backup.*
+
+# Carpetas de paquetes NuGet
+**/packages/
+
+# Carpetas del editor de Visual Studio Code
+.vscode/
+
+# Carpetas de herramientas
+_ReSharper*/
+
+# Carpetas de Visual Studio
+.vs/
