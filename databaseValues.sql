@@ -1,0 +1,86 @@
+-- scripts para pruebas MoneyAdministrator
+
+-- Entities
+INSERT INTO "main"."Entities" ("Id", "Name") VALUES (1, 'Servicios');
+INSERT INTO "main"."Entities" ("Id", "Name") VALUES (2, 'Alquiler');
+INSERT INTO "main"."Entities" ("Id", "Name") VALUES (3, 'MercadoPago');
+INSERT INTO "main"."Entities" ("Id", "Name") VALUES (4, 'Mama');
+INSERT INTO 'main'.'Entities' ('Id', 'Name') VALUES (5, 'Naza');
+
+-- Transactions
+INSERT INTO "main"."Transactions" ("Id", "EntityId", "CurrencyId", "Description") VALUES (1, 1, 1, 'Pago la luz (Edenor)');
+INSERT INTO "main"."Transactions" ("Id", "EntityId", "CurrencyId", "Description") VALUES (2, 1, 1, 'Pago el gas (Metrogas)');
+INSERT INTO "main"."Transactions" ("Id", "EntityId", "CurrencyId", "Description") VALUES (3, 1, 1, 'Pago el agua (Aysa)');
+INSERT INTO "main"."Transactions" ("Id", "EntityId", "CurrencyId", "Description") VALUES (4, 2, 1, 'Pago alquiler');
+INSERT INTO "main"."Transactions" ("Id", "EntityId", "CurrencyId", "Description") VALUES (5, 2, 1, 'Pago expensas');
+INSERT INTO "main"."Transactions" ("Id", "EntityId", "CurrencyId", "Description") VALUES (6, 3, 1, 'Placa de video RX 6700');
+INSERT INTO "main"."Transactions" ("Id", "EntityId", "CurrencyId", "Description") VALUES (7, 4, 2, 'Le preste plata');
+
+-- TransactionDetails
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 1, 1, '2022-01-01', '-200', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 2, 1, '2022-02-01', '-200', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 3, 1, '2022-03-01', '-200', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 4, 1, '2022-04-01', '-200', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 5, 1, '2022-05-01', '-200', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 6, 1, '2022-06-01', '-300', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 7, 1, '2022-07-01', '-300', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 8, 1, '2022-08-01', '-300', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 9, 1, '2022-09-01', '-400', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 10, 1, '2022-10-01', '-400', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 11, 1, '2022-11-01', '-400', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 12, 1, '2022-12-01', '-500', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 13, 2, '2022-01-01', '-1000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 14, 2, '2022-02-01', '-1000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 15, 2, '2022-03-01', '-1000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 16, 2, '2022-04-01', '-1000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 17, 2, '2022-05-01', '-1000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 18, 2, '2022-06-01', '-1200', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 19, 2, '2022-07-01', '-1200', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 20, 2, '2022-08-01', '-1200', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 21, 2, '2022-09-01', '-1200', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 22, 2, '2022-10-01', '-1500', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 23, 2, '2022-11-01', '-1500', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 24, 2, '2022-12-01', '-1500', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 25, 3, '2022-01-01', '-100', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 26, 3, '2022-02-01', '-100', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 27, 3, '2022-03-01', '-100', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 28, 3, '2022-04-01', '-120', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 29, 3, '2022-05-01', '-120', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 30, 3, '2022-06-01', '-120', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 31, 3, '2022-07-01', '-150', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 32, 3, '2022-08-01', '-150', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 33, 3, '2022-09-01', '-170', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 34, 3, '2022-10-01', '-170', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 35, 3, '2022-11-01', '-200', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 36, 3, '2022-12-01', '-200', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 37, 4, '2022-01-01', '-35000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 38, 4, '2022-02-01', '-35000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 39, 4, '2022-03-01', '-35000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 40, 4, '2022-04-01', '-35000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 41, 4, '2022-05-01', '-35000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 42, 4, '2022-06-01', '-35000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 43, 4, '2022-07-01', '-50000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 44, 4, '2022-08-01', '-50000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 45, 4, '2022-09-01', '-50000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 46, 4, '2022-10-01', '-50000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 47, 4, '2022-11-01', '-50000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 48, 4, '2022-12-01', '-50000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 49, 5, '2022-01-01', '-5000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 50, 5, '2022-02-01', '-5000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 51, 5, '2022-03-01', '-5000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 52, 5, '2022-04-01', '-5000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 53, 5, '2022-05-01', '-5000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 54, 5, '2022-06-01', '-5000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 55, 5, '2022-07-01', '-7000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 56, 5, '2022-08-01', '-7000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 57, 5, '2022-09-01', '-7000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 58, 5, '2022-10-01', '-7000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 59, 5, '2022-11-01', '-7000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 60, 5, '2022-12-01', '-7000', 0);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 61, 6, '2022-04-01', '-20000', 1);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 62, 6, '2022-05-01', '-20000', 2);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 63, 6, '2022-06-01', '-20000', 3);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 64, 6, '2022-07-01', '-20000', 4);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 65, 6, '2022-08-01', '-20000', 5);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 66, 6, '2022-09-01', '-20000', 6);
+INSERT INTO 'main'.'TransactionDetails' ('Id', 'TransactionId', 'Date', 'Value', 'Installment') VALUES ( 67, 7, '2022-12-01', '-300', 0);
