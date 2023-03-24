@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyAdministrator", "MoneyAdministrator\MoneyAdministrator.csproj", "{E07F47D5-A7A0-427A-8A34-67F6E58EDBEF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyAdministrator", "MoneyAdministrator\MoneyAdministrator.csproj", "{E07F47D5-A7A0-427A-8A34-67F6E58EDBEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyAdministrator.Models", "MoneyAdministrator.Models\MoneyAdministrator.Models.csproj", "{31C828D0-BB67-4711-8F83-4E27A965F704}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyAdministrator.Models", "MoneyAdministrator.Models\MoneyAdministrator.Models.csproj", "{31C828D0-BB67-4711-8F83-4E27A965F704}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyAdministrator.DataAccess", "MoneyAdministrator.DataAccess\MoneyAdministrator.DataAccess.csproj", "{BF736D83-B70A-4995-9E98-763EBE3CDA23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyAdministrator.DataAccess", "MoneyAdministrator.DataAccess\MoneyAdministrator.DataAccess.csproj", "{BF736D83-B70A-4995-9E98-763EBE3CDA23}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyAdministrator.Services", "MoneyAdministrator.Services\MoneyAdministrator.Services.csproj", "{D0C56CDC-5FF8-427E-BF1C-1DDEC73064B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyAdministrator.Services", "MoneyAdministrator.Services\MoneyAdministrator.Services.csproj", "{D0C56CDC-5FF8-427E-BF1C-1DDEC73064B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyAdministrator.CustomControls", "MoneyAdministrator.CustomControls\MoneyAdministrator.CustomControls.csproj", "{A3EA0AD4-BDDD-48DE-8B4A-0DDE326212E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{D0C56CDC-5FF8-427E-BF1C-1DDEC73064B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0C56CDC-5FF8-427E-BF1C-1DDEC73064B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0C56CDC-5FF8-427E-BF1C-1DDEC73064B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3EA0AD4-BDDD-48DE-8B4A-0DDE326212E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3EA0AD4-BDDD-48DE-8B4A-0DDE326212E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3EA0AD4-BDDD-48DE-8B4A-0DDE326212E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3EA0AD4-BDDD-48DE-8B4A-0DDE326212E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

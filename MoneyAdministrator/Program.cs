@@ -1,9 +1,9 @@
 using MoneyAdministrator.Presenters;
-using MoneyAdministrator.Views.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using MyMoneyAdmin;
 using MoneyAdministrator.DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using MoneyAdministrator.Interfaces;
 
 namespace MoneyAdministrator
 {

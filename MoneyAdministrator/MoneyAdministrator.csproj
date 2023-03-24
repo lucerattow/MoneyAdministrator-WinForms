@@ -15,6 +15,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\sd.cs" />
+    <Compile Remove="Views\sd.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Views\sd.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MoneyAdministrator.CustomControls\MoneyAdministrator.CustomControls.csproj" />
     <ProjectReference Include="..\MoneyAdministrator.Models\MoneyAdministrator.Models.csproj" />
     <ProjectReference Include="..\MoneyAdministrator.Services\MoneyAdministrator.Services.csproj" />
   </ItemGroup>

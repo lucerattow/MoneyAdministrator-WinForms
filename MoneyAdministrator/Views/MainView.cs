@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using MoneyAdministrator.Views.Interfaces;
+using MoneyAdministrator.Interfaces;
 using System.CodeDom;
 
 namespace MyMoneyAdmin

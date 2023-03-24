@@ -1,22 +1,14 @@
-﻿using Microsoft.VisualBasic.Logging;
+﻿using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Services;
-using MoneyAdministrator.Views.Interfaces;
-using MyMoneyAdmin;
-using System;
-using System.Collections.Generic;
+using MoneyAdministrator.Views;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace MoneyAdministrator.Presenters
 {
     public class MainPresenter
     {
-        private string _databasePath;
-
         private IMainView mainView;
+        private string _databasePath;
 
         public MainPresenter(IMainView mainView)
         {
@@ -31,10 +23,9 @@ namespace MoneyAdministrator.Presenters
         //Events
         private void ShowTransactionHistory(object? sender, EventArgs e)
         {
-            //OpenChildren(new Views.UsTransacctions(_dbController));
-            //IPetView view = PetView.GetInstance((Form)mainView);
-            //IPetRepository repository = new PetRepository(connectionString);
-            //new PetPresenter(view, repository);
+            ITransactionHistoryView transactionHistoryView = new TransactionHistoryView();
+            var transactionHistoryPresenter = new TransactionHistoryPresenter(transactionHistoryView, _databasePath);
+            this.mainView.OpenChildren((UserControl)transactionHistoryView);
         }
 
         private void FileNew(object? sender, EventArgs e)

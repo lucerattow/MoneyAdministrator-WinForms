@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MoneyAdministrator.Views.Interfaces
+namespace MoneyAdministrator.Interfaces
 {
     public interface IMainView
     {
