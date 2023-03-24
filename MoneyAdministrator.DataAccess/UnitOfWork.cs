@@ -17,21 +17,18 @@ namespace MoneyAdministrator.DataAccess
         private IRepository<Transaction>? _transactionRepository;
         private IRepository<TransactionDetail>? _transactionDetailRepository;
 
-        public UnitOfWork(AppDbContext context)
+        public UnitOfWork(string databasePath)
         {
-            _context = context;
+            _context = new AppDbContext(databasePath);
         }
 
-        public IRepository<Entity> EntityRepository =>
+        public IRepository<Entity> EntityRepository => 
             _entityRepository ??= new Repository<Entity>(_context);
-
-        public IRepository<Currency> CurrencyRepository =>
+        public IRepository<Currency> CurrencyRepository => 
             _currencyRepository ??= new Repository<Currency>(_context);
-
-        public IRepository<Transaction> TransactionRepository =>
+        public IRepository<Transaction> TransactionRepository => 
             _transactionRepository ??= new Repository<Transaction>(_context);
-
-        public IRepository<TransactionDetail> TransactionDetailRepository =>
+        public IRepository<TransactionDetail> TransactionDetailRepository => 
             _transactionDetailRepository ??= new Repository<TransactionDetail>(_context);
 
         public void Save()
