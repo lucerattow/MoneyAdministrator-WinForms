@@ -7,27 +7,26 @@ namespace MoneyAdministrator.Presenters
 {
     public class MainPresenter
     {
-        private IMainView mainView;
+        private IMainView _mainView;
         private string _databasePath;
 
         public MainPresenter(IMainView mainView)
         {
-            this.mainView = mainView;
-            this.mainView.ShowTransactionHistory += ShowTransactionHistory;
-            this.mainView.FileNew += FileNew;
-            this.mainView.FileOpen += FileOpen;
-            this.mainView.FileClose += FileClose;
-            this.mainView.IsFileOpened = false;
+            this._mainView = mainView;
+            this._mainView.ShowTransactionHistory += ShowTransactionHistory;
+            this._mainView.FileNew += FileNew;
+            this._mainView.FileOpen += FileOpen;
+            this._mainView.FileClose += FileClose;
+            this._mainView.IsFileOpened = false;
         }
 
-        //Events
+        #region events
         private void ShowTransactionHistory(object? sender, EventArgs e)
         {
             ITransactionHistoryView transactionHistoryView = new TransactionHistoryView();
             var transactionHistoryPresenter = new TransactionHistoryPresenter(transactionHistoryView, _databasePath);
-            this.mainView.OpenChildren((UserControl)transactionHistoryView);
+            this._mainView.OpenChildren((UserControl)transactionHistoryView);
         }
-
         private void FileNew(object? sender, EventArgs e)
         {
             using var saveFileDialog = new SaveFileDialog()
@@ -42,7 +41,7 @@ namespace MoneyAdministrator.Presenters
                 {
                     _databasePath = saveFileDialog.FileName;
                     DbFileService.CreateDatabase(_databasePath);
-                    this.mainView.IsFileOpened = true;
+                    this._mainView.IsFileOpened = true;
                 }
                 catch (Exception ex)
                 {
@@ -51,7 +50,6 @@ namespace MoneyAdministrator.Presenters
                 }
             }
         }
-
         private void FileOpen(object? sender, EventArgs e)
         {
             using var openFileDialog = new OpenFileDialog()
@@ -65,7 +63,7 @@ namespace MoneyAdministrator.Presenters
                 try
                 {
                     _databasePath = openFileDialog.FileName;
-                    this.mainView.IsFileOpened = true;
+                    this._mainView.IsFileOpened = true;
                 }
                 catch (Exception ex)
                 {
@@ -74,12 +72,12 @@ namespace MoneyAdministrator.Presenters
                 }
             }
         }
-
         private void FileClose(object? sender, EventArgs e) 
         {
             _databasePath = "";
-            this.mainView.CloseChildrens();
-            this.mainView.IsFileOpened = false;
+            this._mainView.CloseChildrens();
+            this._mainView.IsFileOpened = false;
         }
+        #endregion
     }
 }

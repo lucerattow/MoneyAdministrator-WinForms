@@ -11,33 +11,15 @@ namespace MoneyAdministrator.Models
 {
     public class Currency
     {
-        //Fields
-        private int _id;
-        private string _name;
-
-        private ICollection<Transaction> _transactions;
-
         //Properties
         [DisplayName("Currency ID")]
-        public int Id
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
+        public int Id { get; set; }
 
         [DisplayName("Name")]
         [StringLength(3, MinimumLength = 3, ErrorMessage = "Currency name need 3 cacarteres")]
         [Required(ErrorMessage = "Currency name is required")]
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
+        public string Name { get; set; }
 
-        public ICollection<Transaction> Transactions
-        {
-            get { return _transactions; }
-            set { _transactions = value; }
-        }
+        public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

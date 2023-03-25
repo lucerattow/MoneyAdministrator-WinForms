@@ -10,33 +10,15 @@ namespace MoneyAdministrator.Models
 {
     public class Entity
     {
-        //Fields
-        private int _id;
-        private string _name;
-
-        private ICollection<Transaction> _transactions;
-
         //Properties
         [DisplayName("Entity ID")]
-        public int Id
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
+        public int Id { get; set; }
 
         [DisplayName("Name")]
         [StringLength(25, ErrorMessage = "Entity name must be between 3 and 25 characters")]
         [Required(ErrorMessage = "Entity name is required")]
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
+        public string Name { get; set; }
 
-        public ICollection<Transaction> Transactions
-        {
-            get { return _transactions; }
-            set { _transactions = value; }
-        }
+        public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

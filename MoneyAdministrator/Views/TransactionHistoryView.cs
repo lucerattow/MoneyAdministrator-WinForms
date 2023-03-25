@@ -1,4 +1,6 @@
-﻿using MoneyAdministrator.Interfaces;
+﻿using MoneyAdministrator.DTOs;
+using MoneyAdministrator.Interfaces;
+using MoneyAdministrator.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -46,6 +48,7 @@ namespace MoneyAdministrator.Views
         {
             Dock = DockStyle.Fill;
             InitializeComponent();
+            AssosiateEvents();
 
             //Textbox setup
             _tbValue.TextAlign = HorizontalAlignment.Right;
@@ -58,12 +61,29 @@ namespace MoneyAdministrator.Views
 
             //Configuro la grilla
             GrdConfigure();
-            //GrdLoadData();
 
             //Muestro la ventana ya cargada
             _pnlContent.Visible = true;
         }
 
+        public event EventHandler SelectedYearChange;
+
+        #region methods
+        private void AssosiateEvents()
+        {
+            _ypYearPage.ButtonNextClick += delegate
+            {
+                SelectedYearChange?.Invoke(this, EventArgs.Empty);
+            };
+            _ypYearPage.ButtonPreviousClick += delegate
+            {
+                SelectedYearChange?.Invoke(this, EventArgs.Empty);
+            };
+            _ypYearPage.ValueChange += delegate
+            {
+                SelectedYearChange?.Invoke(this, EventArgs.Empty);
+            };
+        }
         private void GrdConfigure()
         {
             //Configuracion de columnas
@@ -111,10 +131,10 @@ namespace MoneyAdministrator.Views
                 Width = 60,
                 DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleCenter },
             });
-            _grd.Columns.Add(new DataGridViewColumn() //6 value
+            _grd.Columns.Add(new DataGridViewColumn() //6 amount
             {
-                Name = "value",
-                HeaderText = "Valor",
+                Name = "amount",
+                HeaderText = "Monto",
                 CellTemplate = new DataGridViewTextBoxCell(),
                 DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
             });
@@ -141,99 +161,85 @@ namespace MoneyAdministrator.Views
             };
             _grd.RowTemplate.Height = 20;
         }
-
-        private void GrdLoadData()
+        public void GrdRefreshData(List<TransactionViewDto> transactions)
         {
-            //Limpio la grilla
+            //Limpio la grilla y el yearPicker
             _grd.Rows.Clear();
+            _ypYearPage.AvailableYears = transactions.Select(x => x.Date.Year).Distinct().ToList();
 
-            ////Obtengo las transacciones
-            //List<TransactionDetailDto> transactions = _transactionsController.GetAll()
-            //    .OrderByDescending(x => x.Date).ToList();
+            //Filtro las transacciones por el año seleccionado
+            transactions = transactions.Where(x => x.Date.Year == _ypYearPage.Value).ToList();
 
-            //if (transactions.Count <= 0)
-            //    return;
+            if (transactions.Count <= 0)
+                return;
 
-            //Preparo variables para separar los meses
-            CultureInfo culture = CultureInfo.InvariantCulture;
-            DateTime previous = DateTime.MinValue;
-            DateTime current = DateTime.MinValue;
-            DateTime last_year = DateTime.MinValue; 
-            bool monthSeparator = false;
-            int row = 0;
+            var row = 0;
+            for (var i = 12; i >= 1; i--)
+            {
+                List<TransactionViewDto> monthTransactions = transactions
+                    .Where(x => x.Date.Month == i).OrderByDescending(x => x.Date.Day).ToList();
 
-            //Guardo el mes del registro mas nuevo
-            //DateTime.TryParseExact(transactions[0].Date, "yyyy-MM-dd", culture, DateTimeStyles.None, out last_year);
+                //Añado un separador
+                row = _grd.Rows.Add(new object[]
+                {
+                    -1,
+                    monthTransactions[0].Date.ToString("yyyy"),
+                    monthTransactions[0].Date.ToString("(MM) MMM"),
+                    "",
+                    "",
+                    "",
+                    "",
+                });
 
-            //for (int i = 0; i < transactions.Count; i++)
-            //{
-            //    //Guardo el mes del registro actual
-            //    //DateTime.TryParseExact(transactions[i].Date, "yyyy-MM-dd", culture, DateTimeStyles.None, out current);
+                //Pinto el separador
+                Color sepBackColor = Color.FromArgb(75, 135, 230);
+                Color sepForeColor = Color.White;
+                foreach (DataGridViewCell cell in _grd.Rows[row].Cells)
+                {
+                    cell.Style.BackColor = sepBackColor;
+                    cell.Style.ForeColor = sepForeColor;
+                    cell.Style.SelectionBackColor = cell.Style.BackColor;
+                    cell.Style.SelectionForeColor = cell.Style.ForeColor;
+                }
 
-            //    //Comparo los meses del registro actual y el anterior
-            //    //Para definir si debo añadir un nuevo separador
-            //    monthSeparator = current.Month != previous.Month;
+                if (monthTransactions.Count == 0)
+                {
+                    //Si no hay registros en este mes, añado una fila en blanco
+                    row = _grd.Rows.Add(new object[] { "", "", "", "", "", "", "" });
+                }
+                else
+                {
+                    //Caso contrario añado los registros a la tabla
+                    foreach (var transaction in monthTransactions)
+                    {
+                        row = _grd.Rows.Add(new object[]
+                        {
+                            transaction.Id,
+                            transaction.Date.ToString("yyyy-MM-dd"),
+                            transaction.EntityName,
+                            transaction.Description,
+                            transaction.Installment,
+                            transaction.CurrencyName,
+                            transaction.Amount.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
+                        });
 
-            //    if (i == 0 || monthSeparator)
-            //    {
-            //        //Añado un separador
-            //        object[] separator = {
-            //            -1,
-            //            current.ToString("yyyy"),
-            //            current.ToString("(MM) MMM"),
-            //            "",
-            //            "",
-            //            "",
-            //            "",
-            //        };
-            //        row = Grd.Rows.Add(separator);
-
-            //        //Pinto el separador
-            //        Color sepBackColor = Color.FromArgb(200, 100, 0);
-            //        Color sepForeColor = Color.White;
-
-            //        //Si no es el año actual, pintar de gris
-            //        if (current.Year != last_year.Year)
-            //        {
-            //            sepBackColor = Color.FromArgb(200, 200, 200);
-            //            sepForeColor = Color.Black;
-            //        }
-
-            //        foreach (DataGridViewCell cell in Grd.Rows[row].Cells)
-            //        {
-            //            cell.Style.BackColor = sepBackColor;
-            //            cell.Style.ForeColor = sepForeColor;
-            //            cell.Style.SelectionBackColor = cell.Style.BackColor;
-            //            cell.Style.SelectionForeColor = cell.Style.ForeColor;
-            //        }
-
-            //        previous = current;
-            //        monthSeparator = false;
-            //    }
-
-            //    //Añado la transaccion al Grd
-            //    //string installments = $"{transactions[i].InstallmentCurrent}/{transactions[i].InstallmentTotal}";
-            //    //if (transactions[i].InstallmentTotal == 0)
-            //    //    installments = "";
-
-            //    object[] newrow = {
-            //        //transactions[i].Id,
-            //        //transactions[i].Date,
-            //        //transactions[i].Origin,
-            //        //transactions[i].Description,
-            //        //installments,
-            //        //transactions[i].Money,
-            //        //transactions[i].Value.ToString("N2")
-            //    };
-            //    row = Grd.Rows.Add(newrow);
-
-            //    //Pinto la fila segun corresponda
-            //    if (transactions[i].Value >= 0)
-            //        Grd.Rows[row].Cells["valor"].Style.ForeColor = Color.FromArgb(10, 130, 65);
-            //    else
-            //        Grd.Rows[row].Cells["valor"].Style.ForeColor = Color.FromArgb(200, 60, 40);
-            //}
+                        //Pinto el monto segun corresponda
+                        if (transaction.Amount > 0)
+                            _grd.Rows[row].Cells["amount"].Style.ForeColor = Color.FromArgb(40, 150, 60);
+                        else if (transaction.Amount < 0)
+                            _grd.Rows[row].Cells["amount"].Style.ForeColor = Color.FromArgb(200, 60, 40);
+                        else
+                            _grd.Rows[row].Cells["amount"].Style.ForeColor = Color.FromArgb(80, 80, 80);
+                    }
+                }
+            }
         }
+        public void SetCurrenciesList(List<Currency> currencies)
+        {
+            _cbCurrency.DataSource = currencies;
+            _cbCurrency.DisplayMember = "Name";
+        }
+        #endregion
 
         #region Eventos
 
@@ -280,7 +286,7 @@ namespace MoneyAdministrator.Views
         //        e.Handled = true;
         //    }
         //}
-        
+
         //private void BtnCreate_Click(object sender, EventArgs e)
         //{
         //    _ = int.TryParse(_tbInstallments.Text, out int installment);

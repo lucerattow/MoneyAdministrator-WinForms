@@ -167,7 +167,6 @@ namespace MoneyAdministrator.Views
             this._ypYearPage.Name = "_ypYearPage";
             this._ypYearPage.Size = new System.Drawing.Size(830, 23);
             this._ypYearPage.TabIndex = 21;
-            this._ypYearPage.Value = 2023;
             // 
             // _tbValue
             // 

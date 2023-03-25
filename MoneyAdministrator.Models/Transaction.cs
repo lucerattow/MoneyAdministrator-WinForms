@@ -10,64 +10,24 @@ namespace MoneyAdministrator.Models
 {
     public class Transaction
     {
-        //Fields
-        private int _id;
-        private int _entityId;
-        private int _currencyId;
-        private string _description;
-
-        private Entity _entity;
-        private Currency _currency;
-        private ICollection<TransactionDetail> _transactionDetail;
-
         //Properties
         [DisplayName("Transaction ID")]
-        public int Id
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
+        public int Id { get; set; }
 
         [DisplayName("Entity")]
         [Required(ErrorMessage = "Entity ID is required")]
-        public int EntityId
-        {
-            get { return _entityId; }
-            set { _entityId = value; }
-        }
+        public int EntityId { get; set; }
 
         [DisplayName("Currency")]
         [Required(ErrorMessage = "Currency ID is required")]
-        public int CurrencyId
-        {
-            get { return _currencyId; }
-            set { _currencyId = value; }
-        }
+        public int CurrencyId { get; set; }
 
         [DisplayName("Description")]
         [StringLength(150, ErrorMessage = "Transaction description cannot exceed 150 characters.")]
-        public string Description
-        {
-            get { return _description; }
-            set { _description = value; }
-        }
+        public string Description { get; set; }
 
-        public Entity Entity
-        {
-            get { return _entity; }
-            set { _entity = value; }
-        }
-
-        public Currency Currency
-        {
-            get { return _currency; }
-            set { _currency = value; }
-        }
-
-        public ICollection<TransactionDetail> TransactionDetails
-        {
-            get { return _transactionDetail; }
-            set { _transactionDetail = value; }
-        }
+        public virtual Entity Entity { get; set; }
+        public virtual Currency Currency { get; set; }
+        public virtual ICollection<TransactionDetail> TransactionDetails { get; set; }
     }
 }

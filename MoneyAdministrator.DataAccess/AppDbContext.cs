@@ -21,7 +21,7 @@ namespace MoneyAdministrator.DataAccess
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite($"Data Source={_databasePath}");
+            optionsBuilder.UseLazyLoadingProxies().UseSqlite($"Data Source={_databasePath}");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -34,30 +34,5 @@ namespace MoneyAdministrator.DataAccess
                 new Currency { Id = 2, Name = "USD" }
             );
         }
-
-        //public void CreateDataBase(string filepath)
-        //{
-        //    var options = new DbContextOptionsBuilder<AppDbContext>()
-        //        .UseSqlite($"Data Source={filepath}")
-        //        .Options;
-
-        //    var context = new AppDbContext(options);
-        //    context.Database.EnsureCreated();
-        //}
-
-        //public IAppDbContext OpenDataBase(string filepath)
-        //{
-        //    var options = new DbContextOptionsBuilder<AppDbContext>()
-        //        .UseSqlite($"Data Source={filepath}")
-        //        .Options;
-
-        //    return new AppDbContext(options);
-        //}
-
-        //public void DeleteDataBase(string filepath)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
     }
 }

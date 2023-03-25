@@ -10,59 +10,26 @@ namespace MoneyAdministrator.Models
 {
     public class TransactionDetail
     {
-        //Fields
-        private int _id;
-        private int _transactionId;
-        private DateTime _date;
-        private decimal _value;
-        private int _installment;
-
-        private Transaction _transaction;
-
         //Columnas
         [DisplayName("Transaction detail ID")]
         [Required(ErrorMessage = "Transaction detail ID is required")]
-        public int Id
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
+        public int Id { get; set; }
 
         [DisplayName("Transaction ID")]
         [Required(ErrorMessage = "Transaction ID is required")]
-        public int TransactionId
-        {
-            get { return _transactionId; }
-            set { _transactionId = value; }
-        }
+        public int TransactionId { get; set; }
 
         [DisplayName("Transaction date")]
         [Required(ErrorMessage = "Transaction date is required")]
-        public DateTime Date
-        {
-            get { return _date; }
-            set { _date = value; }
-        }
+        public DateTime Date { get; set; }
 
-        [DisplayName("Value")]
-        [Required(ErrorMessage = "Transaction value is required")]
-        public decimal Value
-        {
-            get { return _value; }
-            set { _value = value; }
-        }
+        [DisplayName("Amount")]
+        [Required(ErrorMessage = "Transaction amount is required")]
+        public decimal Amount { get; set; }
 
         [DisplayName("Installment")]
-        public int Installment
-        {
-            get { return _installment; }
-            set { _installment = value; }
-        }
+        public int Installment { get; set; }
 
-        public Transaction Transaction
-        {
-            get { return _transaction; }
-            set { _transaction = value; }
-        }
+        public virtual Transaction Transaction { get; set; }
     }
 }
