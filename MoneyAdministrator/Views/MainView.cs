@@ -31,17 +31,13 @@ namespace MyMoneyAdmin
 
         public MainView()
         {
+            //metodos
             InitializeComponent();
             AssociateEvents();
 
-            //HomeTitleUpdate();
-
-            //_dbController = DbController.Get();
-            //_openedFilePath = "";
-
-            ////Configuro los botones
-            //TsbFileClose.Enabled = false;
-            //BtnTransactions.Enabled = false;
+            //configurations
+            this.Height = Screen.PrimaryScreen.Bounds.Height - 200;
+            this.Width = Screen.PrimaryScreen.Bounds.Width - 200;
         }
 
         private void AssociateEvents()
@@ -80,8 +76,8 @@ namespace MyMoneyAdmin
             _pnlContainer.Controls.Add(children);
         }
 
-        #region ToolStripMenu
-
+        //Todo comentado:
+        #region events
         private void TsbFileNew_Click(object sender, EventArgs e)
         {
             //if (_dbController.CheckDataBaseHasChanges())
@@ -122,7 +118,6 @@ namespace MyMoneyAdmin
             //    }
             //}
         }
-
         private void TsbFileConnect_Click(object sender, EventArgs e)
         {
             //OpenFileDialog o = new();
@@ -145,7 +140,6 @@ namespace MyMoneyAdmin
             //    }
             //}
         }
-
         private void TsbFileClose_Click(object sender, EventArgs e)
         {
             //if (_dbController.CheckDataBaseHasChanges())
@@ -165,13 +159,11 @@ namespace MyMoneyAdmin
             //ButtonsSetEnabled();
             //HomeTitleUpdate();
         }
-
-        #endregion
-
         private void TmHaveChanges_Tick(object sender, EventArgs e)
         {
             //if (_dbController.CheckDataBaseHasChanges())
             //    HomeTitleUpdate(hasChanges: true);
         }
+        #endregion
     }
 }

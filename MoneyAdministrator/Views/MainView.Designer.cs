@@ -76,26 +76,26 @@
             // 
             this._tsbFileNew.Image = global::MoneyAdministrator.Properties.Resources.document_plain_new;
             this._tsbFileNew.Name = "_tsbFileNew";
-            this._tsbFileNew.Size = new System.Drawing.Size(180, 22);
+            this._tsbFileNew.Size = new System.Drawing.Size(160, 22);
             this._tsbFileNew.Text = "Nuevo archivo...";
             // 
             // _tsbFileOpen
             // 
             this._tsbFileOpen.Image = global::MoneyAdministrator.Properties.Resources.folder_document;
             this._tsbFileOpen.Name = "_tsbFileOpen";
-            this._tsbFileOpen.Size = new System.Drawing.Size(180, 22);
+            this._tsbFileOpen.Size = new System.Drawing.Size(160, 22);
             this._tsbFileOpen.Text = "Abrir archivo...";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(157, 6);
             // 
             // _tsbFileClose
             // 
             this._tsbFileClose.Image = global::MoneyAdministrator.Properties.Resources.document_forbidden;
             this._tsbFileClose.Name = "_tsbFileClose";
-            this._tsbFileClose.Size = new System.Drawing.Size(180, 22);
+            this._tsbFileClose.Size = new System.Drawing.Size(160, 22);
             this._tsbFileClose.Text = "Cerrar archivo";
             // 
             // _pnlAside
