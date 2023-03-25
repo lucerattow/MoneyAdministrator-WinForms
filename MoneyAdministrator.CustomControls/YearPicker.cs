@@ -11,54 +11,51 @@ namespace MoneyAdministrator.CustomControls
         private int _height = 25;
 
         //Buttons Fields
-        private string _previousButtonText = "<";
-        private string _nextButtonText = ">";
-        private Image? _buttonPreviousImage = null;
+        private string _buttonNextText = ">";
+        private string _buttonPreviousText = "<";
         private Image? _buttonNextImage = null;
+        private Image? _buttonPreviousImage = null;
 
-        //Properties
-        public Image? ButtonPreviousImage
-        { 
-            get
-            {
-                return _buttonPreviousImage;
-            }
-            set
-            {
-                _buttonPreviousImage = value;
-                ButtonsIconSet();
-                //this.Invalidate();
-            }
-        }
-
+        #region properties
         public Image? ButtonNextImage
         {
-            get
-            {
-                return _buttonNextImage;
-            }
+            get => _buttonNextImage;
             set
             {
                 _buttonNextImage = value;
                 ButtonsIconSet();
             }
         }
-
+        public Image? ButtonPreviousImage
+        { 
+            get => _buttonPreviousImage;
+            set
+            {
+                _buttonPreviousImage = value;
+                ButtonsIconSet();
+            }
+        }
         public List<int> AvailableYears
         {
-            get { return _years; }
-            set { 
+            get => _years;
+            set 
+            { 
                 _years = value;
+
+                if (_years.Count > 0 && !_years.Contains(Value))
+                    Value = _years.FirstOrDefault();
+                else if (_years.Count == 0)
+                    _years.Add(Value);
+
                 YearsSort();
                 ButtonsSetEnabled();
             }
         }
-
         public int Value
-        { 
-            get { return _value; }
-            set 
-            { 
+        {
+            get => _value;
+            set
+            {
                 _value = value;
 
                 if (!_years.Contains(_value))
@@ -66,10 +63,17 @@ namespace MoneyAdministrator.CustomControls
                     _years.Add(_value);
                     YearsSort();
                 }
-                BtnYearPicker.Text = value.ToString();
+                _btnYearPicker.Text = value.ToString();
                 ButtonsSetEnabled();
             }
         }
+        #endregion
+
+        #region events
+        public event EventHandler ButtonNextClick;
+        public event EventHandler ButtonPreviousClick;
+        public event EventHandler ValueChange;
+        #endregion
 
         #region Hide Properties
 
@@ -137,28 +141,14 @@ namespace MoneyAdministrator.CustomControls
 
             this.MaximumSize = new Size(99999, _height);
             this.MinimumSize = new Size(90, _height);
-            this.BtnYearPicker.Text = _value.ToString();
+            this._btnYearPicker.Text = _value.ToString();
 
             ButtonsIconSet();
             ButtonsSetEnabled();
+            AssosiateEvents();
         }
 
-        //Events
-        private void BtnPrevius_Click(object sender, EventArgs e)
-        {
-            for (int i = 0; i < _years.Count; i++)
-            {
-                if (_years[i] == Value) 
-                {
-                    if (i + 1 < _years.Count)
-                    {
-                        Value = _years[i + 1];
-                    }
-                    break;
-                }
-            }
-        }
-
+        #region events
         private void BtnNext_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < _years.Count; i++)
@@ -173,7 +163,20 @@ namespace MoneyAdministrator.CustomControls
                 }
             }
         }
-
+        private void BtnPrevius_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < _years.Count; i++)
+            {
+                if (_years[i] == Value) 
+                {
+                    if (i + 1 < _years.Count)
+                    {
+                        Value = _years[i + 1];
+                    }
+                    break;
+                }
+            }
+        }
         private void BtnYearPicker_Click(object sender, EventArgs e)
         {
             Button button = sender as Button;
@@ -186,77 +189,89 @@ namespace MoneyAdministrator.CustomControls
             menuLocation = button.Parent.PointToScreen(menuLocation);
             contextMenu.Show(menuLocation);
         }
-
         private void BtnYearPicker_TextChanged(object sender, EventArgs e)
         {
             Value = int.Parse((sender as Button).Text);
         }
-
         private void TbItem_Click(object sender, EventArgs e)
         {
-            BtnYearPicker.Text = (sender as ToolStripMenuItem).Text;
+            _btnYearPicker.Text = (sender as ToolStripMenuItem).Text;
         }
+        #endregion
 
-        //Methods
-        private void YearsSort() => 
-            _years = _years.OrderByDescending(x => x).ToList();
-
+        #region methods
+        private void AssosiateEvents()
+        {
+            _btnPrevius.Click += delegate
+            {
+                ButtonPreviousClick?.Invoke(this, EventArgs.Empty);
+            };
+            _btnNext.Click += delegate
+            {
+                ButtonNextClick?.Invoke(this, EventArgs.Empty);
+            };
+            _btnYearPicker.TextChanged += delegate
+            { 
+                ValueChange?.Invoke(this, EventArgs.Empty);
+            };
+        }
+        private void YearsSort() => _years = _years.OrderByDescending(x => x).ToList();
         private void ButtonsIconSet()
         {
             if (_buttonPreviousImage != null)
             {
-                BtnPrevius.Image = _buttonPreviousImage;
-                BtnPrevius.Text = "";
+                _btnPrevius.Image = _buttonPreviousImage;
+                _btnPrevius.Text = "";
             }
             else
             {
-                BtnPrevius.Image = null;
-                BtnPrevius.Text = _previousButtonText;
+                _btnPrevius.Image = null;
+                _btnPrevius.Text = _buttonPreviousText;
             }
 
             if (_buttonNextImage != null)
             {
-                BtnNext.Image = _buttonNextImage;
-                BtnNext.Text = "";
+                _btnNext.Image = _buttonNextImage;
+                _btnNext.Text = "";
             }
             else
             {
-                BtnNext.Image = null;
-                BtnNext.Text = _nextButtonText;
+                _btnNext.Image = null;
+                _btnNext.Text = _buttonNextText;
             }
         }
-
         private void ButtonsSetEnabled()
         {
             if (_years.Count == 0)
             {
-                BtnPrevius.Enabled = false;
-                BtnNext.Enabled = false;
+                _btnPrevius.Enabled = false;
+                _btnNext.Enabled = false;
                 return;
             }
 
             //Compruebo si debo habilitar el boton Previous
             if (_years.OrderByDescending(x => x).LastOrDefault() == _value)
             {
-                BtnPrevius.Enabled = false;
+                _btnPrevius.Enabled = false;
             }
             else
             {
-                BtnPrevius.Enabled = true;
+                _btnPrevius.Enabled = true;
             }
 
             //Compruebo si debo habilitar el boton Next
             if (_years.OrderByDescending(x => x).First() == _value)
             {
-                BtnNext.Enabled = false;
+                _btnNext.Enabled = false;
             }
             else
             {
-                BtnNext.Enabled = true;
+                _btnNext.Enabled = true;
             }
         }
+        #endregion
 
-        //Functions
+        #region functions
         private ContextMenuStrip CreateContextMenu()
         {
             ContextMenuStrip contextMenu = new();
@@ -281,5 +296,6 @@ namespace MoneyAdministrator.CustomControls
 
             return contextMenu;
         }
+        #endregion
     }
 }
