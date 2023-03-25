@@ -76,7 +76,7 @@ namespace MoneyAdministrator.Views
             // 
             // _tsbInsert
             // 
-            this._tsbInsert.Image = global::MoneyAdministrator.Properties.Resources.document_add;
+            this._tsbInsert.Image = global::MoneyAdministrator.Properties.Resources.document_add_shadow;
             this._tsbInsert.ImageTransparentColor = System.Drawing.Color.Magenta;
             this._tsbInsert.Name = "_tsbInsert";
             this._tsbInsert.Size = new System.Drawing.Size(55, 22);
@@ -84,7 +84,7 @@ namespace MoneyAdministrator.Views
             // 
             // _tsbUpdate
             // 
-            this._tsbUpdate.Image = global::MoneyAdministrator.Properties.Resources.document_edit;
+            this._tsbUpdate.Image = global::MoneyAdministrator.Properties.Resources.document_edit_shadow;
             this._tsbUpdate.ImageTransparentColor = System.Drawing.Color.Magenta;
             this._tsbUpdate.Name = "_tsbUpdate";
             this._tsbUpdate.Size = new System.Drawing.Size(78, 22);
@@ -92,7 +92,7 @@ namespace MoneyAdministrator.Views
             // 
             // _tsbDelete
             // 
-            this._tsbDelete.Image = global::MoneyAdministrator.Properties.Resources.document_error;
+            this._tsbDelete.Image = global::MoneyAdministrator.Properties.Resources.document_error_shadow;
             this._tsbDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
             this._tsbDelete.Name = "_tsbDelete";
             this._tsbDelete.Size = new System.Drawing.Size(70, 22);
@@ -100,7 +100,7 @@ namespace MoneyAdministrator.Views
             // 
             // _tsbClear
             // 
-            this._tsbClear.Image = global::MoneyAdministrator.Properties.Resources.document;
+            this._tsbClear.Image = global::MoneyAdministrator.Properties.Resources.document_shadow;
             this._tsbClear.ImageTransparentColor = System.Drawing.Color.Magenta;
             this._tsbClear.Name = "_tsbClear";
             this._tsbClear.Size = new System.Drawing.Size(67, 22);

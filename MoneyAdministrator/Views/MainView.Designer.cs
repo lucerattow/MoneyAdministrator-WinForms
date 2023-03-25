@@ -74,14 +74,14 @@
             // 
             // _tsbFileNew
             // 
-            this._tsbFileNew.Image = global::MoneyAdministrator.Properties.Resources.document_plain_new;
+            this._tsbFileNew.Image = global::MoneyAdministrator.Properties.Resources.document_plain_new_shadow;
             this._tsbFileNew.Name = "_tsbFileNew";
             this._tsbFileNew.Size = new System.Drawing.Size(160, 22);
             this._tsbFileNew.Text = "Nuevo archivo...";
             // 
             // _tsbFileOpen
             // 
-            this._tsbFileOpen.Image = global::MoneyAdministrator.Properties.Resources.folder_document;
+            this._tsbFileOpen.Image = global::MoneyAdministrator.Properties.Resources.folder_document_shadow;
             this._tsbFileOpen.Name = "_tsbFileOpen";
             this._tsbFileOpen.Size = new System.Drawing.Size(160, 22);
             this._tsbFileOpen.Text = "Abrir archivo...";
@@ -93,7 +93,7 @@
             // 
             // _tsbFileClose
             // 
-            this._tsbFileClose.Image = global::MoneyAdministrator.Properties.Resources.document_forbidden;
+            this._tsbFileClose.Image = global::MoneyAdministrator.Properties.Resources.document_forbidden_shadow;
             this._tsbFileClose.Name = "_tsbFileClose";
             this._tsbFileClose.Size = new System.Drawing.Size(160, 22);
             this._tsbFileClose.Text = "Cerrar archivo";

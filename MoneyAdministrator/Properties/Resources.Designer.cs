@@ -83,9 +83,9 @@ namespace MoneyAdministrator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap disk_blue {
+        internal static System.Drawing.Bitmap disk_blue_shadow {
             get {
-                object obj = ResourceManager.GetObject("disk_blue", resourceCulture);
+                object obj = ResourceManager.GetObject("disk_blue_shadow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -93,9 +93,9 @@ namespace MoneyAdministrator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap document {
+        internal static System.Drawing.Bitmap document_add_shadow {
             get {
-                object obj = ResourceManager.GetObject("document", resourceCulture);
+                object obj = ResourceManager.GetObject("document_add_shadow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -103,9 +103,9 @@ namespace MoneyAdministrator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap document_add {
+        internal static System.Drawing.Bitmap document_connection_shadow {
             get {
-                object obj = ResourceManager.GetObject("document_add", resourceCulture);
+                object obj = ResourceManager.GetObject("document_connection_shadow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -113,9 +113,9 @@ namespace MoneyAdministrator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap document_connection {
+        internal static System.Drawing.Bitmap document_edit_shadow {
             get {
-                object obj = ResourceManager.GetObject("document_connection", resourceCulture);
+                object obj = ResourceManager.GetObject("document_edit_shadow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,9 +123,9 @@ namespace MoneyAdministrator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap document_edit {
+        internal static System.Drawing.Bitmap document_error_shadow {
             get {
-                object obj = ResourceManager.GetObject("document_edit", resourceCulture);
+                object obj = ResourceManager.GetObject("document_error_shadow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -133,9 +133,9 @@ namespace MoneyAdministrator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap document_error {
+        internal static System.Drawing.Bitmap document_forbidden_shadow {
             get {
-                object obj = ResourceManager.GetObject("document_error", resourceCulture);
+                object obj = ResourceManager.GetObject("document_forbidden_shadow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -143,9 +143,9 @@ namespace MoneyAdministrator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap document_forbidden {
+        internal static System.Drawing.Bitmap document_lock_shadow {
             get {
-                object obj = ResourceManager.GetObject("document_forbidden", resourceCulture);
+                object obj = ResourceManager.GetObject("document_lock_shadow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -153,9 +153,9 @@ namespace MoneyAdministrator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap document_lock {
+        internal static System.Drawing.Bitmap document_plain_new_shadow {
             get {
-                object obj = ResourceManager.GetObject("document_lock", resourceCulture);
+                object obj = ResourceManager.GetObject("document_plain_new_shadow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -163,9 +163,9 @@ namespace MoneyAdministrator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap document_plain_new {
+        internal static System.Drawing.Bitmap document_shadow {
             get {
-                object obj = ResourceManager.GetObject("document_plain_new", resourceCulture);
+                object obj = ResourceManager.GetObject("document_shadow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -193,9 +193,9 @@ namespace MoneyAdministrator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap folder_document {
+        internal static System.Drawing.Bitmap folder_document_shadow {
             get {
-                object obj = ResourceManager.GetObject("folder_document", resourceCulture);
+                object obj = ResourceManager.GetObject("folder_document_shadow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -203,9 +203,9 @@ namespace MoneyAdministrator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap forbidden {
+        internal static System.Drawing.Bitmap forbidden_shadow {
             get {
-                object obj = ResourceManager.GetObject("forbidden", resourceCulture);
+                object obj = ResourceManager.GetObject("forbidden_shadow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -213,9 +213,9 @@ namespace MoneyAdministrator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap save_as {
+        internal static System.Drawing.Bitmap save_as_shadow {
             get {
-                object obj = ResourceManager.GetObject("save_as", resourceCulture);
+                object obj = ResourceManager.GetObject("save_as_shadow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -40,6 +40,7 @@ namespace MyMoneyAdmin
             this.Width = Screen.PrimaryScreen.Bounds.Width - 200;
         }
 
+        #region methods
         private void AssociateEvents()
         {
             _btnTransactions.Click += delegate 
@@ -59,12 +60,10 @@ namespace MyMoneyAdmin
                 FileClose?.Invoke(this, EventArgs.Empty);
             };
         }
-
         public void CloseChildrens()
         {
             _pnlContainer.Controls.Clear();
         }
-
         public void OpenChildren(UserControl children)
         {
             //Controlo que el nuevo children no este abierto actualmente
@@ -75,6 +74,7 @@ namespace MyMoneyAdmin
             _pnlContainer.Controls.Clear();
             _pnlContainer.Controls.Add(children);
         }
+        #endregion
 
         //Todo comentado:
         #region events
