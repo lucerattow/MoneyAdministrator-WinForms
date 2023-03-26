@@ -132,7 +132,6 @@ namespace MoneyAdministrator.Views
             this._pnlContent.Name = "_pnlContent";
             this._pnlContent.Size = new System.Drawing.Size(850, 410);
             this._pnlContent.TabIndex = 17;
-            this._pnlContent.Visible = false;
             // 
             // _cbCurrency
             // 
@@ -167,6 +166,7 @@ namespace MoneyAdministrator.Views
             this._ypYearPage.Name = "_ypYearPage";
             this._ypYearPage.Size = new System.Drawing.Size(830, 23);
             this._ypYearPage.TabIndex = 21;
+            this._ypYearPage.Value = 2023;
             // 
             // _tbValue
             // 

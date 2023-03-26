@@ -12,13 +12,15 @@ namespace MoneyAdministrator.Models
     {
         //Properties
         [DisplayName("Entity ID")]
+        [Display(AutoGenerateField = false)]
         public int Id { get; set; }
 
         [DisplayName("Name")]
-        [StringLength(25, ErrorMessage = "Entity name must be between 3 and 25 characters")]
+        [StringLength(25, MinimumLength = 3, ErrorMessage = "Entity name must be between 3 and 25 characters")]
         [Required(ErrorMessage = "Entity name is required")]
         public string Name { get; set; }
 
+        [Display(AutoGenerateField = false)]
         public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

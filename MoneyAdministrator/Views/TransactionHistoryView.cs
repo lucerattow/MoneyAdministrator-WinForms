@@ -1,6 +1,7 @@
 ﻿using MoneyAdministrator.DTOs;
 using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Models;
+using MoneyAdministrator.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,6 +12,9 @@ namespace MoneyAdministrator.Views
 {
     public partial class TransactionHistoryView : UserControl, ITransactionHistoryView
     {
+        //fields
+        private int _selectedId = 0;
+
         #region properties
         public string EntityName 
         { 
@@ -44,8 +48,13 @@ namespace MoneyAdministrator.Views
         }
         #endregion
 
+        //events
+        public event EventHandler SelectedYearChange;
+        public event EventHandler EntitySearch;
+
         public TransactionHistoryView()
         {
+            this.Visible = false;
             Dock = DockStyle.Fill;
             InitializeComponent();
             AssosiateEvents();
@@ -56,36 +65,37 @@ namespace MoneyAdministrator.Views
             _tbEntity.MaxLength = 25;
             _tbDescription.MaxLength = 150;
 
-            //Ejecuto eventos necesarios
-            //TbValue_TextChanged(_tbValue, new());
-
             //Configuro la grilla
             GrdConfigure();
 
             //Muestro la ventana ya cargada
-            _pnlContent.Visible = true;
+            this.Visible = true;
         }
 
-        public event EventHandler SelectedYearChange;
-
         #region methods
+        //private
         private void AssosiateEvents()
         {
             _ypYearPage.ButtonNextClick += delegate
             {
-                SelectedYearChange?.Invoke(this, EventArgs.Empty);
+                SelectedYearChange?.Invoke(_ypYearPage, EventArgs.Empty);
             };
             _ypYearPage.ButtonPreviousClick += delegate
             {
-                SelectedYearChange?.Invoke(this, EventArgs.Empty);
+                SelectedYearChange?.Invoke(_ypYearPage, EventArgs.Empty);
             };
             _ypYearPage.ValueChange += delegate
             {
-                SelectedYearChange?.Invoke(this, EventArgs.Empty);
+                SelectedYearChange?.Invoke(_ypYearPage, EventArgs.Empty);
+            };
+            _btnEntitySearch.Click += delegate
+            { 
+                EntitySearch?.Invoke(_btnEntitySearch, EventArgs.Empty);
             };
         }
         private void GrdConfigure()
         {
+            ControlConfig.DataGridViewSetup(_grd);
             //Configuracion de columnas
             _grd.Columns.Add(new DataGridViewColumn() //0 id
             {
@@ -138,29 +148,14 @@ namespace MoneyAdministrator.Views
                 CellTemplate = new DataGridViewTextBoxCell(),
                 DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
             });
-
-            _grd.AllowUserToAddRows = false;
-            _grd.AllowUserToDeleteRows = false;
-            _grd.AllowUserToResizeRows = false;
-            _grd.AllowUserToOrderColumns = false;
-            _grd.AllowUserToResizeColumns = false;
-
-            _grd.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            _grd.EditMode = DataGridViewEditMode.EditProgrammatically;
-
-            _grd.RowHeadersVisible = false;
-            _grd.BorderStyle = BorderStyle.FixedSingle;
-            _grd.CellBorderStyle = DataGridViewCellBorderStyle.None;
-            _grd.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-
-            _grd.BackgroundColor = Color.FromArgb(230, 230, 230);
-            _grd.DefaultCellStyle = new DataGridViewCellStyle()
-            {
-                SelectionBackColor = Color.FromArgb(240, 240, 240),
-                SelectionForeColor = Color.FromArgb(40, 40, 40),
-            };
-            _grd.RowTemplate.Height = 20;
         }
+        private void ButtonsLogic()
+        {
+            _tsbInsert.Enabled = _selectedId == 0;
+            _tsbUpdate.Enabled = _selectedId != 0;
+            _tsbDelete.Enabled = _selectedId != 0;
+        }
+        //public
         public void GrdRefreshData(List<TransactionViewDto> transactions)
         {
             //Limpio la grilla y el yearPicker
