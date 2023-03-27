@@ -20,7 +20,6 @@ namespace MoneyAdministrator.Models
         [Required(ErrorMessage = "Entity name is required")]
         public string Name { get; set; }
 
-        [Display(AutoGenerateField = false)]
         public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

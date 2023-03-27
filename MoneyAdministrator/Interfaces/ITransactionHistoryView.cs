@@ -20,7 +20,7 @@ namespace MoneyAdministrator.Interfaces
 
         //Events
         event EventHandler SelectedYearChange;
-        event EventHandler EntitySearch;
+        event EventHandler ButtonEntitySearchClick;
 
         //Methods
         void SetCurrenciesList(List<Currency> currencies);

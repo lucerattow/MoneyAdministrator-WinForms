@@ -50,7 +50,7 @@ namespace MoneyAdministrator.Views
 
         //events
         public event EventHandler SelectedYearChange;
-        public event EventHandler EntitySearch;
+        public event EventHandler ButtonEntitySearchClick;
 
         public TransactionHistoryView()
         {
@@ -90,7 +90,7 @@ namespace MoneyAdministrator.Views
             };
             _btnEntitySearch.Click += delegate
             { 
-                EntitySearch?.Invoke(_btnEntitySearch, EventArgs.Empty);
+                ButtonEntitySearchClick?.Invoke(_btnEntitySearch, EventArgs.Empty);
             };
         }
         private void GrdConfigure()

@@ -33,12 +33,9 @@
             this._txtName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this._tsbSearch = new System.Windows.Forms.ToolStripButton();
-            this._tsbInsert = new System.Windows.Forms.ToolStripButton();
-            this._tsbUpdate = new System.Windows.Forms.ToolStripButton();
-            this._tsbDelete = new System.Windows.Forms.ToolStripButton();
-            this._tsbClear = new System.Windows.Forms.ToolStripButton();
             this._tsbSelect = new System.Windows.Forms.ToolStripButton();
+            this._tsbSearch = new System.Windows.Forms.ToolStripButton();
+            this._tsbClear = new System.Windows.Forms.ToolStripButton();
             this._pnlContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._grd)).BeginInit();
             this.toolStrip1.SuspendLayout();
@@ -94,9 +91,6 @@
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this._tsbSelect,
             this._tsbSearch,
-            this._tsbInsert,
-            this._tsbUpdate,
-            this._tsbDelete,
             this._tsbClear});
             this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
@@ -107,6 +101,14 @@
             this.toolStrip1.TabIndex = 17;
             this.toolStrip1.Text = "toolStrip1";
             // 
+            // _tsbSelect
+            // 
+            this._tsbSelect.Image = global::MoneyAdministrator.Properties.Resources.document_check_shadow;
+            this._tsbSelect.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this._tsbSelect.Name = "_tsbSelect";
+            this._tsbSelect.Size = new System.Drawing.Size(87, 22);
+            this._tsbSelect.Text = "Seleccionar";
+            // 
             // _tsbSearch
             // 
             this._tsbSearch.Image = global::MoneyAdministrator.Properties.Resources.document_view_shadow;
@@ -115,30 +117,6 @@
             this._tsbSearch.Size = new System.Drawing.Size(62, 22);
             this._tsbSearch.Text = "Buscar";
             // 
-            // _tsbInsert
-            // 
-            this._tsbInsert.Image = global::MoneyAdministrator.Properties.Resources.document_add_shadow;
-            this._tsbInsert.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this._tsbInsert.Name = "_tsbInsert";
-            this._tsbInsert.Size = new System.Drawing.Size(55, 22);
-            this._tsbInsert.Text = "Crear";
-            // 
-            // _tsbUpdate
-            // 
-            this._tsbUpdate.Image = global::MoneyAdministrator.Properties.Resources.document_edit_shadow;
-            this._tsbUpdate.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this._tsbUpdate.Name = "_tsbUpdate";
-            this._tsbUpdate.Size = new System.Drawing.Size(78, 22);
-            this._tsbUpdate.Text = "Modificar";
-            // 
-            // _tsbDelete
-            // 
-            this._tsbDelete.Image = global::MoneyAdministrator.Properties.Resources.document_error_shadow;
-            this._tsbDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this._tsbDelete.Name = "_tsbDelete";
-            this._tsbDelete.Size = new System.Drawing.Size(70, 22);
-            this._tsbDelete.Text = "Eliminar";
-            // 
             // _tsbClear
             // 
             this._tsbClear.Image = global::MoneyAdministrator.Properties.Resources.document_shadow;
@@ -146,14 +124,6 @@
             this._tsbClear.Name = "_tsbClear";
             this._tsbClear.Size = new System.Drawing.Size(67, 22);
             this._tsbClear.Text = "Limpiar";
-            // 
-            // _tsbSelect
-            // 
-            this._tsbSelect.Image = global::MoneyAdministrator.Properties.Resources.document_check_shadow;
-            this._tsbSelect.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this._tsbSelect.Name = "_tsbSelect";
-            this._tsbSelect.Size = new System.Drawing.Size(87, 22);
-            this._tsbSelect.Text = "Seleccionar";
             // 
             // ResultPickerView
             // 
@@ -182,9 +152,6 @@
         private Panel _pnlContainer;
         private ToolStrip toolStrip1;
         private ToolStripButton _tsbSearch;
-        private ToolStripButton _tsbInsert;
-        private ToolStripButton _tsbUpdate;
-        private ToolStripButton _tsbDelete;
         private ToolStripButton _tsbClear;
         private DataGridView _grd;
         private TextBox _txtName;

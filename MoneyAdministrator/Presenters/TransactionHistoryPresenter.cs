@@ -21,7 +21,7 @@ namespace MoneyAdministrator.Presenters
             this._databasePath = databasePath;
             this._transactionHistoryView = transactionHistoryView;
             this._transactionHistoryView.SelectedYearChange += SelectedYearChange;
-            this._transactionHistoryView.EntitySearch += EntitySearch;
+            this._transactionHistoryView.ButtonEntitySearchClick += ButtonEntitySearchClick;
 
             SetCurrenciesList();
             GrdRefreshData();
@@ -32,12 +32,18 @@ namespace MoneyAdministrator.Presenters
         {
             GrdRefreshData();
         }
-        private void EntitySearch(object? sender, EventArgs e)
+        private void ButtonEntitySearchClick(object? sender, EventArgs e)
         {
             var entities = new EntityService(_databasePath).GetAll();
-            var selectedId = new ResultPickerPresenter(_databasePath).Show(entities);
+            var resultPickerViewDtos = entities.Select(entity => new ResultPickerViewDto
+            { 
+                Id = entity.Id,
+                Field1 = entity.Name
+            }).ToList();
 
-            if (selectedId >= 0)
+            var selectedId = new ResultPickerPresenter(resultPickerViewDtos).Show();
+
+            if (selectedId > 0)
                 _transactionHistoryView.EntityName = entities.Where(x => x.Id == selectedId).FirstOrDefault().Name;
         }
         #endregion

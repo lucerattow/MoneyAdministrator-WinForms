@@ -18,13 +18,11 @@ namespace MoneyAdministrator.Interfaces
         event EventHandler<DataGridViewCellMouseEventArgs> GrdDoubleClick;
         event EventHandler ButtonSelectClick;
         event EventHandler ButtonSearchClick;
-        event EventHandler ButtonInsertClick;
-        event EventHandler ButtonUpdateClick;
-        event EventHandler ButtonDeleteClick;
         event EventHandler ButtonClearClick;
+        event EventHandler TxtNameTextChange;
 
         //methods
-        void GrdRefreshData<T>(List<T> dataSource) where T : class;
+        void GrdRefreshData(List<ResultPickerViewDto> dataSource);
         void ButtonsLogic();
 
         //functions
