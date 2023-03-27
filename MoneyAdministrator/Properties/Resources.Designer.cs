@@ -103,6 +103,16 @@ namespace MoneyAdministrator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap document_check_shadow {
+            get {
+                object obj = ResourceManager.GetObject("document_check_shadow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap document_connection_shadow {
             get {
                 object obj = ResourceManager.GetObject("document_connection_shadow", resourceCulture);

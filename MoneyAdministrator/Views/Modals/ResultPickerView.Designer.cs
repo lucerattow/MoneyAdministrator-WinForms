@@ -38,6 +38,7 @@
             this._tsbUpdate = new System.Windows.Forms.ToolStripButton();
             this._tsbDelete = new System.Windows.Forms.ToolStripButton();
             this._tsbClear = new System.Windows.Forms.ToolStripButton();
+            this._tsbSelect = new System.Windows.Forms.ToolStripButton();
             this._pnlContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._grd)).BeginInit();
             this.toolStrip1.SuspendLayout();
@@ -91,6 +92,7 @@
             this.toolStrip1.BackColor = System.Drawing.SystemColors.Control;
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this._tsbSelect,
             this._tsbSearch,
             this._tsbInsert,
             this._tsbUpdate,
@@ -145,6 +147,14 @@
             this._tsbClear.Size = new System.Drawing.Size(67, 22);
             this._tsbClear.Text = "Limpiar";
             // 
+            // _tsbSelect
+            // 
+            this._tsbSelect.Image = global::MoneyAdministrator.Properties.Resources.document_check_shadow;
+            this._tsbSelect.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this._tsbSelect.Name = "_tsbSelect";
+            this._tsbSelect.Size = new System.Drawing.Size(87, 22);
+            this._tsbSelect.Text = "Seleccionar";
+            // 
             // ResultPickerView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -153,6 +163,8 @@
             this.ClientSize = new System.Drawing.Size(559, 329);
             this.Controls.Add(this._pnlContainer);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "ResultPickerView";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ResultPickerView";
@@ -177,5 +189,6 @@
         private DataGridView _grd;
         private TextBox _txtName;
         private Label label1;
+        private ToolStripButton _tsbSelect;
     }
 }

@@ -13,32 +13,39 @@ namespace MoneyAdministrator.Presenters
     {
         private readonly IResultPickerView? _resultPickerView;
         private string _databasePath;
-        private bool resultPickerIsOpen = false;
 
         public ResultPickerPresenter(string databasePath)
         {
             _resultPickerView = new ResultPickerView();
             _databasePath = databasePath;
-            _resultPickerView.FormClosed += FormClosed;
+            _resultPickerView.GrdDoubleClick += GrdDoubleClick;
+            _resultPickerView.ButtonSelectClick += ButtonSelectClick;
         }
 
-        public void Show<T>(List<T> resultPickerData) where T : class
+        //public methods
+        public int Show<T>(List<T> resultPickerData) where T : class
         {
-            if (resultPickerIsOpen)
-            {
-                _resultPickerView?.BringToFront();
-            }
+            if (_resultPickerView == null)
+                throw new Exception("Ocurrio un error al intentar abrir el popup");
+
+            _resultPickerView.GrdRefreshData(resultPickerData);
+
+            if (_resultPickerView.ShowDialog() == DialogResult.OK)
+                return _resultPickerView.SelectedId;
             else
-            {
-                resultPickerIsOpen = true;
-                _resultPickerView?.Show();
-                _resultPickerView.TopMost = true;
-                _resultPickerView?.GrdRefreshData<T>(resultPickerData);
-            }
+                return -1;
         }
-        private void FormClosed(object? sender, EventArgs e)
-        { 
-            resultPickerIsOpen = false;
+
+        //view events
+        private void GrdDoubleClick(object? sender, DataGridViewCellMouseEventArgs e)
+        {
+            _resultPickerView.SelectedId = (int)((DataGridView)sender).Rows[e.RowIndex].Cells[0].Value;
+            _resultPickerView.SelectedName = (string)((DataGridView)sender).Rows[e.RowIndex].Cells[1].Value;
+            _resultPickerView.ButtonsLogic();
+        }
+        private void ButtonSelectClick(object? sender, EventArgs e)
+        {
+            _resultPickerView.DialogResult = DialogResult.OK;
         }
     }
 }

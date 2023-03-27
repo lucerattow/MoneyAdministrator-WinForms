@@ -9,15 +9,25 @@ namespace MoneyAdministrator.Interfaces
 {
     public interface IResultPickerView
     {
-        //fields
-        bool TopMost { get; set; }
+        //field
+        int SelectedId { get; set; }
+        string SelectedName { get; set; }
+        DialogResult DialogResult { get; set; }
 
         //events
-        event EventHandler FormClosed;
+        event EventHandler<DataGridViewCellMouseEventArgs> GrdDoubleClick;
+        event EventHandler ButtonSelectClick;
+        event EventHandler ButtonSearchClick;
+        event EventHandler ButtonInsertClick;
+        event EventHandler ButtonUpdateClick;
+        event EventHandler ButtonDeleteClick;
+        event EventHandler ButtonClearClick;
 
         //methods
-        void BringToFront();
-        void Show();
         void GrdRefreshData<T>(List<T> dataSource) where T : class;
+        void ButtonsLogic();
+
+        //functions
+        DialogResult ShowDialog();
     }
 }
