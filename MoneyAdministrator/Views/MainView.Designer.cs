@@ -128,11 +128,6 @@
             this._pnlContainer.Size = new System.Drawing.Size(851, 488);
             this._pnlContainer.TabIndex = 2;
             // 
-            // TmHaveChanges
-            // 
-            this.TmHaveChanges.Interval = 1000;
-            this.TmHaveChanges.Tick += new System.EventHandler(this.TmHaveChanges_Tick);
-            // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
