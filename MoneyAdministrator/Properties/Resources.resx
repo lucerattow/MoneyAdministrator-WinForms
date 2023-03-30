@@ -133,6 +133,9 @@
   <data name="forbidden_shadow" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\forbidden_shadow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="document_check_shadow" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\document_check_shadow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="document_edit_shadow" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\document_edit_shadow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -172,7 +175,7 @@
   <data name="documents" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\documents.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="document_check_shadow" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\document_check_shadow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="exit_shadow" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\exit_shadow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
