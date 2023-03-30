@@ -5,18 +5,17 @@ namespace MoneyAdministrator.CustomControls
 {
     public partial class YearPicker : UserControl
     {
-        //General Fields
+        //fields
         private int _value = DateTime.Now.Year;
         private List<int> _years = new List<int>();
         private int _height = 25;
 
-        //Buttons Fields
         private string _buttonNextText = ">";
         private string _buttonPreviousText = "<";
         private Image? _buttonNextImage = null;
         private Image? _buttonPreviousImage = null;
 
-        #region properties
+        //properties
         public Image? ButtonNextImage
         {
             get => _buttonNextImage;
@@ -67,73 +66,62 @@ namespace MoneyAdministrator.CustomControls
                 ButtonsSetEnabled();
             }
         }
-        #endregion
-
-        #region events
-        public event EventHandler ButtonNextClick;
-        public event EventHandler ButtonPreviousClick;
-        public event EventHandler ValueChange;
-        #endregion
 
         #region Hide Properties
-
         [Browsable(false)]
         public new bool AutoSize
         {
             get { return base.AutoSize; }
             set { base.AutoSize = value; }
         }
-
         [Browsable(false)]
         public new AutoSizeMode AutoSizeMode
         {
             get { return base.AutoSizeMode; }
             set { base.AutoSizeMode = value; }
         }
-
         [Browsable(false)]
         public new Image BackgroundImage
         {
             get { return base.BackgroundImage; }
             set { base.BackgroundImage = value; }
         }
-
         [Browsable(false)]
         public new ImageLayout BackgroundImageLayout
         {
             get { return base.BackgroundImageLayout; }
             set { base.BackgroundImageLayout = value; }
         }
-
         [Browsable(false)]
         public new DockStyle Dock
         { 
             get { return base.Dock; }
             set { base.Dock = value; }
         }
-
         [Browsable(false)]
         public new Size MaximumSize
         {
             get { return base.MaximumSize; }
             set { base.MaximumSize = value; }
         }
-
         [Browsable(false)]
         public new Size MinimumSize
         {
             get { return base.MinimumSize; }
             set { base.MinimumSize = value; }
         }
-
         [Browsable(false)]
         public new Padding Padding
         {
             get { return base.Padding; }
             set { base.Padding = value; }
         }
-
         #endregion
+
+        //setteable events
+        public event EventHandler ButtonNextClick;
+        public event EventHandler ButtonPreviousClick;
+        public event EventHandler ValueChange;
 
         public YearPicker()
         {
@@ -148,58 +136,9 @@ namespace MoneyAdministrator.CustomControls
             AssosiateEvents();
         }
 
-        #region events
-        private void BtnNext_Click(object sender, EventArgs e)
-        {
-            for (int i = 0; i < _years.Count; i++)
-            {
-                if (_years[i] == Value)
-                {
-                    if (i - 1 >= 0)
-                    {
-                        Value = _years[i - 1];
-                    }
-                    break;
-                }
-            }
-        }
-        private void BtnPrevius_Click(object sender, EventArgs e)
-        {
-            for (int i = 0; i < _years.Count; i++)
-            {
-                if (_years[i] == Value) 
-                {
-                    if (i + 1 < _years.Count)
-                    {
-                        Value = _years[i + 1];
-                    }
-                    break;
-                }
-            }
-        }
-        private void BtnYearPicker_Click(object sender, EventArgs e)
-        {
-            Button button = sender as Button;
+        //methods
+        private void YearsSort() => _years = _years.OrderByDescending(x => x).ToList();
 
-            var contextMenu = CreateContextMenu();
-            contextMenu.Width = button.Width;
-
-            //Cambio la posicion en la que se abre el menu contextual
-            Point menuLocation = new Point(button.Left, button.Bottom);
-            menuLocation = button.Parent.PointToScreen(menuLocation);
-            contextMenu.Show(menuLocation);
-        }
-        private void BtnYearPicker_TextChanged(object sender, EventArgs e)
-        {
-            Value = int.Parse((sender as Button).Text);
-        }
-        private void TbItem_Click(object sender, EventArgs e)
-        {
-            _btnYearPicker.Text = (sender as ToolStripMenuItem).Text;
-        }
-        #endregion
-
-        #region methods
         private void AssosiateEvents()
         {
             _btnPrevius.Click += delegate
@@ -215,7 +154,7 @@ namespace MoneyAdministrator.CustomControls
                 ValueChange?.Invoke(this, EventArgs.Empty);
             };
         }
-        private void YearsSort() => _years = _years.OrderByDescending(x => x).ToList();
+
         private void ButtonsIconSet()
         {
             if (_buttonPreviousImage != null)
@@ -240,6 +179,7 @@ namespace MoneyAdministrator.CustomControls
                 _btnNext.Text = _buttonNextText;
             }
         }
+
         private void ButtonsSetEnabled()
         {
             if (_years.Count == 0)
@@ -269,9 +209,8 @@ namespace MoneyAdministrator.CustomControls
                 _btnNext.Enabled = true;
             }
         }
-        #endregion
 
-        #region functions
+        //functions
         private ContextMenuStrip CreateContextMenu()
         {
             ContextMenuStrip contextMenu = new();
@@ -296,6 +235,60 @@ namespace MoneyAdministrator.CustomControls
 
             return contextMenu;
         }
-        #endregion
+
+        //events
+        private void BtnNext_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < _years.Count; i++)
+            {
+                if (_years[i] == Value)
+                {
+                    if (i - 1 >= 0)
+                    {
+                        Value = _years[i - 1];
+                    }
+                    break;
+                }
+            }
+        }
+
+        private void BtnPrevius_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < _years.Count; i++)
+            {
+                if (_years[i] == Value)
+                {
+                    if (i + 1 < _years.Count)
+                    {
+                        Value = _years[i + 1];
+                    }
+                    break;
+                }
+            }
+        }
+
+        private void BtnYearPicker_Click(object sender, EventArgs e)
+        {
+            Button button = sender as Button;
+
+            var contextMenu = CreateContextMenu();
+            contextMenu.Width = button.Width;
+
+            //Cambio la posicion en la que se abre el menu contextual
+            Point menuLocation = new Point(button.Left, button.Bottom);
+            menuLocation = button.Parent.PointToScreen(menuLocation);
+            contextMenu.Show(menuLocation);
+        }
+
+        private void BtnYearPicker_TextChanged(object sender, EventArgs e)
+        {
+            Value = int.Parse((sender as Button).Text);
+        }
+
+        private void TbItem_Click(object sender, EventArgs e)
+        {
+            _btnYearPicker.Text = (sender as ToolStripMenuItem).Text;
+        }
+
     }
 }

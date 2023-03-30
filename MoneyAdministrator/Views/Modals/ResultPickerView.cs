@@ -30,13 +30,6 @@ namespace MoneyAdministrator.Views.Modals
             set => base.DialogResult = value;
         }
 
-        //public events
-        public event EventHandler<DataGridViewCellMouseEventArgs> GrdDoubleClick;
-        public event EventHandler ButtonSelectClick;
-        public event EventHandler ButtonSearchClick;
-        public event EventHandler ButtonClearClick;
-        public event EventHandler TxtNameTextChange;
-
         public ResultPickerView()
         {
             InitializeComponent();
@@ -49,7 +42,7 @@ namespace MoneyAdministrator.Views.Modals
             ControlConfig.DataGridViewSetup(_grd);
         }
 
-        //public methods
+        //methods
         public void GrdRefreshData(List<ResultPickerViewDto> dataSource)
         {
             _grd.Visible = false;
@@ -62,12 +55,12 @@ namespace MoneyAdministrator.Views.Modals
 
             _grd.Visible = true;
         }
+
         public void ButtonsLogic()
         { 
             _tsbSelect.Enabled = _selectedId > 0;
         }
 
-        //private methods
         private void AssosiateEvents()
         {
             _grd.CellMouseDoubleClick += (sender, e) => GrdDoubleClick?.Invoke(sender, e);
@@ -76,5 +69,12 @@ namespace MoneyAdministrator.Views.Modals
             _tsbClear.Click += (sender, e) => ButtonClearClick?.Invoke(sender, e);
             _txtName.TextChanged += (sender, e) => TxtNameTextChange?.Invoke(sender, e);
         }
+
+        //events
+        public event EventHandler<DataGridViewCellMouseEventArgs> GrdDoubleClick;
+        public event EventHandler ButtonSelectClick;
+        public event EventHandler ButtonSearchClick;
+        public event EventHandler ButtonClearClick;
+        public event EventHandler TxtNameTextChange;
     }
 }

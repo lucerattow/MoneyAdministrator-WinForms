@@ -78,16 +78,6 @@ namespace MoneyAdministrator.Views
             }
         }
 
-        //events
-        public event EventHandler<DataGridViewCellMouseEventArgs> GrdDoubleClick;
-        public event EventHandler ButtonInsertClick;
-        public event EventHandler ButtonUpdateClick;
-        public event EventHandler ButtonDeleteClick;
-        public event EventHandler ButtonClearClick;
-        public event EventHandler ButtonExitClick;
-        public event EventHandler SelectedYearChange;
-        public event EventHandler ButtonEntitySearchClick;
-
         public TransactionHistoryView()
         {
             this.Visible = false;
@@ -103,7 +93,7 @@ namespace MoneyAdministrator.Views
             this.Visible = true;
         }
 
-        //public methods
+        //methods
         public void GrdRefreshData(List<TransactionViewDto> transactions)
         {
             //Limpio la grilla y el yearPicker
@@ -178,11 +168,13 @@ namespace MoneyAdministrator.Views
                 }
             }
         }
+
         public void SetCurrenciesList(List<Currency> currencies)
         {
             _cbCurrency.DataSource = currencies;
             _cbCurrency.DisplayMember = "Name";
         }
+
         public void ButtonsLogic()
         {
             _tsbInsert.Enabled = _selectedId == 0;
@@ -190,7 +182,6 @@ namespace MoneyAdministrator.Views
             _tsbDelete.Enabled = _selectedId != 0;
         }
 
-        //private methods
         private void AssosiateEvents()
         {
             _grd.CellMouseDoubleClick += (sender, e) => GrdDoubleClick?.Invoke(sender, e);
@@ -207,6 +198,7 @@ namespace MoneyAdministrator.Views
             _ypYearPage.ButtonPreviousClick += (sender, e) => SelectedYearChange?.Invoke(sender, e);
             _ypYearPage.ValueChange += (sender, e) => SelectedYearChange?.Invoke(sender, e);
         }
+
         private void GrdConfigure()
         {
             ControlConfig.DataGridViewSetup(_grd);
@@ -263,6 +255,7 @@ namespace MoneyAdministrator.Views
                 DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
             });
         }
+
         private void ConfigureFields()
         {
             _txtEntityName.MaxLength = 25;
@@ -276,89 +269,14 @@ namespace MoneyAdministrator.Views
             _txtInstallments.TextAlign = HorizontalAlignment.Center;
         }
 
-        #region Eventos
-
-        //private void TbValue_TextChanged(object sender, EventArgs e)
-        //{
-        //    TextBox? tb = sender as TextBox;
-        //    // Verifica si el valor es un número válido
-        //    if (decimal.TryParse(tb?.Text, out decimal value))
-        //    {
-        //        // Formatea el valor utilizando la cadena de formato "#0.00"
-        //        tb.Text = value.ToString("#0.00");
-        //    }
-        //}
-
-        //private void TbValue_KeyPress(object sender, KeyPressEventArgs e)
-        //{
-        //    TextBox? tb = sender as TextBox;
-        //    // Permitir solo números, caracteres de control (como retroceso) y el separador decimal
-        //    if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '.')
-        //    {
-        //        e.Handled = true;
-        //    }
-
-        //    // Permitir solo un separador decimal
-        //    if (e.KeyChar == '.' && tb.Text.IndexOf('.') > -1)
-        //    {
-        //        e.Handled = true;
-        //    }
-
-        //    // Permitir solo dos dígitos decimales
-        //    if (!char.IsControl(e.KeyChar))
-        //    {
-        //        if (tb?.Text.IndexOf('.') > -1 && tb.Text.Substring(tb.Text.IndexOf('.')).Length > 2)
-        //        {
-        //            e.Handled = true;
-        //        }
-        //    }
-        //}
-
-        //private void TbInstallments_KeyPress(object sender, KeyPressEventArgs e)
-        //{
-        //    if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-        //    {
-        //        e.Handled = true;
-        //    }
-        //}
-
-        //private void BtnCreate_Click(object sender, EventArgs e)
-        //{
-        //    _ = int.TryParse(_tbInstallments.Text, out int installment);
-        //    _ = decimal.TryParse(_tbValue.Text, out decimal value);
-        //    //string money = _rbCurrencyArs.Checked ? _rbCurrencyArs.Text : _rbCurrencyUsd.Text;
-
-        //    try
-        //    {
-        //        //ValidateTransaction();
-        //    }
-        //    catch (ArgumentException ex)
-        //    {
-        //        if (ex.ParamName == _tbEntity.Name)
-        //            _lbOrigin.ForeColor = Color.Red;
-        //        else
-        //            _lbOrigin.ForeColor = Color.Black;
-        //        return;
-        //    }
-
-        //    _lbOrigin.ForeColor = Color.Black;
-
-        //    //var transaction = new TransactionDetailDto()
-        //    //{
-        //    //    //Date = DpDate.Value.ToString("yyyy-MM-dd"),
-        //    //    //Origin = TbOrigin.Text,
-        //    //    //Description = TbDescription.Text,
-        //    //    //Value = value,
-        //    //    //Money = money,
-        //    //    //InstallmentCurrent = 1,
-        //    //    //InstallmentTotal = installment
-        //    //};
-
-        //    //_transactionsController.Create(transaction);
-        //    GrdLoadData();
-        //}
-         
-        #endregion
-
+        //events
+        public event EventHandler<DataGridViewCellMouseEventArgs> GrdDoubleClick;
+        public event EventHandler ButtonInsertClick;
+        public event EventHandler ButtonUpdateClick;
+        public event EventHandler ButtonDeleteClick;
+        public event EventHandler ButtonClearClick;
+        public event EventHandler ButtonExitClick;
+        public event EventHandler SelectedYearChange;
+        public event EventHandler ButtonEntitySearchClick;
     }
 }
