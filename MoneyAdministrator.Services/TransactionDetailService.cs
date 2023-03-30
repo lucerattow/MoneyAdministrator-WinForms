@@ -24,6 +24,11 @@ namespace MoneyAdministrator.Services
             return _unitOfWork.TransactionDetailRepository.GetAll().ToList();
         }
 
+        public TransactionDetail Get(int id)
+        {
+            return _unitOfWork.TransactionDetailRepository.GetById(id);
+        }
+
         public void Insert(TransactionDetail model)
         {
             //Valido el modelo

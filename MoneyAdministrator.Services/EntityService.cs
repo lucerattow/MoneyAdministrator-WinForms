@@ -1,4 +1,5 @@
-﻿using MoneyAdministrator.DataAccess;
+﻿using Microsoft.EntityFrameworkCore;
+using MoneyAdministrator.DataAccess;
 using MoneyAdministrator.DataAccess.Interfaces;
 using MoneyAdministrator.Models;
 using MoneyAdministrator.Services.Interfaces;
@@ -22,6 +23,16 @@ namespace MoneyAdministrator.Services
         public List<Entity> GetAll()
         {
             return _unitOfWork.EntityRepository.GetAll().ToList();
+        }
+
+        public Entity Get(int id)
+        {
+            return _unitOfWork.EntityRepository.GetById(id);
+        }
+
+        public Entity GetByName(string name)
+        {
+            return _unitOfWork.EntityRepository.GetAll().Where(x => x.Name == name).FirstOrDefault();
         }
 
         public void Insert(Entity model)

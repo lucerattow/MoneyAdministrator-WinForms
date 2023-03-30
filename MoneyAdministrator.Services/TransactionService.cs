@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MoneyAdministrator.Services
 {
-    internal class TransactionService : IService<Transaction>
+    public class TransactionService : IService<Transaction>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -22,6 +22,11 @@ namespace MoneyAdministrator.Services
         public List<Transaction> GetAll()
         {
             return _unitOfWork.TransactionRepository.GetAll().ToList();
+        }
+
+        public Transaction Get(int id)
+        {
+            return _unitOfWork.TransactionRepository.GetById(id);
         }
 
         public void Insert(Transaction model)
