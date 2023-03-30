@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainView));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this._tsddFile = new System.Windows.Forms.ToolStripDropDownButton();
@@ -39,7 +38,6 @@
             this._pnlAside = new System.Windows.Forms.Panel();
             this._btnTransactions = new System.Windows.Forms.Button();
             this._pnlContainer = new System.Windows.Forms.Panel();
-            this.TmHaveChanges = new System.Windows.Forms.Timer(this.components);
             this.toolStrip.SuspendLayout();
             this._pnlAside.SuspendLayout();
             this.SuspendLayout();
@@ -159,6 +157,5 @@
         private Panel _pnlAside;
         private Button _btnTransactions;
         private Panel _pnlContainer;
-        private System.Windows.Forms.Timer TmHaveChanges;
     }
 }
