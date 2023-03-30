@@ -14,18 +14,18 @@ namespace MoneyAdministrator.Interfaces
         string SelectedName { get; set; }
         DialogResult DialogResult { get; set; }
 
-        //events
-        event EventHandler<DataGridViewCellMouseEventArgs> GrdDoubleClick;
-        event EventHandler ButtonSelectClick;
-        event EventHandler ButtonSearchClick;
-        event EventHandler ButtonClearClick;
-        event EventHandler TxtNameTextChange;
-
         //methods
         void GrdRefreshData(List<ResultPickerViewDto> dataSource);
         void ButtonsLogic();
 
         //functions
         DialogResult ShowDialog();
+
+        //events
+        event EventHandler<DataGridViewCellMouseEventArgs> GrdDoubleClick;
+        event EventHandler ButtonSelectClick;
+        event EventHandler ButtonSearchClick;
+        event EventHandler ButtonClearClick;
+        event EventHandler TxtNameTextChange;
     }
 }

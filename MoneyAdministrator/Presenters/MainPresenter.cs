@@ -1,32 +1,46 @@
 ﻿using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Services;
 using MoneyAdministrator.Views;
+using MyMoneyAdmin;
 using System.Configuration;
 
 namespace MoneyAdministrator.Presenters
 {
     public class MainPresenter
     {
-        private IMainView _mainView;
+        //fields
+        private readonly IMainView _view;
         private string _databasePath;
 
-        public MainPresenter(IMainView mainView)
+        //properties
+        public IMainView View
         {
-            this._mainView = mainView;
-            this._mainView.ShowTransactionHistory += ShowTransactionHistory;
-            this._mainView.FileNew += FileNew;
-            this._mainView.FileOpen += FileOpen;
-            this._mainView.FileClose += FileClose;
-            this._mainView.IsFileOpened = false;
+            get { return _view; }
         }
 
-        #region events
+        public MainPresenter()
+        {
+            _view = new MainView();
+            _view.IsFileOpened = false;
+            AssosiateEvents();
+        }
+
+        //methods
+        private void AssosiateEvents()
+        {
+            _view.ShowTransactionHistory += ShowTransactionHistory;
+            _view.FileNew += FileNew;
+            _view.FileOpen += FileOpen;
+            _view.FileClose += FileClose;
+        }
+
+        //events
         private void ShowTransactionHistory(object? sender, EventArgs e)
         {
-            ITransactionHistoryView transactionHistoryView = new TransactionHistoryView();
-            var transactionHistoryPresenter = new TransactionHistoryPresenter(transactionHistoryView, _databasePath);
-            this._mainView.OpenChildren((UserControl)transactionHistoryView);
+            var transactionHistoryPresenter = new TransactionHistoryPresenter(_databasePath, _view.CloseChildrens);
+            this._view.OpenChildren((UserControl)transactionHistoryPresenter.View);
         }
+
         private void FileNew(object? sender, EventArgs e)
         {
             using var saveFileDialog = new SaveFileDialog()
@@ -41,7 +55,7 @@ namespace MoneyAdministrator.Presenters
                 {
                     _databasePath = saveFileDialog.FileName;
                     DbFileService.CreateDatabase(_databasePath);
-                    this._mainView.IsFileOpened = true;
+                    this._view.IsFileOpened = true;
                 }
                 catch (Exception ex)
                 {
@@ -50,6 +64,7 @@ namespace MoneyAdministrator.Presenters
                 }
             }
         }
+
         private void FileOpen(object? sender, EventArgs e)
         {
             using var openFileDialog = new OpenFileDialog()
@@ -63,7 +78,7 @@ namespace MoneyAdministrator.Presenters
                 try
                 {
                     _databasePath = openFileDialog.FileName;
-                    this._mainView.IsFileOpened = true;
+                    this._view.IsFileOpened = true;
                 }
                 catch (Exception ex)
                 {
@@ -72,12 +87,12 @@ namespace MoneyAdministrator.Presenters
                 }
             }
         }
+
         private void FileClose(object? sender, EventArgs e) 
         {
             _databasePath = "";
-            this._mainView.CloseChildrens();
-            this._mainView.IsFileOpened = false;
+            this._view.CloseChildrens();
+            this._view.IsFileOpened = false;
         }
-        #endregion
     }
 }

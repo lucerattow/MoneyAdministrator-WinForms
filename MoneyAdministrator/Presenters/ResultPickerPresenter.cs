@@ -11,6 +11,7 @@ namespace MoneyAdministrator.Presenters
 {
     public class ResultPickerPresenter
     {
+        //fields
         private readonly IResultPickerView? _resultPickerView;
         private List<ResultPickerViewDto> _dataSource;
 
@@ -25,7 +26,7 @@ namespace MoneyAdministrator.Presenters
             _resultPickerView.TxtNameTextChange += TxtNameTextChange;
         }
 
-        //public methods
+        //methods
         public int Show()
         {
             if (_resultPickerView == null)
@@ -39,7 +40,7 @@ namespace MoneyAdministrator.Presenters
                 return -1;
         }
 
-        //view events
+        //events
         private void GrdDoubleClick(object? sender, DataGridViewCellMouseEventArgs e)
         {
             _resultPickerView.SelectedId = (int)((DataGridView)sender).Rows[e.RowIndex].Cells[0].Value;

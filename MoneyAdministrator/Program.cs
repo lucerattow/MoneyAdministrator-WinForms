@@ -19,10 +19,7 @@ namespace MoneyAdministrator
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
 
-            IMainView view = new MainView();
-            new MainPresenter(view);
-
-            Application.Run((Form)view);
+            Application.Run((Form)new MainPresenter().View);
         }
     }
 }

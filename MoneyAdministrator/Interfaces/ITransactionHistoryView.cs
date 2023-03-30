@@ -10,20 +10,29 @@ namespace MoneyAdministrator.Interfaces
 {
     public interface ITransactionHistoryView
     {
-        //Properties
+        //properties
+        int SelectedId { get; set; }
         DateTime Date { get; set; }
         string EntityName { get; set; }
         string Description { get; set; }
-        decimal Value { get; set; }
+        decimal Amount { get; set; }
         int CurrencyId { get; set; }
-        int Installments { get; set; }
+        int InstallmentCurrent { get; set; }
+        int InstallmentMax { get; set; }
 
-        //Events
-        event EventHandler SelectedYearChange;
-        event EventHandler ButtonEntitySearchClick;
-
-        //Methods
+        //methods
         void SetCurrenciesList(List<Currency> currencies);
         void GrdRefreshData(List<TransactionViewDto> transactions);
+        void ButtonsLogic();
+
+        //events
+        event EventHandler<DataGridViewCellMouseEventArgs> GrdDoubleClick;
+        event EventHandler ButtonInsertClick;
+        event EventHandler ButtonUpdateClick;
+        event EventHandler ButtonDeleteClick;
+        event EventHandler ButtonClearClick;
+        event EventHandler ButtonExitClick;
+        event EventHandler SelectedYearChange;
+        event EventHandler ButtonEntitySearchClick;
     }
 }
