@@ -414,6 +414,5 @@ namespace MoneyAdministrator.Views
         public event EventHandler ButtonExitClick;
         public event EventHandler SelectedYearChange;
         public event EventHandler ButtonEntitySearchClick;
-
     }
 }

@@ -31,17 +31,16 @@ namespace MoneyAdministrator.Views
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TransactionHistoryView));
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this._toolStripButton = new System.Windows.Forms.ToolStrip();
             this._tsbInsert = new System.Windows.Forms.ToolStripButton();
             this._tsbUpdate = new System.Windows.Forms.ToolStripButton();
             this._tsbDelete = new System.Windows.Forms.ToolStripButton();
             this._tsbClear = new System.Windows.Forms.ToolStripButton();
             this._tsbExit = new System.Windows.Forms.ToolStripButton();
             this._pnlContent = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
             this._grd = new System.Windows.Forms.DataGridView();
             this._ypYearPage = new MoneyAdministrator.CustomControls.YearPicker();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this._pnlInputs = new System.Windows.Forms.Panel();
             this._txtAmount = new MoneyAdministrator.CustomControls.MoneyTextBox();
             this._cbFrequency = new System.Windows.Forms.ComboBox();
             this._lblMoney = new System.Windows.Forms.Label();
@@ -57,35 +56,34 @@ namespace MoneyAdministrator.Views
             this._lblAmount = new System.Windows.Forms.Label();
             this._dtpDate = new System.Windows.Forms.DateTimePicker();
             this._lblInstallments = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this._lnlInstallmentSeparator = new System.Windows.Forms.Label();
             this._ckbService = new System.Windows.Forms.CheckBox();
-            this.toolStrip1.SuspendLayout();
+            this._toolStripButton.SuspendLayout();
             this._pnlContent.SuspendLayout();
-            this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._grd)).BeginInit();
-            this.panel1.SuspendLayout();
+            this._pnlInputs.SuspendLayout();
             this.SuspendLayout();
             // 
-            // toolStrip1
+            // _toolStripButton
             // 
-            this.toolStrip1.AllowMerge = false;
-            this.toolStrip1.BackColor = System.Drawing.Color.White;
-            this.toolStrip1.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this._toolStripButton.AllowMerge = false;
+            this._toolStripButton.BackColor = System.Drawing.Color.White;
+            this._toolStripButton.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this._toolStripButton.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this._toolStripButton.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this._tsbInsert,
             this._tsbUpdate,
             this._tsbDelete,
             this._tsbClear,
             this._tsbExit});
-            this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-            this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.toolStrip1.Size = new System.Drawing.Size(781, 27);
-            this.toolStrip1.TabIndex = 16;
-            this.toolStrip1.Text = "toolStrip1";
+            this._toolStripButton.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
+            this._toolStripButton.Location = new System.Drawing.Point(0, 0);
+            this._toolStripButton.Name = "_toolStripButton";
+            this._toolStripButton.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
+            this._toolStripButton.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this._toolStripButton.Size = new System.Drawing.Size(791, 27);
+            this._toolStripButton.TabIndex = 16;
+            this._toolStripButton.Text = "toolStrip1";
             // 
             // _tsbInsert
             // 
@@ -134,28 +132,13 @@ namespace MoneyAdministrator.Views
             // 
             // _pnlContent
             // 
-            this._pnlContent.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this._pnlContent.BackColor = System.Drawing.Color.White;
-            this._pnlContent.Controls.Add(this.panel2);
-            this._pnlContent.Controls.Add(this.panel1);
-            this._pnlContent.Controls.Add(this.toolStrip1);
-            this._pnlContent.Location = new System.Drawing.Point(5, 5);
-            this._pnlContent.Margin = new System.Windows.Forms.Padding(4);
+            this._pnlContent.Controls.Add(this._grd);
+            this._pnlContent.Controls.Add(this._ypYearPage);
+            this._pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._pnlContent.Location = new System.Drawing.Point(0, 148);
             this._pnlContent.Name = "_pnlContent";
-            this._pnlContent.Size = new System.Drawing.Size(781, 323);
-            this._pnlContent.TabIndex = 17;
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this._grd);
-            this.panel2.Controls.Add(this._ypYearPage);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(0, 148);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(781, 175);
-            this.panel2.TabIndex = 27;
+            this._pnlContent.Size = new System.Drawing.Size(791, 185);
+            this._pnlContent.TabIndex = 27;
             // 
             // _grd
             // 
@@ -166,7 +149,7 @@ namespace MoneyAdministrator.Views
             this._grd.Location = new System.Drawing.Point(9, 9);
             this._grd.Margin = new System.Windows.Forms.Padding(4);
             this._grd.Name = "_grd";
-            this._grd.Size = new System.Drawing.Size(763, 119);
+            this._grd.Size = new System.Drawing.Size(773, 129);
             this._grd.TabIndex = 12;
             this._grd.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this._grd_CellMouseDoubleClick);
             // 
@@ -180,47 +163,47 @@ namespace MoneyAdministrator.Views
             this._ypYearPage.ButtonPreviousImage = global::MoneyAdministrator.Properties.Resources.arrow_left_green;
             this._ypYearPage.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this._ypYearPage.ForeColor = System.Drawing.SystemColors.ControlText;
-            this._ypYearPage.Location = new System.Drawing.Point(8, 136);
+            this._ypYearPage.Location = new System.Drawing.Point(8, 146);
             this._ypYearPage.Margin = new System.Windows.Forms.Padding(4);
             this._ypYearPage.MaximumSize = new System.Drawing.Size(11428, 30);
             this._ypYearPage.MinimumSize = new System.Drawing.Size(0, 30);
             this._ypYearPage.Name = "_ypYearPage";
-            this._ypYearPage.Size = new System.Drawing.Size(765, 30);
+            this._ypYearPage.Size = new System.Drawing.Size(775, 30);
             this._ypYearPage.TabIndex = 21;
             this._ypYearPage.Value = 2023;
             // 
-            // panel1
+            // _pnlInputs
             // 
-            this.panel1.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.panel1.Controls.Add(this._txtAmount);
-            this.panel1.Controls.Add(this._cbFrequency);
-            this.panel1.Controls.Add(this._lblMoney);
-            this.panel1.Controls.Add(this._lblOrigin);
-            this.panel1.Controls.Add(this._lblDescription);
-            this.panel1.Controls.Add(this._txtInstallmentCurrent);
-            this.panel1.Controls.Add(this._cbCurrency);
-            this.panel1.Controls.Add(this._txtDescription);
-            this.panel1.Controls.Add(this._lblDate);
-            this.panel1.Controls.Add(this._btnEntitySearch);
-            this.panel1.Controls.Add(this._txtEntityName);
-            this.panel1.Controls.Add(this._txtInstallments);
-            this.panel1.Controls.Add(this._lblAmount);
-            this.panel1.Controls.Add(this._dtpDate);
-            this.panel1.Controls.Add(this._lblInstallments);
-            this.panel1.Controls.Add(this.label2);
-            this.panel1.Controls.Add(this._ckbService);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 27);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(781, 121);
-            this.panel1.TabIndex = 26;
+            this._pnlInputs.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this._pnlInputs.Controls.Add(this._txtAmount);
+            this._pnlInputs.Controls.Add(this._cbFrequency);
+            this._pnlInputs.Controls.Add(this._lblMoney);
+            this._pnlInputs.Controls.Add(this._lblOrigin);
+            this._pnlInputs.Controls.Add(this._lblDescription);
+            this._pnlInputs.Controls.Add(this._txtInstallmentCurrent);
+            this._pnlInputs.Controls.Add(this._cbCurrency);
+            this._pnlInputs.Controls.Add(this._txtDescription);
+            this._pnlInputs.Controls.Add(this._lblDate);
+            this._pnlInputs.Controls.Add(this._btnEntitySearch);
+            this._pnlInputs.Controls.Add(this._txtEntityName);
+            this._pnlInputs.Controls.Add(this._txtInstallments);
+            this._pnlInputs.Controls.Add(this._lblAmount);
+            this._pnlInputs.Controls.Add(this._dtpDate);
+            this._pnlInputs.Controls.Add(this._lblInstallments);
+            this._pnlInputs.Controls.Add(this._lnlInstallmentSeparator);
+            this._pnlInputs.Controls.Add(this._ckbService);
+            this._pnlInputs.Dock = System.Windows.Forms.DockStyle.Top;
+            this._pnlInputs.Location = new System.Drawing.Point(0, 27);
+            this._pnlInputs.Margin = new System.Windows.Forms.Padding(4);
+            this._pnlInputs.Name = "_pnlInputs";
+            this._pnlInputs.Size = new System.Drawing.Size(791, 121);
+            this._pnlInputs.TabIndex = 26;
             // 
             // _txtAmount
             // 
             this._txtAmount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._txtAmount.Colored = true;
-            this._txtAmount.Location = new System.Drawing.Point(384, 29);
+            this._txtAmount.Location = new System.Drawing.Point(394, 29);
             this._txtAmount.Name = "_txtAmount";
             this._txtAmount.OperatorSymbol = "-";
             this._txtAmount.Size = new System.Drawing.Size(132, 27);
@@ -232,7 +215,7 @@ namespace MoneyAdministrator.Views
             this._cbFrequency.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._cbFrequency.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this._cbFrequency.FormattingEnabled = true;
-            this._cbFrequency.Location = new System.Drawing.Point(673, 29);
+            this._cbFrequency.Location = new System.Drawing.Point(683, 29);
             this._cbFrequency.Margin = new System.Windows.Forms.Padding(4);
             this._cbFrequency.Name = "_cbFrequency";
             this._cbFrequency.Size = new System.Drawing.Size(99, 28);
@@ -242,7 +225,7 @@ namespace MoneyAdministrator.Views
             // 
             this._lblMoney.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._lblMoney.AutoSize = true;
-            this._lblMoney.Location = new System.Drawing.Point(513, 5);
+            this._lblMoney.Location = new System.Drawing.Point(523, 5);
             this._lblMoney.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this._lblMoney.Name = "_lblMoney";
             this._lblMoney.Size = new System.Drawing.Size(64, 20);
@@ -273,7 +256,7 @@ namespace MoneyAdministrator.Views
             // 
             this._txtInstallmentCurrent.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._txtInstallmentCurrent.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-            this._txtInstallmentCurrent.Location = new System.Drawing.Point(593, 29);
+            this._txtInstallmentCurrent.Location = new System.Drawing.Point(603, 29);
             this._txtInstallmentCurrent.Margin = new System.Windows.Forms.Padding(4);
             this._txtInstallmentCurrent.Name = "_txtInstallmentCurrent";
             this._txtInstallmentCurrent.Size = new System.Drawing.Size(28, 27);
@@ -285,7 +268,7 @@ namespace MoneyAdministrator.Views
             this._cbCurrency.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._cbCurrency.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this._cbCurrency.FormattingEnabled = true;
-            this._cbCurrency.Location = new System.Drawing.Point(517, 29);
+            this._cbCurrency.Location = new System.Drawing.Point(527, 29);
             this._cbCurrency.Margin = new System.Windows.Forms.Padding(4);
             this._cbCurrency.Name = "_cbCurrency";
             this._cbCurrency.Size = new System.Drawing.Size(60, 28);
@@ -298,7 +281,7 @@ namespace MoneyAdministrator.Views
             this._txtDescription.Location = new System.Drawing.Point(9, 84);
             this._txtDescription.Margin = new System.Windows.Forms.Padding(4);
             this._txtDescription.Name = "_txtDescription";
-            this._txtDescription.Size = new System.Drawing.Size(764, 27);
+            this._txtDescription.Size = new System.Drawing.Size(774, 27);
             this._txtDescription.TabIndex = 3;
             // 
             // _lblDate
@@ -332,7 +315,7 @@ namespace MoneyAdministrator.Views
             // _txtInstallments
             // 
             this._txtInstallments.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this._txtInstallments.Location = new System.Drawing.Point(629, 29);
+            this._txtInstallments.Location = new System.Drawing.Point(639, 29);
             this._txtInstallments.Margin = new System.Windows.Forms.Padding(4);
             this._txtInstallments.Name = "_txtInstallments";
             this._txtInstallments.Size = new System.Drawing.Size(28, 27);
@@ -342,7 +325,7 @@ namespace MoneyAdministrator.Views
             // 
             this._lblAmount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._lblAmount.AutoSize = true;
-            this._lblAmount.Location = new System.Drawing.Point(381, 5);
+            this._lblAmount.Location = new System.Drawing.Point(391, 5);
             this._lblAmount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this._lblAmount.Name = "_lblAmount";
             this._lblAmount.Size = new System.Drawing.Size(53, 20);
@@ -363,29 +346,29 @@ namespace MoneyAdministrator.Views
             // 
             this._lblInstallments.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._lblInstallments.AutoSize = true;
-            this._lblInstallments.Location = new System.Drawing.Point(589, 5);
+            this._lblInstallments.Location = new System.Drawing.Point(599, 5);
             this._lblInstallments.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this._lblInstallments.Name = "_lblInstallments";
             this._lblInstallments.Size = new System.Drawing.Size(54, 20);
             this._lblInstallments.TabIndex = 4;
             this._lblInstallments.Text = "Cuotas";
             // 
-            // label2
+            // _lnlInstallmentSeparator
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(618, 30);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(15, 20);
-            this.label2.TabIndex = 29;
-            this.label2.Text = "/";
+            this._lnlInstallmentSeparator.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this._lnlInstallmentSeparator.AutoSize = true;
+            this._lnlInstallmentSeparator.Location = new System.Drawing.Point(628, 30);
+            this._lnlInstallmentSeparator.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this._lnlInstallmentSeparator.Name = "_lnlInstallmentSeparator";
+            this._lnlInstallmentSeparator.Size = new System.Drawing.Size(15, 20);
+            this._lnlInstallmentSeparator.TabIndex = 29;
+            this._lnlInstallmentSeparator.Text = "/";
             // 
             // _ckbService
             // 
             this._ckbService.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._ckbService.AutoSize = true;
-            this._ckbService.Location = new System.Drawing.Point(673, 5);
+            this._ckbService.Location = new System.Drawing.Point(683, 5);
             this._ckbService.Margin = new System.Windows.Forms.Padding(4);
             this._ckbService.Name = "_ckbService";
             this._ckbService.Size = new System.Drawing.Size(80, 24);
@@ -398,34 +381,34 @@ namespace MoneyAdministrator.Views
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this._pnlContent);
+            this.Controls.Add(this._pnlInputs);
+            this.Controls.Add(this._toolStripButton);
             this.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.MinimumSize = new System.Drawing.Size(791, 333);
             this.Name = "TransactionHistoryView";
             this.Size = new System.Drawing.Size(791, 333);
             this.Resize += new System.EventHandler(this.TransactionHistoryView_Resize);
-            this.toolStrip1.ResumeLayout(false);
-            this.toolStrip1.PerformLayout();
+            this._toolStripButton.ResumeLayout(false);
+            this._toolStripButton.PerformLayout();
             this._pnlContent.ResumeLayout(false);
-            this._pnlContent.PerformLayout();
-            this.panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this._grd)).EndInit();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this._pnlInputs.ResumeLayout(false);
+            this._pnlInputs.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStrip _toolStripButton;
         private System.Windows.Forms.ToolStripButton _tsbInsert;
         private System.Windows.Forms.ToolStripButton _tsbUpdate;
         private System.Windows.Forms.ToolStripButton _tsbDelete;
         private System.Windows.Forms.ToolStripButton _tsbClear;
-        private System.Windows.Forms.Panel _pnlContent;
         private System.Windows.Forms.Label _lblOrigin;
         private System.Windows.Forms.DataGridView _grd;
         private System.Windows.Forms.Label _lblInstallments;
@@ -440,13 +423,13 @@ namespace MoneyAdministrator.Views
         private Button _btnEntitySearch;
         private ComboBox _cbCurrency;
         private TextBox _txtInstallmentCurrent;
-        private Panel panel1;
+        private Panel _pnlInputs;
         private CheckBox _ckbService;
         private Label _lblMoney;
         private ComboBox _cbFrequency;
-        private Label label2;
+        private Label _lnlInstallmentSeparator;
         private ToolStripButton _tsbExit;
-        private Panel panel2;
+        private Panel _pnlContent;
         private CustomControls.MoneyTextBox _txtAmount;
     }
 }

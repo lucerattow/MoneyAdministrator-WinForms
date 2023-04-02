@@ -16,10 +16,7 @@ namespace MyMoneyAdmin
             set
             { 
                 _isFileOpened = value;
-
-                //Cambio el estado de los botones
-                _tsbFileClose.Enabled = value;
-                _btnTransactions.Enabled = value;
+                ButtonsLogic();
             }
         }
 
@@ -69,6 +66,14 @@ namespace MyMoneyAdmin
             {
                 FileClose?.Invoke(this, EventArgs.Empty);
             };
+        }
+
+        private void ButtonsLogic()
+        {
+            _tsbFileClose.Enabled = _isFileOpened;
+            _btnDashboard.Enabled = _isFileOpened;
+            _btnTransactions.Enabled = _isFileOpened;
+            _btnCreditCards.Enabled = _isFileOpened;
         }
 
         //Events
