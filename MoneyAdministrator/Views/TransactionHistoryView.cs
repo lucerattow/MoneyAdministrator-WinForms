@@ -151,7 +151,7 @@ namespace MoneyAdministrator.Views
                 if (InstallmentMax > 1)
                     _dtpDate.CustomFormat = "'Dia:' dd";
                 else
-                    _dtpDate.CustomFormat = "yyyy-MM-dd";
+                    _dtpDate.CustomFormat = ConfigurationManager.AppSettings["DateFormat"];
             }
         }
 
@@ -381,6 +381,12 @@ namespace MoneyAdministrator.Views
             ClearInputs();
         }
 
+        private void _txtInstallmentCurrent_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
+
         private void _ckbService_CheckedChanged(object sender, EventArgs e)
         {
             _cbFrequency.Enabled = _ckbService.Checked;
@@ -409,10 +415,5 @@ namespace MoneyAdministrator.Views
         public event EventHandler SelectedYearChange;
         public event EventHandler ButtonEntitySearchClick;
 
-        private void _txtInstallmentCurrent_KeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-            e.SuppressKeyPress = true;
-        }
     }
 }
