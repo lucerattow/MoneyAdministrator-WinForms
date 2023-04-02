@@ -30,7 +30,7 @@ namespace MoneyAdministrator.Utilities
                 SelectionBackColor = Color.FromArgb(240, 240, 240),
                 SelectionForeColor = Color.FromArgb(40, 40, 40),
             };
-            _grd.RowTemplate.Height = 20;
+            _grd.RowTemplate.Height = 23;
         }
     }
 }

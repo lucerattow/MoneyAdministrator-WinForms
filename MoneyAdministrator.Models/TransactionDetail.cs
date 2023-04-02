@@ -30,6 +30,9 @@ namespace MoneyAdministrator.Models
         [DisplayName("Installment")]
         public int Installment { get; set; }
 
+        [DisplayName("Frequency")]
+        public int Frequency { get; set; }
+
         public virtual Transaction Transaction { get; set; }
     }
 }

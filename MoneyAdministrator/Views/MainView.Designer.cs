@@ -45,6 +45,7 @@
             // toolStrip
             // 
             this.toolStrip.BackColor = System.Drawing.Color.White;
+            this.toolStrip.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this._tsddFile});
@@ -52,7 +53,7 @@
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
             this.toolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.toolStrip.Size = new System.Drawing.Size(1051, 25);
+            this.toolStrip.Size = new System.Drawing.Size(1051, 27);
             this.toolStrip.TabIndex = 0;
             this.toolStrip.Text = "toolStrip1";
             // 
@@ -67,33 +68,33 @@
             this._tsddFile.Image = global::MoneyAdministrator.Properties.Resources.documents;
             this._tsddFile.ImageTransparentColor = System.Drawing.Color.Magenta;
             this._tsddFile.Name = "_tsddFile";
-            this._tsddFile.Size = new System.Drawing.Size(61, 22);
+            this._tsddFile.Size = new System.Drawing.Size(72, 24);
             this._tsddFile.Text = "Archivo";
             // 
             // _tsbFileNew
             // 
             this._tsbFileNew.Image = global::MoneyAdministrator.Properties.Resources.document_plain_new_shadow;
             this._tsbFileNew.Name = "_tsbFileNew";
-            this._tsbFileNew.Size = new System.Drawing.Size(160, 22);
+            this._tsbFileNew.Size = new System.Drawing.Size(182, 24);
             this._tsbFileNew.Text = "Nuevo archivo...";
             // 
             // _tsbFileOpen
             // 
             this._tsbFileOpen.Image = global::MoneyAdministrator.Properties.Resources.folder_document_shadow;
             this._tsbFileOpen.Name = "_tsbFileOpen";
-            this._tsbFileOpen.Size = new System.Drawing.Size(160, 22);
+            this._tsbFileOpen.Size = new System.Drawing.Size(182, 24);
             this._tsbFileOpen.Text = "Abrir archivo...";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(157, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(179, 6);
             // 
             // _tsbFileClose
             // 
             this._tsbFileClose.Image = global::MoneyAdministrator.Properties.Resources.document_forbidden_shadow;
             this._tsbFileClose.Name = "_tsbFileClose";
-            this._tsbFileClose.Size = new System.Drawing.Size(160, 22);
+            this._tsbFileClose.Size = new System.Drawing.Size(182, 24);
             this._tsbFileClose.Text = "Cerrar archivo";
             // 
             // _pnlAside
@@ -101,15 +102,16 @@
             this._pnlAside.BackColor = System.Drawing.Color.White;
             this._pnlAside.Controls.Add(this._btnTransactions);
             this._pnlAside.Dock = System.Windows.Forms.DockStyle.Left;
-            this._pnlAside.Location = new System.Drawing.Point(0, 25);
+            this._pnlAside.Location = new System.Drawing.Point(0, 27);
             this._pnlAside.Name = "_pnlAside";
-            this._pnlAside.Size = new System.Drawing.Size(200, 488);
+            this._pnlAside.Size = new System.Drawing.Size(200, 486);
             this._pnlAside.TabIndex = 1;
             // 
             // _btnTransactions
             // 
             this._btnTransactions.FlatAppearance.BorderSize = 0;
             this._btnTransactions.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this._btnTransactions.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this._btnTransactions.Location = new System.Drawing.Point(0, 0);
             this._btnTransactions.Name = "_btnTransactions";
             this._btnTransactions.Size = new System.Drawing.Size(200, 30);
@@ -121,9 +123,10 @@
             // 
             this._pnlContainer.BackColor = System.Drawing.SystemColors.ControlDark;
             this._pnlContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._pnlContainer.Location = new System.Drawing.Point(200, 25);
+            this._pnlContainer.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this._pnlContainer.Location = new System.Drawing.Point(200, 27);
             this._pnlContainer.Name = "_pnlContainer";
-            this._pnlContainer.Size = new System.Drawing.Size(851, 488);
+            this._pnlContainer.Size = new System.Drawing.Size(851, 486);
             this._pnlContainer.TabIndex = 2;
             // 
             // MainView

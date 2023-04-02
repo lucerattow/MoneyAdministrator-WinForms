@@ -16,9 +16,14 @@ namespace MoneyAdministrator.Interfaces
         string EntityName { get; set; }
         string Description { get; set; }
         decimal Amount { get; set; }
-        int CurrencyId { get; set; }
+        Currency Currency { get; set; }
+
         int InstallmentCurrent { get; set; }
         int InstallmentMax { get; set; }
+        int Frequency { get; set; }
+
+        bool IsService { get; set; }
+        bool Editing { get; set; }
 
         //methods
         void SetCurrenciesList(List<Currency> currencies);
@@ -26,11 +31,10 @@ namespace MoneyAdministrator.Interfaces
         void ButtonsLogic();
 
         //events
-        event EventHandler<DataGridViewCellMouseEventArgs> GrdDoubleClick;
+        event EventHandler GrdDoubleClick;
         event EventHandler ButtonInsertClick;
         event EventHandler ButtonUpdateClick;
         event EventHandler ButtonDeleteClick;
-        event EventHandler ButtonClearClick;
         event EventHandler ButtonExitClick;
         event EventHandler SelectedYearChange;
         event EventHandler ButtonEntitySearchClick;

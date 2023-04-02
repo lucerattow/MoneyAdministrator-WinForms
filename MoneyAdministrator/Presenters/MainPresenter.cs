@@ -32,6 +32,7 @@ namespace MoneyAdministrator.Presenters
             _view.FileNew += FileNew;
             _view.FileOpen += FileOpen;
             _view.FileClose += FileClose;
+            _view.Test += test;
         }
 
         //events
@@ -39,6 +40,12 @@ namespace MoneyAdministrator.Presenters
         {
             var transactionHistoryPresenter = new TransactionHistoryPresenter(_databasePath, _view.CloseChildrens);
             this._view.OpenChildren((UserControl)transactionHistoryPresenter.View);
+        }
+
+        private void test(object? sender, EventArgs e)
+        {
+            this._view.CloseChildrens();
+            this._view.OpenChildren(new Test());
         }
 
         private void FileNew(object? sender, EventArgs e)
