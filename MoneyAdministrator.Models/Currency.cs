@@ -12,14 +12,15 @@ namespace MoneyAdministrator.Models
     public class Currency
     {
         //Properties
-        [DisplayName("Currency ID")]
         public int Id { get; set; }
 
-        [DisplayName("Name")]
         [StringLength(3, MinimumLength = 3, ErrorMessage = "Currency name need 3 cacarteres")]
         [Required(ErrorMessage = "Currency name is required")]
         public string Name { get; set; }
 
+        //ForaignKeys
         public virtual ICollection<Transaction> Transactions { get; set; }
+        public virtual ICollection<CurrencyValue> CurrencyValues { get; set; }
+        public virtual ICollection<Salary> Salaries { get; set; }
     }
 }

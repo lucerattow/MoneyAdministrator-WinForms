@@ -17,7 +17,7 @@ namespace MoneyAdministrator.Presenters
         //fields
         private ITransactionHistoryView _view;
         private string _databasePath;
-        private Action _closeForm;
+        private Action _closeView;
 
         //properties
         public ITransactionHistoryView View 
@@ -28,7 +28,7 @@ namespace MoneyAdministrator.Presenters
         public TransactionHistoryPresenter(string databasePath, Action closeView)
         {
             _databasePath = databasePath;
-            _closeForm = closeView;
+            _closeView = closeView;
             _view = new TransactionHistoryView();
 
             AssosiateEvents();
@@ -348,7 +348,7 @@ namespace MoneyAdministrator.Presenters
 
         private void ButtonExitClick(object? sender, EventArgs e)
         {
-            _closeForm();
+            _closeView();
         }
 
         private void SelectedYearChange(object? sender, EventArgs e)

@@ -26,6 +26,7 @@ namespace MoneyAdministrator.Models
         [StringLength(150, ErrorMessage = "Transaction description cannot exceed 150 characters.")]
         public string Description { get; set; }
 
+        //ForaignKeys
         public virtual Entity Entity { get; set; }
         public virtual Currency Currency { get; set; }
         public virtual ICollection<TransactionDetail> TransactionDetails { get; set; }

@@ -18,6 +18,7 @@ namespace MoneyAdministrator.Interfaces
         void OpenChildren(UserControl children);
 
         //events
+        event EventHandler ShowDashboard;
         event EventHandler ShowTransactionHistory;
         event EventHandler FileNew;
         event EventHandler FileOpen;

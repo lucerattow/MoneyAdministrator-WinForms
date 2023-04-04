@@ -50,22 +50,12 @@ namespace MyMoneyAdmin
 
         private void AssociateEvents()
         {
-            _btnTransactions.Click += delegate
-            {
-                ShowTransactionHistory?.Invoke(this, EventArgs.Empty);
-            };
-            _tsbFileNew.Click += delegate
-            {
-                FileNew?.Invoke(this, EventArgs.Empty);
-            };
-            _tsbFileOpen.Click += delegate
-            {
-                FileOpen?.Invoke(this, EventArgs.Empty);
-            };
-            _tsbFileClose.Click += delegate
-            {
-                FileClose?.Invoke(this, EventArgs.Empty);
-            };
+            _btnDashboard.Click += (sender, e) => ShowDashboard?.Invoke(sender, e);
+            _btnTransactions.Click += (sender, e) => ShowTransactionHistory?.Invoke(sender, e);
+
+            _tsbFileNew.Click += (sender, e) => FileNew?.Invoke(sender, e);
+            _tsbFileOpen.Click += (sender, e) => FileOpen?.Invoke(sender, e);
+            _tsbFileClose.Click += (sender, e) => FileClose?.Invoke(sender, e);
         }
 
         private void ButtonsLogic()
@@ -77,6 +67,7 @@ namespace MyMoneyAdmin
         }
 
         //Events
+        public event EventHandler ShowDashboard;
         public event EventHandler ShowTransactionHistory;
         public event EventHandler FileNew;
         public event EventHandler FileOpen;

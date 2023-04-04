@@ -204,12 +204,10 @@ namespace MoneyAdministrator.Views
                     });
 
                     //Pinto el separador
-                    Color sepBackColor = Color.FromArgb(75, 135, 230);
-                    Color sepForeColor = Color.White;
                     foreach (DataGridViewCell cell in _grd.Rows[row].Cells)
                     {
-                        cell.Style.BackColor = sepBackColor;
-                        cell.Style.ForeColor = sepForeColor;
+                        cell.Style.BackColor = Color.FromArgb(75, 135, 230);
+                        cell.Style.ForeColor = Color.White;
                         cell.Style.SelectionBackColor = cell.Style.BackColor;
                         cell.Style.SelectionForeColor = cell.Style.ForeColor;
                     }
@@ -246,13 +244,6 @@ namespace MoneyAdministrator.Views
             _cbCurrency.DisplayMember = "Name";
         }
 
-        public void ButtonsLogic()
-        {
-            _tsbInsert.Enabled = _selectedId == 0;
-            _tsbUpdate.Enabled = _selectedId != 0;
-            _tsbDelete.Enabled = _selectedId != 0;
-        }
-
         private void ClearInputs()
         {
             _selectedId = 0;
@@ -270,10 +261,16 @@ namespace MoneyAdministrator.Views
             ButtonsLogic();
         }
 
+        public void ButtonsLogic()
+        {
+            _tsbInsert.Enabled = _selectedId == 0;
+            _tsbUpdate.Enabled = _selectedId != 0;
+            _tsbDelete.Enabled = _selectedId != 0;
+        }
+
         private void AssosiateEvents()
         {
             _btnEntitySearch.Click += (sender, e) => ButtonEntitySearchClick?.Invoke(sender, e);
-            _tsbExit.Click += (sender, e) => ButtonExitClick?.Invoke(sender, e);
             _tsbExit.Click += (sender, e) => ButtonExitClick?.Invoke(sender, e);
             _ypYearPage.ButtonNextClick += (sender, e) => SelectedYearChange?.Invoke(sender, e);
             _ypYearPage.ButtonPreviousClick += (sender, e) => SelectedYearChange?.Invoke(sender, e);
@@ -286,7 +283,7 @@ namespace MoneyAdministrator.Views
             _dtpDate.CustomFormat = ConfigurationManager.AppSettings["DateFormat"];
             _txtDescription.MaxLength = 150;
             _txtAmount.TextAlign = HorizontalAlignment.Right;
-            _txtAmount.Text = "0,00 $";
+            _txtAmount.Text = "0";
             _txtInstallmentCurrent.MaxLength = 2;
             _txtInstallmentCurrent.TextAlign = HorizontalAlignment.Center;
             _txtInstallments.MaxLength = 2;

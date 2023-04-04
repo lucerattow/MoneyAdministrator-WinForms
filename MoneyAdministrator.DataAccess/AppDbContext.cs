@@ -12,6 +12,8 @@ namespace MoneyAdministrator.DataAccess
         public DbSet<Currency> Currencies { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<TransactionDetail> TransactionDetails { get; set; }
+        public DbSet<CurrencyValue> CurrencyValues { get; set; }
+        public DbSet<Salary> Salaries { get; set; }
 
         public AppDbContext(string databasePath) 
         {

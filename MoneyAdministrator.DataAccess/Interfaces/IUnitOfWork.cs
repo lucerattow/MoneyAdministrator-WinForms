@@ -13,6 +13,8 @@ namespace MoneyAdministrator.DataAccess.Interfaces
         IRepository<Currency> CurrencyRepository { get; }
         IRepository<Transaction> TransactionRepository { get; }
         IRepository<TransactionDetail> TransactionDetailRepository { get; }
+        IRepository<CurrencyValue> CurrencyValueRepository { get; }
+        IRepository<Salary> SalaryRepository { get; }
         void Save();
     }
 }

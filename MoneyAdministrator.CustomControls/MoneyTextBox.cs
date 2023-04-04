@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ namespace MoneyAdministrator.CustomControls
                 if (value == "+" || value == "-")
                 {
                     _operatorSymbol = value;
+                    this_TextChanged(this, EventArgs.Empty);
                 }
             } 
         }
@@ -31,6 +33,7 @@ namespace MoneyAdministrator.CustomControls
 
         public MoneyTextBox()
         {
+            this.Text = "0.00 $";
             _operatorSymbol = "-";
             this.Click += this_Click;
             this.Enter += this_Enter;
@@ -97,8 +100,12 @@ namespace MoneyAdministrator.CustomControls
         private string FormatCurrency(string input)
         {
             var numbers = new string(input.Where(char.IsDigit).ToArray());
-            decimal value = decimal.Parse(numbers) / 100;
-            return value.ToString(_operatorSymbol + "0.00 $");
+
+            decimal value = 0;
+            if (!string.IsNullOrEmpty(numbers) && decimal.TryParse(numbers, out value))
+                value = value != 0 ? value / 100 : 0;
+
+            return _operatorSymbol + value.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")); ;
         }
 
         private void Colorize()
