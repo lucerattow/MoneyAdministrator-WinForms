@@ -9,6 +9,7 @@ namespace MoneyAdministrator.Interfaces
     public interface IMainView
     {
         //properties
+        /// <summary>Informa si la aplicacion tiene una base de datos abierta</summary>
         bool IsFileOpened { get; set; }
 
         //Methods
