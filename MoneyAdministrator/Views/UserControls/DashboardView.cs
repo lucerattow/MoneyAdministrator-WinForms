@@ -29,7 +29,7 @@ namespace MoneyAdministrator.Views.UserControls
                 if (value != null)
                     _dtpDate.Value = (DateTime)value;
                 else
-                    _dtpDate.Value = DateTime.Now;
+                    _dtpDate.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             } 
         }
         public decimal UsdValue
@@ -201,7 +201,7 @@ namespace MoneyAdministrator.Views.UserControls
         public void ClearInputs()
         {
             _selectedPeriod = null;
-            _dtpDate.Value = DateTime.Now;
+            _dtpDate.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             _txtUsdValue.Text = "";
             _txtUsdValue.OperatorSymbol = "+";
             _txtSalaryArs.Text = "";
