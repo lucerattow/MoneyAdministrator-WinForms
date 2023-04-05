@@ -15,12 +15,12 @@ namespace MoneyAdministrator.Presenters
     public class DashboardPresenter
     {
         //fields
-        private IDashboard _view;
+        private IDashboardView _view;
         private string _databasePath;
         private Action _closeView;
 
         //properties
-        public IDashboard View
+        public IDashboardView View
         {
             get { return _view; }
         }

@@ -16,7 +16,7 @@ using System.Globalization;
 
 namespace MoneyAdministrator.Views.UserControls
 {
-    public partial class DashboardView : UserControl, IDashboard
+    public partial class DashboardView : UserControl, IDashboardView
     {
         private DateTime? _selectedPeriod;
 

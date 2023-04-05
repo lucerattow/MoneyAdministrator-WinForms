@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MoneyAdministrator.Interfaces
 {
-    public interface IDashboard
+    public interface IDashboardView
     {
         //properties
         /// <summary>Obtengo el periodo seleccionado</summary>
