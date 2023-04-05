@@ -27,7 +27,7 @@ namespace MoneyAdministrator.Presenters
 
         public DashboardPresenter(string databasePath, Action closeView)
         {
-            _view = new Dashboard();
+            _view = new DashboardView();
             _databasePath = databasePath;
             _closeView = closeView;
             GrdRefreshData();

@@ -16,7 +16,7 @@ using System.Globalization;
 
 namespace MoneyAdministrator.Views.UserControls
 {
-    public partial class Dashboard : UserControl, IDashboard
+    public partial class DashboardView : UserControl, IDashboard
     {
         private DateTime? _selectedPeriod;
 
@@ -107,7 +107,7 @@ namespace MoneyAdministrator.Views.UserControls
         private int _colUsdCompareWidth = 250;
         private int _colWalletWidth = 600;
 
-        public Dashboard()
+        public DashboardView()
         {
             this.Visible = false;
 

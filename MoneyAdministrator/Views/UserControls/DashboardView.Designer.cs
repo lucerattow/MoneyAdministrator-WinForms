@@ -1,6 +1,6 @@
 ﻿namespace MoneyAdministrator.Views.UserControls
 {
-    partial class Dashboard
+    partial class DashboardView
     {
         /// <summary> 
         /// Required designer variable.
