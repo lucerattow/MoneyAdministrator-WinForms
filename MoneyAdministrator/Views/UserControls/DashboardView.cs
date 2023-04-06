@@ -112,10 +112,13 @@ namespace MoneyAdministrator.Views.UserControls
         {
             this.Visible = false;
 
-            Dock = DockStyle.Fill;
-            InitializeComponent();
-            ControlsSetup();
-            AssosiateEvents();
+            using (new CursorWait())
+            {
+                Dock = DockStyle.Fill;
+                InitializeComponent();
+                ControlsSetup();
+                AssosiateEvents();
+            }
 
             //Muestro la ventana ya cargada
             this.Visible = true;
@@ -338,20 +341,23 @@ namespace MoneyAdministrator.Views.UserControls
 
         private void _grd_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            var value = (sender as DataGridView).Rows[e.RowIndex].Cells[0].Value.ToString();
+            using (new CursorWait())
+            {
+                var value = (sender as DataGridView).Rows[e.RowIndex].Cells[0].Value.ToString();
 
-            //Si la fecha no tiene el tamaño para "yyyy-MM"
-            if (value.Length != 7)
-                return;
+                //Si la fecha no tiene el tamaño para "yyyy-MM"
+                if (value.Length != 7)
+                    return;
 
-            string[] values = value.Split('-');
-            int year = int.Parse(values[0]);
-            int month = int.Parse(values[1]);
+                string[] values = value.Split('-');
+                int year = int.Parse(values[0]);
+                int month = int.Parse(values[1]);
 
-            SelectedPeriod = new DateTime(year, month, 1);
+                SelectedPeriod = new DateTime(year, month, 1);
 
-            GrdDoubleClick?.Invoke(sender, e);
-            ButtonsLogic();
+                GrdDoubleClick?.Invoke(sender, e);
+                ButtonsLogic();
+            }
         }
 
         public event EventHandler ButtonUpdateClick;

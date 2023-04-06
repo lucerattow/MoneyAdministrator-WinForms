@@ -1,5 +1,6 @@
 ﻿using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Services;
+using MoneyAdministrator.Utilities.Disposable;
 using MoneyAdministrator.Views;
 using MyMoneyAdmin;
 using System.Configuration;
@@ -64,6 +65,7 @@ namespace MoneyAdministrator.Presenters
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(saveFileDialog.FileName))
             {
+                using (new CursorWait())
                 try
                 {
                     _databasePath = saveFileDialog.FileName;
@@ -89,6 +91,7 @@ namespace MoneyAdministrator.Presenters
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
+                using (new CursorWait())
                 try
                 {
                     _databasePath = openFileDialog.FileName;

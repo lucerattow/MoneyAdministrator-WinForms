@@ -47,15 +47,18 @@ namespace MoneyAdministrator.Presenters
             _resultPickerView.SelectedName = (string)((DataGridView)sender).Rows[e.RowIndex].Cells[1].Value;
             _resultPickerView.ButtonsLogic();
         }
+
         private void ButtonSelectClick(object? sender, EventArgs e)
         {
             _resultPickerView.DialogResult = DialogResult.OK;
         }
+
         private void ButtonSearchClick(object? sender, EventArgs e)
         {
             var search = _dataSource.Where(data => data.Field1.Contains(_resultPickerView.SelectedName)).ToList();
             _resultPickerView.GrdRefreshData(search);
         }
+
         private void ButtonClearClick(object? sender, EventArgs e)
         {
             _resultPickerView.SelectedId = 0;
@@ -63,6 +66,7 @@ namespace MoneyAdministrator.Presenters
             _resultPickerView.GrdRefreshData(_dataSource);
             _resultPickerView.ButtonsLogic();
         }
+
         private void TxtNameTextChange(object? sender, EventArgs e)
         {
             var resultId = _dataSource.Where(data => data.Field1 == _resultPickerView.SelectedName).FirstOrDefault()?.Id;

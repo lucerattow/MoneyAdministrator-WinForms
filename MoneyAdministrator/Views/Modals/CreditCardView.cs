@@ -47,13 +47,16 @@ namespace MoneyAdministrator.Views.Modals
 
         public CreditCardView()
         {
-            InitializeComponent();
+            using (new CursorWait())
+            {
+                InitializeComponent();
 
-            this.Text = $"{ConfigurationManager.AppSettings["AppTitle"]} : Seleccionar tarjeta de credito";
+                this.Text = $"{ConfigurationManager.AppSettings["AppTitle"]} : Seleccionar tarjeta de credito";
 
-            GrdSetup();
-            AssosiateEvents();
-            ButtonsLogic();
+                GrdSetup();
+                AssosiateEvents();
+                ButtonsLogic();
+            }
         }
 
         //methods

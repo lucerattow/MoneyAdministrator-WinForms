@@ -155,11 +155,14 @@ namespace MoneyAdministrator.Views
         {
             this.Visible = false;
 
-            Dock = DockStyle.Fill;
-            InitializeComponent();
-            AssosiateEvents();
-            ControlsSetup();
-            ButtonsLogic();
+            using (new CursorWait())
+            {
+                Dock = DockStyle.Fill;
+                InitializeComponent();
+                AssosiateEvents();
+                ControlsSetup();
+                ButtonsLogic();
+            }
 
             //Muestro la ventana ya cargada
             this.Visible = true;

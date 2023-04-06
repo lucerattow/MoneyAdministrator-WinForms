@@ -58,9 +58,12 @@ namespace MoneyAdministrator.Presenters
 
         private void SetCreditCardTypeList()
         {
-            var service = new CreditCardTypeService(_databasePath);
-            var entities = service.GetAll();
-            this._view.SetCreditCardTypeList(entities);
+            using (new CursorWait())
+            { 
+                var service = new CreditCardTypeService(_databasePath);
+                var entities = service.GetAll();
+                this._view.SetCreditCardTypeList(entities);
+            }
         }
 
         private void GrdRefreshData()
@@ -189,42 +192,48 @@ namespace MoneyAdministrator.Presenters
 
         private void ButtonDeleteClick(object? sender, EventArgs e)
         {
-            try
+            using (new CursorWait())
             {
-                //Inicializo los servicios
-                var creditCardService = new CreditCardService(_databasePath);
-                var entityService = new EntityService(_databasePath);
-
-                //Compruebo que la tarjeta de credito existe
-                var creditCard = creditCardService.Get(_view.SelectedId);
-                if (creditCard == null)
+                try
                 {
-                    CommonMessageBox.errorMessageShow("La tarjeta de credito seleccionada ya ha sido eliminada", MessageBoxButtons.OK);
-                    return;
-                }
+                    //Inicializo los servicios
+                    var creditCardService = new CreditCardService(_databasePath);
+                    var entityService = new EntityService(_databasePath);
 
-                creditCardService.Delete(creditCard);
+                    //Compruebo que la tarjeta de credito existe
+                    var creditCard = creditCardService.Get(_view.SelectedId);
+                    if (creditCard == null)
+                    {
+                        CommonMessageBox.errorMessageShow("La tarjeta de credito seleccionada ya ha sido eliminada", MessageBoxButtons.OK);
+                        return;
+                    }
+
+                    creditCardService.Delete(creditCard);
+                }
+                catch (Exception ex)
+                {
+                    CommonMessageBox.errorMessageShow(ex.Message, MessageBoxButtons.OK);
+                }
+                GrdRefreshData();
             }
-            catch (Exception ex)
-            {
-                CommonMessageBox.errorMessageShow(ex.Message, MessageBoxButtons.OK);
-            }
-            GrdRefreshData();
         }
 
         private void ButtonEntitySearchClick(object? sender, EventArgs e)
         {
-            var entities = new EntityService(_databasePath).GetAll();
-            var resultPickerViewDtos = entities.Select(entity => new ResultPickerViewDto
+            using (new CursorWait())
             {
-                Id = entity.Id,
-                Field1 = entity.Name
-            }).ToList();
+                var entities = new EntityService(_databasePath).GetAll();
+                var resultPickerViewDtos = entities.Select(entity => new ResultPickerViewDto
+                {
+                    Id = entity.Id,
+                    Field1 = entity.Name
+                }).ToList();
 
-            var selectedId = new ResultPickerPresenter(resultPickerViewDtos).Show();
+                var selectedId = new ResultPickerPresenter(resultPickerViewDtos).Show();
 
-            if (selectedId > 0)
-                _view.BankEntityName = entities.Where(x => x.Id == selectedId).FirstOrDefault().Name;
+                if (selectedId > 0)
+                    _view.BankEntityName = entities.Where(x => x.Id == selectedId).FirstOrDefault().Name;
+            }
         }
     }
 }
