@@ -20,7 +20,7 @@ namespace MoneyAdministrator.Models
 
         public decimal Value { get; set; }
 
-        //ForaignKeys
+        //foraign keys
         public virtual Currency Currency { get; set; }
     }
 }

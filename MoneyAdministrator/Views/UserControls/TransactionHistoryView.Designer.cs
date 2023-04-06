@@ -135,9 +135,9 @@ namespace MoneyAdministrator.Views
             this._pnlContent.Controls.Add(this._grd);
             this._pnlContent.Controls.Add(this._ypYearPage);
             this._pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this._pnlContent.Location = new System.Drawing.Point(0, 148);
+            this._pnlContent.Location = new System.Drawing.Point(0, 143);
             this._pnlContent.Name = "_pnlContent";
-            this._pnlContent.Size = new System.Drawing.Size(800, 252);
+            this._pnlContent.Size = new System.Drawing.Size(800, 257);
             this._pnlContent.TabIndex = 27;
             // 
             // _grd
@@ -149,7 +149,7 @@ namespace MoneyAdministrator.Views
             this._grd.Location = new System.Drawing.Point(5, 5);
             this._grd.Margin = new System.Windows.Forms.Padding(4);
             this._grd.Name = "_grd";
-            this._grd.Size = new System.Drawing.Size(790, 209);
+            this._grd.Size = new System.Drawing.Size(790, 214);
             this._grd.TabIndex = 12;
             this._grd.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this._grd_CellMouseDoubleClick);
             // 
@@ -163,7 +163,7 @@ namespace MoneyAdministrator.Views
             this._ypYearPage.ButtonPreviousImage = global::MoneyAdministrator.Properties.Resources.arrow_left_green;
             this._ypYearPage.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this._ypYearPage.ForeColor = System.Drawing.SystemColors.ControlText;
-            this._ypYearPage.Location = new System.Drawing.Point(4, 217);
+            this._ypYearPage.Location = new System.Drawing.Point(4, 222);
             this._ypYearPage.Margin = new System.Windows.Forms.Padding(4);
             this._ypYearPage.MaximumSize = new System.Drawing.Size(11428, 30);
             this._ypYearPage.MinimumSize = new System.Drawing.Size(0, 30);
@@ -196,19 +196,21 @@ namespace MoneyAdministrator.Views
             this._pnlInputs.Location = new System.Drawing.Point(0, 27);
             this._pnlInputs.Margin = new System.Windows.Forms.Padding(4);
             this._pnlInputs.Name = "_pnlInputs";
-            this._pnlInputs.Size = new System.Drawing.Size(800, 121);
+            this._pnlInputs.Size = new System.Drawing.Size(800, 116);
             this._pnlInputs.TabIndex = 26;
             // 
             // _txtAmount
             // 
             this._txtAmount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._txtAmount.Colored = true;
+            this._txtAmount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
             this._txtAmount.Location = new System.Drawing.Point(403, 29);
             this._txtAmount.Name = "_txtAmount";
             this._txtAmount.OperatorSymbol = "-";
             this._txtAmount.Size = new System.Drawing.Size(132, 27);
             this._txtAmount.TabIndex = 30;
             this._txtAmount.Tag = "";
+            this._txtAmount.Text = "-0,00 $";
             // 
             // _cbFrequency
             // 

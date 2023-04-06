@@ -21,6 +21,7 @@ namespace MoneyAdministrator.Interfaces
         //events
         event EventHandler ShowDashboard;
         event EventHandler ShowTransactionHistory;
+        event EventHandler ShowCreditCard;
         event EventHandler FileNew;
         event EventHandler FileOpen;
         event EventHandler FileClose;

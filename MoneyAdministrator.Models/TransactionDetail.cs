@@ -33,6 +33,7 @@ namespace MoneyAdministrator.Models
         [DisplayName("Frequency")]
         public int Frequency { get; set; }
 
+        //foreign keys
         public virtual Transaction Transaction { get; set; }
     }
 }

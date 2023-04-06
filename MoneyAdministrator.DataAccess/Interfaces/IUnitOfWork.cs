@@ -9,12 +9,18 @@ namespace MoneyAdministrator.DataAccess.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        IRepository<Entity> EntityRepository { get; }
+        IRepository<CCResume> CCResumeRepository { get; }
+        IRepository<CCResumeDetail> CCResumeDetailRepository { get; }
+        IRepository<CreditCard> CreditCardRepository { get; }
+        IRepository<CreditCardType> CreditCardTypeRepository { get; }
         IRepository<Currency> CurrencyRepository { get; }
+        IRepository<CurrencyValue> CurrencyValueRepository { get; }
+        IRepository<Entity> EntityRepository { get; }
+        IRepository<EntityType> EntityTypeRepository { get; }
+        IRepository<Salary> SalaryRepository { get; }
         IRepository<Transaction> TransactionRepository { get; }
         IRepository<TransactionDetail> TransactionDetailRepository { get; }
-        IRepository<CurrencyValue> CurrencyValueRepository { get; }
-        IRepository<Salary> SalaryRepository { get; }
+
         void Save();
     }
 }

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MoneyAdministrator.DTOs;
 using System.Globalization;
+using MoneyAdministrator.Utilities.Disposable;
 
 namespace MoneyAdministrator.Views.UserControls
 {
@@ -104,8 +105,8 @@ namespace MoneyAdministrator.Views.UserControls
 
         //Configuracion de los anchos de columnas
         private int _colPeriodWidth = 90;
-        private int _colUsdCompareWidth = 250;
-        private int _colWalletWidth = 600;
+        private int _colUsdCompareWidth = 180;
+        private int _colWalletWidth = 750;
 
         public DashboardView()
         {
@@ -123,75 +124,70 @@ namespace MoneyAdministrator.Views.UserControls
         //methods
         public void GrdRefreshData(List<DashboardViewDto> dashboardDtos)
         {
-            //Limpio la grilla y el yearPicker
-            _grd.Rows.Clear();
-
-            if (dashboardDtos.Count <= 0)
-                return;
-
-            var years = dashboardDtos.Select(x => x.Period.Year).Distinct().ToList();
-
-            var row = 0;
-            Color SeparatorBackColor = Color.FromArgb(153, 0, 255);
-            foreach (var year in years)
+            using (new CursorWait())
+            using (new DataGridViewHide(_grd))
             {
-                var yearDashboarDtos = dashboardDtos.Where(x => x.Period.Year == year).ToList();
+                //Limpio la grilla y el yearPicker
+                _grd.Rows.Clear();
 
-                if (yearDashboarDtos.Count == 0)
-                    continue;
+                if (dashboardDtos.Count <= 0)
+                    return;
 
-                DateTime separatorDate = new DateTime(yearDashboarDtos[0].Period.Year, yearDashboarDtos[0].Period.Month, 1);
-                //Añado un separador
-                row = _grd.Rows.Add(new object[]
+                var years = dashboardDtos.Select(x => x.Period.Year).Distinct().ToList();
+
+                var row = 0;
+                Color separatorBackColor = Color.FromArgb(153, 0, 255);
+                Color separatorForeColor = Color.White;
+                foreach (var year in years)
                 {
-                    yearDashboarDtos[0].Period.Year,
-                    "",
-                    "",
-                    "",
-                    "Año completo",
-                    "",
-                    "",
-                    "",
-                });
+                    var yearDashboarDtos = dashboardDtos.Where(x => x.Period.Year == year).ToList();
 
-                //Pinto el separador
-                foreach (DataGridViewCell cell in _grd.Rows[row].Cells)
-                {
-                    cell.Style.BackColor = SeparatorBackColor;
-                    cell.Style.ForeColor = Color.White;
-                    cell.Style.SelectionBackColor = cell.Style.BackColor;
-                    cell.Style.SelectionForeColor = cell.Style.ForeColor;
-                }
-                SeparatorBackColor = Color.FromArgb(100, 100, 100);
+                    if (yearDashboarDtos.Count == 0)
+                        continue;
 
-                //Añado los registros a la tabla
-                foreach (var dashboardDto in yearDashboarDtos)
-                {
+                    DateTime separatorDate = new DateTime(yearDashboarDtos[0].Period.Year, yearDashboarDtos[0].Period.Month, 1);
+                    //Añado un separador
                     row = _grd.Rows.Add(new object[]
                     {
-                        dashboardDto.Period.ToString("yyyy-MM"),
-                        dashboardDto.UsdValue.ToString("#,##0.00 U$D", CultureInfo.GetCultureInfo("es-ES")),
-                        dashboardDto.UsdSalary.ToString("#,##0.00 AR$", CultureInfo.GetCultureInfo("es-ES")),
-                        dashboardDto.SalaryArs.ToString("#,##0.00 AR$", CultureInfo.GetCultureInfo("es-ES")),
-                        dashboardDto.SalaryUsd.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
-                        dashboardDto.Assets.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
-                        dashboardDto.Passives.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
-                        dashboardDto.Balance.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
+                        yearDashboarDtos[0].Period.ToString("'Año: 'yyyy"),
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
                     });
 
-                    //Pinto el monto segun corresponda
-                    for (int i = 1; i < _grd.Rows[row].Cells.Count; i++)
-                    {
-                        var strValue = string.Concat(_grd.Rows[row].Cells[i].Value.ToString().Where(x => char.IsDigit(x) || x == ',' || x == '-'));
+                    //Pinto el separador
+                    PaintDgvCells.PaintSeparator(_grd, row, separatorBackColor, separatorForeColor);
+                    separatorBackColor = Color.FromArgb(100, 100, 100);
 
-                        if (decimal.TryParse(strValue, out decimal value))
-                        { 
-                            if (value > 0)
-                                _grd.Rows[row].Cells[i].Style.ForeColor = Color.Green;
-                            else if (value < 0)
-                                _grd.Rows[row].Cells[i].Style.ForeColor = Color.FromArgb(150, 0, 0);
-                            else
-                                _grd.Rows[row].Cells[i].Style.ForeColor = Color.FromArgb(80, 80, 80);
+                    //Añado los registros a la tabla
+                    foreach (var dashboardDto in yearDashboarDtos)
+                    {
+                        row = _grd.Rows.Add(new object[]
+                        {
+                            dashboardDto.Period.ToString("yyyy-MM"),
+                            dashboardDto.UsdValue.ToString("#,##0.00 U$D", CultureInfo.GetCultureInfo("es-ES")),
+                            dashboardDto.UsdSalary.ToString("#,##0.00 AR$", CultureInfo.GetCultureInfo("es-ES")),
+                            dashboardDto.SalaryArs.ToString("#,##0.00 AR$", CultureInfo.GetCultureInfo("es-ES")),
+                            dashboardDto.SalaryUsd.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
+                            dashboardDto.Assets.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
+                            dashboardDto.Passives.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
+                            dashboardDto.Balance.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
+                        });
+
+                        //Pinto el monto segun corresponda
+                        for (int col = 0; col < _grd.Rows[row].Cells.Count; col++)
+                        {
+                            //Pinto el periodo actual
+                            if (col == 0)
+                                PaintDgvCells.PaintCurrentDate(_grd, row, col);
+
+                            //Pinto los valores de moneda
+                            if (col >= 1)
+                                PaintDgvCells.PaintDecimal(_grd, row, col);
                         }
                     }
                 }

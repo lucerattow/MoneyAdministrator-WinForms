@@ -25,13 +25,16 @@
     <ProjectReference Include="..\MoneyAdministrator.Services\MoneyAdministrator.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\Modals\" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Modals\CreditCardView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\UserControls\CreditCardsResumes.cs">
+      <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>

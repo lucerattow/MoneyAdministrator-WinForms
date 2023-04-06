@@ -38,11 +38,11 @@ namespace MoneyAdministrator.Interfaces
 
         //methods
         /// <summary>Envio los datos de las monedas al ComboBox de transaccionHistory</summary>
-        /// <param name="currencies">Lista de monedas</param>
-        void SetCurrenciesList(List<Currency> currencies);
+        /// <param name="datasource">Lista de monedas</param>
+        void SetCurrenciesList(List<Currency> datasource);
         /// <summary>Envio los datos de las transacciones al GRD de transaccionHistory</summary>
-        /// <param name="transactions">DTOs para rellenar la GRD de transaccionHistory</param>
-        void GrdRefreshData(List<TransactionViewDto> transactions);
+        /// <param name="datasource">DTOs para rellenar la GRD de transaccionHistory</param>
+        void GrdRefreshData(List<TransactionViewDto> datasource);
         /// <summary>Ejecuto la logica de botones</summary>
         void ButtonsLogic();
 

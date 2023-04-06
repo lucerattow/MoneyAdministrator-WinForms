@@ -50,9 +50,9 @@ namespace MoneyAdministrator.Presenters
 
         private void SetCurrenciesList()
         {
-            var currencyService = new CurrencyService(_databasePath);
-            var currencies = currencyService.GetAll();
-            this._view.SetCurrenciesList(currencies);
+            var service = new CurrencyService(_databasePath);
+            var entities = service.GetAll();
+            this._view.SetCurrenciesList(entities);
         }
 
         private void GrdRefreshData()
@@ -116,21 +116,6 @@ namespace MoneyAdministrator.Presenters
         private void GrdDoubleClick(object? sender, EventArgs e)
         {
             SelectTransaction();
-        }
-
-        private void ButtonEntitySearchClick(object? sender, EventArgs e)
-        {
-            var entities = new EntityService(_databasePath).GetAll();
-            var resultPickerViewDtos = entities.Select(entity => new ResultPickerViewDto
-            {
-                Id = entity.Id,
-                Field1 = entity.Name
-            }).ToList();
-
-            var selectedId = new ResultPickerPresenter(resultPickerViewDtos).Show();
-
-            if (selectedId > 0)
-                _view.EntityName = entities.Where(x => x.Id == selectedId).FirstOrDefault().Name;
         }
 
         private void ButtonInsertClick(object? sender, EventArgs e) 
@@ -209,7 +194,7 @@ namespace MoneyAdministrator.Presenters
                 var transactionDetail = transactionDetailService.Get(_view.SelectedId);
                 if (transactionDetail == null)
                 {
-                    CommonMessageBox.errorMessageShow("La transacción seleccionada ya ha sido eliminada", MessageBoxButtons.OK);
+                    CommonMessageBox.errorMessageShow("La transacción seleccionada no existe", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -293,6 +278,7 @@ namespace MoneyAdministrator.Presenters
         {
             try
             {
+                //Inicializo los servicios
                 var transactionService = new TransactionService(_databasePath);
                 var transactionDetailService = new TransactionDetailService(_databasePath);
 
@@ -354,6 +340,21 @@ namespace MoneyAdministrator.Presenters
         private void SelectedYearChange(object? sender, EventArgs e)
         {
             GrdRefreshData();
+        }
+
+        private void ButtonEntitySearchClick(object? sender, EventArgs e)
+        {
+            var entities = new EntityService(_databasePath).GetAll();
+            var resultPickerViewDtos = entities.Select(entity => new ResultPickerViewDto
+            {
+                Id = entity.Id,
+                Field1 = entity.Name
+            }).ToList();
+
+            var selectedId = new ResultPickerPresenter(resultPickerViewDtos).Show();
+
+            if (selectedId > 0)
+                _view.EntityName = entities.Where(x => x.Id == selectedId).FirstOrDefault().Name;
         }
     }
 }

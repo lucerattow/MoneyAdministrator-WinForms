@@ -18,9 +18,11 @@ namespace MoneyAdministrator.Models
         [Required(ErrorMessage = "Currency name is required")]
         public string Name { get; set; }
 
-        //ForaignKeys
+        //foreign keys all constraints
         public virtual ICollection<Transaction> Transactions { get; set; }
+
         public virtual ICollection<CurrencyValue> CurrencyValues { get; set; }
+
         public virtual ICollection<Salary> Salaries { get; set; }
     }
 }

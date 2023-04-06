@@ -2,6 +2,7 @@
 using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Models;
 using MoneyAdministrator.Utilities;
+using MoneyAdministrator.Utilities.Disposable;
 using System.Configuration;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -51,12 +52,7 @@ namespace MoneyAdministrator.Views
         public Currency Currency
         {
             get => (Currency)_cbCurrency.SelectedItem;
-            set
-            {
-                var a = _cbCurrency.FindStringExact(value.Name);
-                _cbCurrency.SelectedIndex = _cbCurrency.FindStringExact(value.Name);
-            }
-            //set => _cbCurrency.SelectedIndex = _cbCurrency.FindStringExact(value.Name);
+            set => _cbCurrency.SelectedIndex = _cbCurrency.FindStringExact(value.Name);
         }
         public decimal Amount
         {
@@ -170,30 +166,39 @@ namespace MoneyAdministrator.Views
         }
 
         //methods
-        public void GrdRefreshData(List<TransactionViewDto> transactions)
+        public void SetCurrenciesList(List<Currency> datasource)
         {
-            //Limpio la grilla y el yearPicker
-            _grd.Rows.Clear();
-            _ypYearPage.AvailableYears = transactions.Select(x => x.Date.Year).Distinct().ToList();
+            _cbCurrency.DataSource = datasource;
+            _cbCurrency.DisplayMember = "Name";
+        }
 
-            //Filtro las transacciones por el año seleccionado
-            transactions = transactions.Where(x => x.Date.Year == _ypYearPage.Value).ToList();
-
-            if (transactions.Count <= 0)
-                return;
-
-            var row = 0;
-            for (var i = 12; i >= 1; i--)
+        public void GrdRefreshData(List<TransactionViewDto> datasource)
+        {
+            using (new CursorWait())
+            using (new DataGridViewHide(_grd))
             {
-                List<TransactionViewDto> monthTransactions = transactions
-                    .Where(x => x.Date.Month == i).OrderByDescending(x => x.Date.Day).ToList();
+                //Limpio la grilla y el yearPicker
+                _grd.Rows.Clear();
+                _ypYearPage.AvailableYears = datasource.Select(x => x.Date.Year).Distinct().ToList();
 
-                if (monthTransactions.Count != 0)
+                //Filtro las transacciones por el año seleccionado
+                datasource = datasource.Where(x => x.Date.Year == _ypYearPage.Value).ToList();
+
+                if (datasource.Count <= 0)
+                    return;
+
+                var row = 0;
+                for (var i = 12; i >= 1; i--)
                 {
-                    DateTime separatorDate = new DateTime(_ypYearPage.Value, i, 1);
-                    //Añado un separador
-                    row = _grd.Rows.Add(new object[]
+                    List<TransactionViewDto> monthTransactions = datasource
+                        .Where(x => x.Date.Month == i).OrderByDescending(x => x.Date.Day).ToList();
+
+                    if (monthTransactions.Count != 0)
                     {
+                        DateTime separatorDate = new DateTime(_ypYearPage.Value, i, 1);
+                        //Añado un separador
+                        row = _grd.Rows.Add(new object[]
+                        {
                         -1,
                         separatorDate.ToString("yyyy"),
                         separatorDate.ToString("(MM) MMM"),
@@ -201,22 +206,18 @@ namespace MoneyAdministrator.Views
                         "",
                         "",
                         "",
-                    });
+                        });
 
-                    //Pinto el separador
-                    foreach (DataGridViewCell cell in _grd.Rows[row].Cells)
-                    {
-                        cell.Style.BackColor = Color.FromArgb(75, 135, 230);
-                        cell.Style.ForeColor = Color.White;
-                        cell.Style.SelectionBackColor = cell.Style.BackColor;
-                        cell.Style.SelectionForeColor = cell.Style.ForeColor;
-                    }
+                        //Pinto el separador
+                        Color separatorBackColor = Color.FromArgb(75, 135, 230);
+                        Color separatorForeColor = Color.White;
+                        PaintDgvCells.PaintSeparator(_grd, row, separatorBackColor, separatorForeColor);
 
-                    //Caso contrario añado los registros a la tabla
-                    foreach (var transaction in monthTransactions)
-                    {
-                        row = _grd.Rows.Add(new object[]
+                        //Caso contrario añado los registros a la tabla
+                        foreach (var transaction in monthTransactions)
                         {
+                            row = _grd.Rows.Add(new object[]
+                            {
                             transaction.Id,
                             transaction.Date.ToString("yyyy-MM-dd"),
                             transaction.EntityName,
@@ -224,24 +225,21 @@ namespace MoneyAdministrator.Views
                             transaction.Installment,
                             transaction.CurrencyName,
                             transaction.Amount.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
-                        });
+                            });
 
-                        //Pinto el monto segun corresponda
-                        if (transaction.Amount > 0)
-                            _grd.Rows[row].Cells["amount"].Style.ForeColor = Color.Green;
-                        else if (transaction.Amount < 0)
-                            _grd.Rows[row].Cells["amount"].Style.ForeColor = Color.FromArgb(150, 0, 0);
-                        else
-                            _grd.Rows[row].Cells["amount"].Style.ForeColor = Color.FromArgb(80, 80, 80);
+                            //Pinto el monto segun corresponda
+                            PaintDgvCells.PaintDecimal(_grd, row, "amount");
+                        }
                     }
                 }
             }
         }
 
-        public void SetCurrenciesList(List<Currency> currencies)
+        public void ButtonsLogic()
         {
-            _cbCurrency.DataSource = currencies;
-            _cbCurrency.DisplayMember = "Name";
+            _tsbInsert.Enabled = _selectedId == 0;
+            _tsbUpdate.Enabled = _selectedId != 0;
+            _tsbDelete.Enabled = _selectedId != 0;
         }
 
         private void ClearInputs()
@@ -259,13 +257,6 @@ namespace MoneyAdministrator.Views
 
             Editing = false;
             ButtonsLogic();
-        }
-
-        public void ButtonsLogic()
-        {
-            _tsbInsert.Enabled = _selectedId == 0;
-            _tsbUpdate.Enabled = _selectedId != 0;
-            _tsbDelete.Enabled = _selectedId != 0;
         }
 
         private void AssosiateEvents()
