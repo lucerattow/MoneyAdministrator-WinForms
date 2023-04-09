@@ -23,7 +23,7 @@ namespace MoneyAdministrator.Views.Modals
             get => _selectedId;
             set => _selectedId = value;
         }
-        public string BankEntityName
+        public string EntityName
         {
             get => _txtEntityName.Text;
             set => _txtEntityName.Text = value;
@@ -60,7 +60,7 @@ namespace MoneyAdministrator.Views.Modals
         }
 
         //methods
-        public void GrdRefreshData(List<CreditCardViewDto> dataSource)
+        public void GrdRefreshData(List<CreditCardDto> dataSource)
         {
             using (new CursorWait())
             using (new DataGridViewHide(_grd))

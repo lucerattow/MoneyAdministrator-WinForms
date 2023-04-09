@@ -31,7 +31,7 @@ namespace MoneyAdministrator.Presenters
         {
             _view.ShowDashboard += ShowDashboard;
             _view.ShowTransactionHistory += ShowTransactionHistory;
-            _view.ShowCreditCard += ShowCreditCard;
+            _view.ShowCreditCardSummary += ShowCreditCardSummary;
             _view.FileNew += FileNew;
             _view.FileOpen += FileOpen;
             _view.FileClose += FileClose;
@@ -40,19 +40,20 @@ namespace MoneyAdministrator.Presenters
         //events
         private void ShowDashboard(object? sender, EventArgs e)
         {
-            var dashboardPresenter = new DashboardPresenter(_databasePath, _view.CloseChildrens);
-            this._view.OpenChildren((UserControl)dashboardPresenter.View);
+            var presenter = new DashboardPresenter(_databasePath, _view.CloseChildrens);
+            this._view.OpenChildren((UserControl)presenter.View);
         }
 
         private void ShowTransactionHistory(object? sender, EventArgs e)
         {
-            var transactionHistoryPresenter = new TransactionHistoryPresenter(_databasePath, _view.CloseChildrens);
-            this._view.OpenChildren((UserControl)transactionHistoryPresenter.View);
+            var presenter = new TransactionHistoryPresenter(_databasePath, _view.CloseChildrens);
+            this._view.OpenChildren((UserControl)presenter.View);
         }
 
-        private void ShowCreditCard(object? sender, EventArgs e)
+        private void ShowCreditCardSummary(object? sender, EventArgs e)
         {
-            new CreditCardPresenter(_databasePath, _view.CloseChildrens).Show();
+            var presenter = new CreditCardsSummaryPresenter(_databasePath, _view.CloseChildrens);
+            this._view.OpenChildren((UserControl)presenter.View);
         }
 
         private void FileNew(object? sender, EventArgs e)

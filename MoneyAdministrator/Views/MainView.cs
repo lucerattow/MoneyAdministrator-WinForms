@@ -54,7 +54,7 @@ namespace MyMoneyAdmin
         {
             _btnDashboard.Click += (sender, e) => ShowDashboard?.Invoke(sender, e);
             _btnTransactions.Click += (sender, e) => ShowTransactionHistory?.Invoke(sender, e);
-            _btnCreditCards.Click += (sender, e) => ShowCreditCard?.Invoke(sender, e);
+            _btnCreditCards.Click += (sender, e) => ShowCreditCardSummary?.Invoke(sender, e);
 
             _tsbFileNew.Click += (sender, e) => FileNew?.Invoke(sender, e);
             _tsbFileOpen.Click += (sender, e) => FileOpen?.Invoke(sender, e);
@@ -72,7 +72,7 @@ namespace MyMoneyAdmin
         //Events
         public event EventHandler ShowDashboard;
         public event EventHandler ShowTransactionHistory;
-        public event EventHandler ShowCreditCard;
+        public event EventHandler ShowCreditCardSummary;
         public event EventHandler FileNew;
         public event EventHandler FileOpen;
         public event EventHandler FileClose;

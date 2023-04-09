@@ -1,0 +1,344 @@
+::: PAGE 1 :::
+Hoja 1/3
+CERATTO LUCAS EZEQUIEL
+
+ZELAYA 969
+CUIT Entidad: 33-53718600-9
+01849   CLAYPOLE
+PREMIER
+:
+CONSUMIDOR FINAL         Nº de Cuenta  1537821-0-8
+Nº de Resumen 031041517498
+031 . 305 . 8
+
+02-Mar-23   131514,97       104,98
+Estado de cuenta al: Saldo actual: $ U$S
+10-Mar-23     9210,00
+Vencimiento actual: Pago Mínimo : $
+26-Ene-23     6624,99       192,45 30-Mar-23
+Cierre Anterior: Compras Anteriores : $ U$S Próximo Cierre:
+03-Feb-23    51240,0010-Abr-23
+Vencimiento Anterior: Pago Mínimo Anterior: $ Próximo Vencimiento:
+    240000,00     36000,00     96000,00
+Límite Contado $ Límite Adelanto $ Lím.Prést. Financiación $
+    240000,00    240000,00
+Límite Crédito $ Límite Cuotas $
+Cuotas a vencer     Marzo-23     Abril-23      Mayo-23     Junio-23     Julio-23    Agosto-23
+$        0,00 $        0,00 $        0,00 $        0,00 $        0,00 $        0,00
+RESUMEN CONSOLIDADO       PESOS       DOLARES
+                      SALDO ANTERIOR   225679,94        192,45
+03-Feb-23             SU PAGO       -0,82
+03-Feb-23             PAGO CAJERO/INTERNET   -75000,00
+03-Feb-23             PAGO CAJERO/INTERNET  -155245,00
+01-Mar-23             PAGO CAJERO/INTERNET   -50000,00
+                      TRANSFER FINANC. PESOS    32942,00
+                      TRANSFER FINANC. PESOS                   -169,02
+------------------------------------------------------------------------------------------------------------------------
+                      SALDO PENDIENTE   -17058,00          0,00
+                      TOTAL CONSUMOS DEL MES   128977,45        104,98
+------------------------------------------------------------------------------------------------------------------------
+                      SUBTOTAL   111919,45        104,98
+                      PERCEPCION IVA DTO 354/18      573,39
+                      IMPUESTO PAIS AR      218,43
+                      IMPUESTO PAIS     5403,14
+                      PERCEP.AFIP RG 4815 45%     9333,37
+                      PERC IIBB SERV DIG CABA       54,61
+                      INT. COMPENSATORIOS     1806,76
+                      IMPUESTO DE SELLOS     1826,40
+                      I.V.A. 21,0%      379,42
+------------------------------------------------------------------------------------------------------------------------
+                      SALDO ACTUAL   131514,97        104,98
+------------------------------------------------------------------------------------------------------------------------
+                      PAGO MINIMO     9210,00
+____________________________________________________________________________________________________________________________________________
+DETALLE DEL MES                                 NRO CUPON       PESOS       DOLARES
+FECHA      COMPRAS DEL MES
+26-Ene-23 STEAMGAMES.COM 4(DEU,ARS,     2014,19)  00735                    10,91
+27-Ene-23 GOOGLE *Google S(USA,USD,        1,99)  00840                     1,99
+04-Feb-23 PEDIDOSYA RESTAU(NIC,NIO,      475,00)  00361                    13,18
+04-Feb-23 STEAMGAMES.COM 4(DEU,ARS,      449,99)  00362                     2,40
+07-Feb-23 STEAM PURCHASE  (DEU,ARS,       67,99)  00100                     0,36
+13-Feb-23 BLIZZARD US53414(FRA,ARS,     1090,00)  00550                     5,72
+15-Feb-23 PEDIDOSYA RESTAU(NIC,NIO,      360,94)  00178                     9,96
+16-Feb-23 STEAM PURCHASE  (DEU,ARS,       67,99)  00392                     0,35
+19-Feb-23 PEDIDOSYA RESTAU(NIC,NIO,      279,00)  00390                     7,70
+19-Feb-23 STEAM PURCHASE  (DEU,ARS,       87,09)  00399                     0,45
+19-Feb-23 STEAM PURCHASE  (DEU,ARS,       87,09)  00400                     0,45
+031 305 8 031 305 8 CERATTO LUCAS EZEQUIEL 10-Mar-23
+Vencimiento
+Ent/Sucursal/DV Ent/Sucursal/DV
+$
+       9210,00
+  1537821-0-8  1537821-0-8
+Pago Mínimo Actual
+031 305 8  1537821-0-8
+Número de Socio Número de Socio
+Ent/Sucursal/DV Número de Socio $
+$ $
+EFVO. EFVO. EFVO.
+$ U$S Importe Abonado
+    131514,97       104,98
+Importe Abonado Importe Abonado
+DB.CTA. DB.CTA. DB.CTA.
+U$S
+Saldo Actual
+U$S U$S
+CH. CH. CH.
+Importe Abonado
+Importe Abonado Importe Abonado
+Son Pesos/Dólares
+Nro. Nro.
+Banco Banco
+TALON SOCIO SELLAR AL DORSO TALON ENTIDAD SELLAR AL DORSO TALON ENTIDADSELLAR AL DORSO
+::: PAGE 2 :::
+20-Feb-23 STEAMGAMES.COM 4(DEU,ARS,       99,00)  00391                     0,51
+20-Feb-23 ENGLISH4CALLCENT(USA,USD,       51,00)  00393                    51,00
+27-Ene-23 RAPPI ARG S.A.S.                        02910     1030,00
+29-Ene-23 RAPPI ARG S.A.S.                        02911     1259,50
+03-Feb-23 RAPPI                                   03555     1459,50
+03-Feb-23 RAPPI ARG S.A.S.                        04812     2042,50
+05-Feb-23 RAPPI ARG S.A.S.                        04813     1892,50
+06-Feb-23 RAPPI ARG S.A.S.                        02875     1094,50
+06-Feb-23 MERPAGO*EXPRESS                         02876     1140,00
+06-Feb-23 MERPAGO*MERCADOLIBRE                    02878     5748,24
+07-Feb-23 MERPAGO*LUCKY13                         02877     1200,00
+07-Feb-23 RAPPI ARG S.A.S.                        05754     1369,50
+07-Feb-23 MERPAGO*ZHUANG                          05755     1480,00
+07-Feb-23 MERPAGO*ZHUANG                          05756     1480,00
+08-Feb-23 MERPAGO*VAR                             08070    10799,00
+08-Feb-23 RAPPI                                   06526     1209,50
+09-Feb-23 MERPAGO*EXPRESS                         06527     4560,00
+10-Feb-23 MERPAGO*ZHUANG                          08060     1470,00
+11-Feb-23 MERPAGO*EXPRESS                         00666     5690,00
+11-Feb-23 MERPAGO*LUCKY13                         00668      990,00
+12-Feb-23 RAPPI                                   00669     5694,50
+12-Feb-23 MERPAGO*COMPRA551364L                   00667    18130,95
+12-Feb-23 MERPAGO*EXPRESS                         00670      400,00
+12-Feb-23 MERPAGO*ZHUANG                          00671     1270,00
+12-Feb-23 MERPAGO*VAR                             00672     7991,26
+13-Feb-23 MERPAGO*LUCKY13                         01065     2320,00
+13-Feb-23 MOSTAZA JUAN B JUSTO M                  00967     5079,99
+14-Feb-23 RAPPI ARG S.A.S.                        00966      993,50
+14-Feb-23 MERPAGO*ZHUANG                          00968     1800,00
+15-Feb-23 PEDIDOSYA                               00041     2124,00
+15-Feb-23 MERPAGO*EXPRESS                         00042     1150,00
+15-Feb-23 MERPAGO*ZHUANG                          00043     1520,00
+16-Feb-23 MERPAGO*ZHUANG                          04226     2900,00
+17-Feb-23 MERPAGO*VAR                             07956      431,96
+17-Feb-23 MERPAGO*VAR                             01686     1047,50
+17-Feb-23 MONTE AYALA                             09863     3800,00
+18-Feb-23 MERPAGO*VAR                             07957     2192,20
+18-Feb-23 MERPAGO*LUCIANABELENI                   01684     7019,35
+18-Feb-23 MERPAGO*ZHUANG                          01685     5630,00
+18-Feb-23 MERPAGO*VAR                             01687     1079,90
+18-Feb-23 CABIFY AR                               09862      420,00
+19-Feb-23 CABIFY AR                               09861      611,54
+19-Feb-23 RAPPI ARG S.A.S.                        05140      499,00
+20-Feb-23 MERCADOPAGO*LUCKY13                     00012     1030,00
+20-Feb-23 MERCADOPAGO*LUCKY13                     00077      660,00
+20-Feb-23 MERCADOPAGO*PACHECODAN                  00258     3239,70
+20-Feb-23 MERPAGO*VAR                             09864      302,37
+FECHA      DEBITOS AUTOMATICOS
+17-Feb-23 IPLAN   36978801 02/23                  02738     3724,99
+          TOTAL TITULAR      CERATTO LUCAS EZEQUIEL   128977,45        104,98
+------------------------------------------------------------------------------------------------------------------------
+Debitaremos de su c.ahorro  1246154528 el importe de su pago mínimo actual
+El monto de IVA discriminado no puede computarse como crédito fiscal
+::: PAGE 3 :::
+Hoja 2/3
+CERATTO LUCAS EZEQUIEL
+
+ZELAYA 969
+CUIT Entidad: 33-53718600-9
+01849   CLAYPOLE
+PREMIER
+:
+CONSUMIDOR FINAL         Nº de Cuenta  1537821-0-8
+Nº de Resumen 031041517498
+031 . 305 . 8
+OPCIONES DE FINANCIACION
+
+Tasas de interés de financiación en pesos: TNA 77,000%, TEA 110,195%, TEM 6,296%.
+Tasas de interés de financiación en dólares: TNA 0,000%, TEA 0,000%, TEM 0,000%.
+Tasas de intereses punitorios en pesos: TNA 38,400%, TEA 45,805%, TEM 3,148%, TIP 0,105%.
+Tasas de intereses punitorios en dólares: TNA 0,000%, TEA 0,000%, TEM 0,000%, TIP 0,000%.
+Los intereses de financiación se calculan desde fecha de vencimiento de su resumen anterior.
+Los intereses punitorios sobre pago mínimo impago se calculan desde fecha de vencimiento de su
+resumen anterior.
+
+** En cumplimiento a la normativa BCRA "A" 7198, para saldos mayores a $ 200.000,00,
+ la tasa de interés de financiación en pesos a aplicar sobre el excedente será:
+ TNA 90,930%, TEA 139,136%, TEM 7,429%.
+
+Siempre y cuando no haya consumos que totalicen U$S 200 o más en el periodo actual (Normativa BCRA
+"A" 7559). En ese caso la tasa de interés de financiación en pesos a aplicar será:
+ TNA 90,930%, TEA 139,136%, TEM 7,429%.
+
+La tasa de interés punitorio en pesos a aplicar: será: TNA 45,460%, TIP 0,124% **
+
+** USTED DISPONE DE 30 DIAS PARA CUESTIONAR SU RESUMEN DE CUENTA DESDE SU RECEPCION **.
+
+Tasa de adelantos en efectivo local en 1 pago vigente al 02/03/2023: TNA 77,000%. Consulte con su
+entidad emisora la tasa vigente al momento de efectuar un adelanto en el exterior.
+Descripciones de tasas:
+TNA: Tasa Nominal Anual, TEA: Tasa Efectiva Anual, TEM: Tasa Efectiva Mensual,
+TIP: Tasa Diaria de Interés Punitorio, CFT: Costo Financiero Total
+
+
+INFORMACION INSTITUCIONAL
+
+Pague su resumen en 24 cuotas:
+
+Abonando  el  pago  mínimo  de $   9210,00, el  saldo  adeudado  de $    143778,62 podrá  cancelarlo
+hasta 24 cuotas según las siguientes opciones:
+
+   2 cuotas de $  78783,65* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 132,72% - CFT S/IVA: 110,99%</b>)
+   3 cuotas de $  54116,49* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 126,81% - CFT S/IVA: 110,99%</b>)
+   4 cuotas de $  41806,10* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 123,47% - CFT S/IVA: 110,99%</b>)
+   5 cuotas de $  34438,37* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 126,83% - CFT S/IVA: 110,99%</b>)
+   6 cuotas de $  29541,91* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 124,54% - CFT S/IVA: 110,99%</b>)
+   7 cuotas de $  26057,55* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 126,85% - CFT S/IVA: 110,99%</b>)
+   8 cuotas de $  23455,71* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 125,14% - CFT S/IVA: 111,00%</b>)
+   9 cuotas de $  21442,14* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 126,88% - CFT S/IVA: 111,00%</b>)
+  10 cuotas de $  19840,32* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 125,53% - CFT S/IVA: 111,01%</b>)
+  11 cuotas de $  18537,88* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 124,46% - CFT S/IVA: 111,01%</b>)
+  12 cuotas de $  17459,93* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 125,82% - CFT S/IVA: 111,02%</b>)
+  13 cuotas de $  16554,60* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 124,92% - CFT S/IVA: 111,02%</b>)
+  14 cuotas de $  15784,85* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 124,18% - CFT S/IVA: 111,03%</b>)
+  15 cuotas de $  15123,49* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 125,28% - CFT S/IVA: 111,04%</b>)
+  16 cuotas de $  14550,15* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 124,63% - CFT S/IVA: 111,05%</b>)
+  17 cuotas de $  14049,23* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 124,09% - CFT S/IVA: 111,06%</b>)
+  18 cuotas de $  13608,62* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 125,01% - CFT S/IVA: 111,07%</b>)
+::: PAGE 4 :::
+  19 cuotas de $  13218,73* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 124,53% - CFT S/IVA: 111,08%</b>)
+  20 cuotas de $  12871,89* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 124,11% - CFT S/IVA: 111,09%</b>)
+  21 cuotas de $  12561,91* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 123,75% - CFT S/IVA: 111,11%</b>)
+  22 cuotas de $  12283,70* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 123,44% - CFT S/IVA: 111,12%</b>)
+  23 cuotas de $  12033,06* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 124,21% - CFT S/IVA: 111,14%</b>)
+  24 cuotas de $  11806,50* (TNA:  77,00% - TEA: 110,98% - <b>CFT: 123,93% - CFT S/IVA: 111,15%</b>)
+            *No incluye comisión por préstamo e IVA sobre interés y comisiones. Sujeto al
+disponible de la cuenta en el momento de la solicitud.
+
+El CFT se expresa como tasa efectiva anual correspondiente al flujo de fondos considerado.
+
+Usted podrá acceder a este beneficio hasta el  30/03/23 Comuniquese al 0800-333-4438 de lunes a vier
+nes de 9 a 18 hs.
+Recuerde que luego de la fecha de vencimiento de su resumen se  le cobrarán los intereses correspon-
+dientes hasta la fecha en la que se le otorgó el préstamo en el próximo resumen de cuenta.
+
+
+Centro de Atención exclusivo para clientes HSBC Premier: 0800-999-PREMIER (7736). Si Ud. se
+encuentra en el exterior comuníquese por cobro revertido al +5411-4340-5656.
+Centro de Denuncias: CABA y GBA.: (011) 4340-5700 - Interior del País: 0800-222-3475.
+Si desea acceder a su resumen cuenta en formato digital o consultar otros servicios, podrá hacerlo
+sin costo ingresando en www.masterconsultas.com.ar
+"Si usted contrato una cobertura MasterAssist recuerde que la misma cuenta con una vigencia de un
+a¦o y su renovación es automática. Ud. tiene 10 días corridos desde la solicitud de cobertura para
+darla de baja. Una vez superado este plazo, el socio podrá cancelar la renovación automática,
+notificando esta decisión con anticipación a la fecha de vencimiento."
+Esta hoja fue fabricada 100% con fibra de cana de azúcar, 0% fibra de árbol y 0% blanqueadores
+químicos, para reducir la emisión de CO2 y cuidar el Medioambiente
+------------------------------------------------------------------------------------------------------------------------
+INFORMACION DE LA ENTIDAD
+
+Si Ud. desea financiar sus consumos, a partir del próximo cierre el interés financiero a aplicar  
+no superará para $ TNA 120,00% TEM 9,86%, TEA 214,07% <b>CFT efectivo (sin IVA) 214,07%, CFT</b>
+<b>efectivo (con IVA) 294,20%</b>  y para U$S TNA 50,00% TEM 4,11% TEA 63,23%. <b>CFT Efectivo</b>
+<b>(sin IVA) 63,23%, CFT Efectivo (con IVA) 80,48%</b>. Estas mismas tasas aplicarán para los
+servicios: Adelantos en un pago, Adelantos en cuotas, Cuotificación de saldos, según corresponda.
+"Le recordamos que, si a pesar de estar adherido al servicio de débito automático del pago de su
+Tarjeta de Crédito de HSBC, deseara realizar ocasionalmente el pago utilizando otro medio de pago,
+recuerde solicitar primero el "Stop Debit", comunicándose al Centro de Atención a Clientes de HSBC
+al 0810-333-4722, donde será asesorado por uno de nuestros operadores."
+"En Online Banking Ud. puede visualizar y descargar en formato PDF las últimas 12 liquidaciones de
+sus Tarjetas de Crédito de HSBC. Si todavia no está registrado,puede hacerlo con su Clave del Centro
+de Atención al Cliente, ingresando a www.hsbc.com.ar en cualquier momento."
+Informamos que se puede consultar los términos y condiciones del programa HSBC Rewards,
+método de acumulación y puntos disponibles, ingresando a
+https://www.hsbc.com.ar/canales/online-banking.
+Seguro de Vida: 0,17 %
+"Estimado cliente: de acuerdo a la Comunicación de SSN N°4036, le informamos que el servicio
+telefónico de la Superintendencia de Seguros de la Nación es: 4338-4000 o 0-800-666-8400."
+"En función a las recientes medidas adoptadas por el BCRA en la Comunicación "A" 5850 "Mercado Único
+y Libre de Cambios", informamos que a partir del cierre del mes de Marzo de 2016, los saldos en
+dólares estadounidenses no cancelados a la fecha de vencimiento, se financiarán en dicha moneda a
+la tasa vigente, la cual se encuentra informada en los resúmenes mensuales al igual que la tasa de
+::: PAGE 5 :::
+Hoja 3/3
+CERATTO LUCAS EZEQUIEL
+
+ZELAYA 969
+CUIT Entidad: 33-53718600-9
+01849   CLAYPOLE
+PREMIER
+:
+CONSUMIDOR FINAL         Nº de Cuenta  1537821-0-8
+Nº de Resumen 031041517498
+031 . 305 . 8
+financiación en pesos argentinos. De esta manera, se retoma la modalidad que se encontraba vigente
+anteriormente, teniendo la posibilidad de financiar los saldos en ambas monedas. Ante cualquier
+consulta puede comunicarse con nuestro Centro de Atención al Cliente al 0810-333-4722."
+"En caso que deba viajar al exterior, informamos que las tarjetas de crédito MasterCard, en todos
+sus segmentos, no pueden ser utilizadas en Siria, Corea del Norte, Sudan, Irán, Región de Crimea
+(Conformada por las ciudades de Sevastopol, Yevpatoria, Yalta, Feodosia y Kerch). Por cualquier
+consulta comuníquese con nuestro Centro de Atención al Cliente al 0810-333-4722"
+"De conformidad con la Comunicación "A" 5928 del BCRA, a partirdel 1 de septiembre de 2016, se
+modificará el marco normativo del Seguro de Vida Saldo Deudor, en virtud de lo cual el Banco
+asegurará su vida contratando y asumiendo el costo de un seguro sobre saldo deudor con cobertura de
+fallecimiento e invalidez total permanente.
+Aclaramos que ello no implicará ningún cargo adicional para el cliente".
+"Informamos que en cumplimiento de normas locales y tratados internacionales, relacionados con
+acciones del fraude, la evasión y las prácticas de elusión fiscales, en caso de identificarse en su
+tarjeta/s de crédito/s ______saldos acreedores iguales o mayores a U$S 50.000 (Dólares
+Estadounidenses Cincuenta Mil), o su equivalente en Pesos, se procederá a reversar el monto, y
+se acreditará en su caja de ahorro o cuenta corriente, correspondiente a la misma moneda,
+o bien se pondrá a su disposición en la sucursal de radicación de sus productos, en caso de no
+poseer cuentas. Por cualquier consulta puede comunicarse con nuestro Centro de Atención al Cliente
+llamando al 0810-333-4722".
+VISITE NUESTRA PAGINA DE SEGURIDAD ON LINE EN WWW.HSBC.COM.AR DONDE ENCONTRARA INFORMACION SOBRE
+TECNICAS DE DETECCION, PRIVACIDAD Y PREVENCION DE APROPIACION DE DATOS PERSONALES Y RECOMENDACIONES
+SOBRE EL USO SEGURO EN LOS DISTINTOS CANALES EN QUE OPERE. HSBC NUNCA ENVIA A SUS CLIENTES CORREOS
+ELECTRONICOS SOLICITANDO INFORMACION CONFIDENCIAL COMO CUENTAS, CLAVES DE ACCESO O CONTRASE#AS. SI
+RECIBE UN CORREO, UN SMS, O UN LLAMADO POR TELEFONO QUE SOLICITE ESOS DATOS, POR FAVOR NO
+PROPORCIONE NINGUNA INFORMACION Y REPORTELO POR CORREO ELECTRONICO A CONTACTENOS@HSBC.COM.AR O
+COMUNIQUESE A NUESTRO CENTRO DE ATENCION DE CLIENTES AL 0810-333-4722.
+"De acuerdo con lo dispuesto en la Ley de Tarjetas de Crédito N° 25.065 art.23 inc. ¦, se deja
+expresamente establecido que se encuentra prohibido y no se aplicará la capitalización de los
+intereses".
+Le informamos que en caso de incurrir en mora en cualquiera de sus productos, HSBC tendrá derecho a
+adoptar todas aquellas medidas que considere necesarias a fin de resguardar sus acreencias, entre
+ellas la disminución del límite de su tarjeta de crédito , o la inhabilitación preventiva de la
+misma.
+"En caso de reemplazo de la tarjeta de crédito por reimpresión, cambio de producto, reposición
+u otros motivos, si contás con servicios adheridos al débito automático de la tarjeta,
+recordá verificar con el establecimiento si es necesario gestionar la continuidad del mismo".
+Usted puede consultar el -Régimen de Transparencia- elaborado por el Banco Central sobre la base de
+la información proporcionada por los sujetos obligados a fin de comparar los costos y
+características de los productos y servicios financieros ingresando a
+http://www.bcra.gob.ar/BCRAyVos/Regimen_de_transparencia.asp.
+"Los consumos en dólares de sus tarjetas de crédito podrán ser cancelados en esa moneda extranjera o
+en pesos, siendo aplicable como máximo en este caso el tipo de cambio vendedor (aplicable para
+operaciones efectuadas por ventanilla o a través de medios electrónicos, según corresponda) del
+momento de cancelación -o día hábil inmediato anterior cuando el pago se efectúe un día inhábil-.
+Si hubiera pactado el débito automático del resumen de la tarjeta, aplicará el tipo de cambio
+vendedor para operaciones efectuadas a través de medios electrónicos de pago del cierre del mismo
+día hábil del pago". (Entidades financieras emisoras de tarjetas de crédito y/o compra).
+"Seguro de Vida: Aseguradora: HSBC Seguros de Vida. Póliza Nro: CD07 99 6153. Riesgos cubiertos:
+Vida e Incapacidad Total y Permanente por Accidente y Enfermedad. Capital máximo: $400.000.
+Edad máxima de permanencia: Vida 99 a¦os, Incapacidad 65 a¦os".
+Intereses de financiación, compensat. y punitorios se calculan desde vencimiento de pago. Ud.
+dispone de 30 días desde su Vto. para cuestionar su resumen.
+::: PAGE 6 :::
+"Conforme Ley 2709 de CABA modificatoria de la Ley 2221 de CABA comunicamos que puede efectuar
+reclamos y/o consultas de forma personal, en su sucursal ubicada en la Ciudad Autónoma de Buenos
+en horario bancario. Consulte el listado de sucursales en nuestra página www.hsbc.com.ar"
+Le recordamos que toda persona que se encuentre inhabilitada por el Banco Central de la República
+Argentina para acceder al mercado único libre de cambios, deberá efectuar los pagos en la moneda de
+orígen, esto es el saldo en pesos abonado en pesos, y el saldo en dólares estadounidenses abonado en
+dólares estadounidenses, sin poder efectuar operaciones de cambio a efectos de realizar el pago
+correspondiente. En caso contrario, se procederá a la reversa de los pagos. En caso que se encuentre
+ inhabilitado para acceder al Mercado Libre de Cambios, los saldos en dólares estadounidenses, no
+serán pesificados a la fecha de vencimiento, manteniendose en la moneda de origen.
+<b>LE RECORDAMOS QUE USTED NO DEBE EL IMPUESTO PAIS EN LA MEDIDA QUE CANCELE SU SALDO EN DOLARES</b>
+<b>CON DOLARES. SI USTED DECIDE PAGAR SOLO UN PROPORCIONAL DE SU SALDO EN DOLARES CON DOLARES,</b>
+<b>SOLO DEBERA EL IMPUESTO PAIS POR EL PROPORCIONAL ABONADO EN PESOS.</b>

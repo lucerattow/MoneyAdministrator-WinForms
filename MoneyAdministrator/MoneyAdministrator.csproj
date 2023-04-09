@@ -22,6 +22,7 @@
     <ProjectReference Include="..\MoneyAdministrator.CustomControls\MoneyAdministrator.CustomControls.csproj" />
     <ProjectReference Include="..\MoneyAdministrator.DTOs\MoneyAdministrator.DTOs.csproj" />
     <ProjectReference Include="..\MoneyAdministrator.Models\MoneyAdministrator.Models.csproj" />
+    <ProjectReference Include="..\MoneyAdministrator.Module.ImportHsbcSummary\MoneyAdministrator.Module.ImportHsbcSummary.csproj" />
     <ProjectReference Include="..\MoneyAdministrator.Services\MoneyAdministrator.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -33,7 +34,7 @@
     <Compile Update="Views\Modals\CreditCardView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Views\UserControls\CreditCardsResumes.cs">
+    <Compile Update="Views\UserControls\CreditCardsSummaryView.cs">
       <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>

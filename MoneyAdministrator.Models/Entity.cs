@@ -11,15 +11,20 @@ namespace MoneyAdministrator.Models
     public class Entity
     {
         //Properties
-        [DisplayName("Entity ID")]
         public int Id { get; set; }
 
-        [StringLength(25, MinimumLength = 3, ErrorMessage = "Entity name must be between 3 and 25 characters")]
-        [Required(ErrorMessage = "Entity name is required")]
+        [StringLength(25, MinimumLength = 3, ErrorMessage = "El nombre de la entidad debe tener entre 3 y 25 caracteres")]
+        [Required(ErrorMessage = "Falta indicar el nombre de la entidad")]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = "Entity Type is required")]
+        [Required(ErrorMessage = "Falta indicar el tipo de entidad")]
         public int EntityTypeId { get; set; }
+
+        [DefaultValue(false)]
+        public bool Deleted { get; set; }
+
+        //foreign keys
+        public virtual EntityType EntityType { get; set; }
 
         //foreign keys all constraints
         public virtual ICollection<Transaction> Transactions { get; set; }

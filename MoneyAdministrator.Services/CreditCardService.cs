@@ -13,20 +13,30 @@ namespace MoneyAdministrator.Services
     public class CreditCardService : IService<CreditCard>
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly bool _showDeleted;
 
-        public CreditCardService(string databasePath)
+        public CreditCardService(string databasePath, bool showDeleted = false)
         {
             _unitOfWork = new UnitOfWork(databasePath);
+            _showDeleted = showDeleted;
         }
 
         public List<CreditCard> GetAll()
         {
-            return _unitOfWork.CreditCardRepository.GetAll().ToList();
+            if (_showDeleted)
+                return _unitOfWork.CreditCardRepository.GetAll().ToList();
+            else
+                return _unitOfWork.CreditCardRepository.GetAll().Where(x => x.Deleted == false).ToList();
         }
 
         public CreditCard Get(int id)
         {
-            return _unitOfWork.CreditCardRepository.GetById(id);
+            var item = _unitOfWork.CreditCardRepository.GetById(id);
+
+            if (!_showDeleted && item != null && item.Deleted)
+                return null;
+            else
+                return item;
         }
 
         public void Insert(CreditCard model)
@@ -40,6 +50,11 @@ namespace MoneyAdministrator.Services
 
             if (item != null)
             {
+                //Revierto el estado Deleted o Actualizo el tipo de entidad
+                item.LastFourNumbers = model.LastFourNumbers;
+                item.Deleted = false;
+                _unitOfWork.CreditCardRepository.Update(item);
+
                 //Si el objeto ya existe, añado el id en el modelo
                 model.Id = item.Id;
             }
@@ -69,7 +84,8 @@ namespace MoneyAdministrator.Services
             var item = _unitOfWork.CreditCardRepository.GetById(model.Id);
             if (item != null)
             {
-                _unitOfWork.CreditCardRepository.Delete(item);
+                item.Deleted = true;
+                _unitOfWork.CreditCardRepository.Update(item);
                 _unitOfWork.Save();
             }
         }

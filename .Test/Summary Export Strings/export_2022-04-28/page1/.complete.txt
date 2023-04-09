@@ -1,0 +1,52 @@
+28-Abr-22    25667,98         0,00
+Estado de cuenta al: Saldo actual: $ U$S
+05-May-22     8680,00
+Vencimiento actual: Pago Mínimo : $
+31-Mar-22   101031,50         4,43 26-May-22
+Cierre Anterior: Compras Anteriores : $ U$S Próximo Cierre:
+07-Abr-22    54150,0002-Jun-22
+Vencimiento Anterior: Pago Mínimo Anterior: $ Próximo Vencimiento:
+    240000,00     36000,00     96000,00
+Límite Contado $ Límite Adelanto $ Lím.Prést. Financiación $
+    240000,00    240000,00
+Límite Crédito $ Límite Cuotas $
+Cuotas a vencer      Mayo-22     Junio-22     Julio-22    Agosto-22 Septiembre-22   Octubre-22
+$    21337,16 $    17737,16 $    17737,16 $    17737,16 $    17737,16 $        0,00
+RESUMEN CONSOLIDADO       PESOS       DOLARES
+                      SALDO ANTERIOR   102628,49          4,43
+05-Abr-22             SU PAGO     -100,00
+05-Abr-22             PAGO CAJERO/INTERNET    -6630,00
+07-Abr-22             SU PAGO   -51520,00
+20-Abr-22             SU PAGO       -0,74
+25-Abr-22             CRED.SDO.CUOTIF.$   -92402,90
+                      TRANSFER FINANC. PESOS      520,30
+                      TRANSFER FINANC. PESOS                     -4,43
+                      DEB POR PAGO ERRONEO    51520,00
+                      CASH BACK OBS BIEN P    -4000,00
+------------------------------------------------------------------------------------------------------------------------
+                      SALDO PENDIENTE       15,15          0,00
+                      TOTAL CONSUMOS DEL MES    21737,63          0,00
+------------------------------------------------------------------------------------------------------------------------
+                      SUBTOTAL    21752,78          0,00
+                      INT. FINANCIACION        0,59
+                      INT. COMPENSATORIOS     2324,25
+                      IMPUESTO DE SELLOS      288,75
+                      I.V.A. 21,0%     1301,61
+------------------------------------------------------------------------------------------------------------------------
+                      SALDO ACTUAL    25667,98          0,00
+------------------------------------------------------------------------------------------------------------------------
+                      PAGO MINIMO     8680,00
+____________________________________________________________________________________________________________________________________________
+DETALLE DEL MES                                 NRO CUPON       PESOS       DOLARES
+FECHA      COMPRAS DEL MES
+04-Abr-22 CABIFY AR                               07986      400,47
+FECHA      CUOTAS DEL MES
+03-Mar-22 MERCADOPAGO*SUPERT                02/03 05761     3600,00
+25-Abr-22 PLAN SDO.CUOTIF.    TNA  51,00%   01/06 00555    13863,83
+25-Abr-22 INTERESES                         01/06     3873,33
+          TOTAL TITULAR      CERATTO LUCAS EZEQUIEL    21737,63          0,00
+------------------------------------------------------------------------------------------------------------------------
+Debitaremos de su c.ahorro  1246154528 el importe de su pago mínimo actual
+El monto de IVA discriminado no puede computarse como crédito fiscal
+OPCIONES DE FINANCIACION
+Tasas de interés de financiación en pesos: TNA 51,010%, TEA 64,926%, TEM 4,198%.

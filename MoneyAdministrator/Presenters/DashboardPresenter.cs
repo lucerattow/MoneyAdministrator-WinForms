@@ -54,7 +54,7 @@ namespace MoneyAdministrator.Presenters
 
                 var transactionDetails = transactionDetailService.GetAll();
 
-                List<DashboardViewDto> dtos = new List<DashboardViewDto>();
+                List<DashboardDto> dtos = new List<DashboardDto>();
 
                 var usdList = currencyValueService.GetAll().OrderByDescending(x => x.Date);
                 var salaryList = salaryService.GetAll().OrderByDescending(x => x.Date);
@@ -82,7 +82,7 @@ namespace MoneyAdministrator.Presenters
 
                         decimal assets = monthTransactions.Where(x => x.Amount > 0).Sum(x => x.Amount);
                         decimal passives = monthTransactions.Where(x => x.Amount < 0).Sum(x => x.Amount);
-                        dtos.Add(new DashboardViewDto()
+                        dtos.Add(new DashboardDto()
                         {
                             Period = new DateTime(year, month, 1),
                             UsdValue = usdValue,

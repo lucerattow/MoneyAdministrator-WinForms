@@ -41,13 +41,13 @@ namespace MoneyAdministrator.DataAccess
                 new Currency { Id = 2, Name = "USD" }
             );
             modelBuilder.Entity<EntityType>().HasData(
-                new Currency { Id = 1, Name = "General" },
-                new Currency { Id = 2, Name = "Banco" }
+                new EntityType { Id = 1, Name = "General" },
+                new EntityType { Id = 2, Name = "Banco" }
             );
             modelBuilder.Entity<CreditCardType>().HasData(
-                new Currency { Id = 1, Name = "Visa" },
-                new Currency { Id = 2, Name = "MasterCard" },
-                new Currency { Id = 3, Name = "American Express" }
+                new CreditCardType { Id = 1, Name = "Visa" },
+                new CreditCardType { Id = 2, Name = "MasterCard" },
+                new CreditCardType { Id = 3, Name = "American Express" }
             );
         }
     }
