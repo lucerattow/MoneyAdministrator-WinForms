@@ -14,40 +14,25 @@ namespace MoneyAdministrator.Services
     public class EntityTypeService : IService<EntityType>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly bool _showDeleted;
 
-        public EntityTypeService(string databasePath, bool showDeleted = false) 
+        public EntityTypeService(string databasePath) 
         {
-            _unitOfWork = new UnitOfWork(databasePath);
-            _showDeleted = showDeleted;
+            _unitOfWork = new UnitOfWork(databasePath);    
         }
 
         public List<EntityType> GetAll()
         {
-            if (_showDeleted)
-                return _unitOfWork.EntityTypeRepository.GetAll().ToList();
-            else
-                return _unitOfWork.EntityTypeRepository.GetAll().Where(x => x.Deleted == false).ToList();
+            return _unitOfWork.EntityTypeRepository.GetAll().ToList();
         }
 
         public EntityType Get(int id)
         {
-            var item = _unitOfWork.EntityTypeRepository.GetById(id);
-
-            if (!_showDeleted && item != null && item.Deleted)
-                return null;
-            else
-                return item;
+            return _unitOfWork.EntityTypeRepository.GetById(id);
         }
 
-        public EntityType? GetByName(string name)
+        public EntityType GetByName(string name)
         {
-            var item = _unitOfWork.EntityTypeRepository.GetAll().Where(x => x.Name == name).FirstOrDefault();
-
-            if (!_showDeleted && item != null && item.Deleted)
-                return null;
-            else
-                return item;
+            return _unitOfWork.EntityTypeRepository.GetAll().Where(x => x.Name == name).FirstOrDefault();
         }
 
         public void Insert(EntityType model)
@@ -61,10 +46,6 @@ namespace MoneyAdministrator.Services
 
             if (item != null)
             {
-                //Revierto la eliminacion
-                item.Deleted = false;
-                _unitOfWork.EntityTypeRepository.Update(item);
-
                 //Si el objeto ya existe, añado el id en el modelo
                 model.Id = item.Id;
             }
@@ -72,8 +53,8 @@ namespace MoneyAdministrator.Services
             {
                 //Agrego el modelo a la base de datos
                 _unitOfWork.EntityTypeRepository.Insert(model);
+                _unitOfWork.Save();
             }
-            _unitOfWork.Save();
         }
 
         public void Update(EntityType model)
@@ -84,9 +65,6 @@ namespace MoneyAdministrator.Services
             var item = _unitOfWork.EntityTypeRepository.GetById(model.Id);
             if (item != null)
             {
-                if (item.Id <= 2)
-                    item.Deleted = false;
-
                 _unitOfWork.EntityTypeRepository.Update(model);
                 _unitOfWork.Save();
             }
@@ -97,8 +75,7 @@ namespace MoneyAdministrator.Services
             var item = _unitOfWork.EntityTypeRepository.GetById(model.Id);
             if (item != null )
             {
-                item.Deleted = true;
-                _unitOfWork.EntityTypeRepository.Update(item);
+                _unitOfWork.EntityTypeRepository.Delete(item);
                 _unitOfWork.Save();
             }
         }

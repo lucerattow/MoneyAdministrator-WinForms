@@ -13,30 +13,20 @@ namespace MoneyAdministrator.Services
     public class CreditCardTypeService : IService<CreditCardType>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly bool _showDeleted;
 
-        public CreditCardTypeService(string databasePath, bool showDeleted = false)
+        public CreditCardTypeService(string databasePath)
         {
             _unitOfWork = new UnitOfWork(databasePath);
-            _showDeleted = showDeleted;
         }
 
         public List<CreditCardType> GetAll()
         {
-            if (_showDeleted)
-                return _unitOfWork.CreditCardTypeRepository.GetAll().ToList();
-            else
-                return _unitOfWork.CreditCardTypeRepository.GetAll().Where(x => x.Deleted == false).ToList();
+            return _unitOfWork.CreditCardTypeRepository.GetAll().ToList();
         }
 
         public CreditCardType Get(int id)
         {
-            var item = _unitOfWork.CreditCardTypeRepository.GetById(id);
-
-            if (!_showDeleted && item != null && item.Deleted)
-                return null;
-            else
-                return item;
+            return _unitOfWork.CreditCardTypeRepository.GetById(id);
         }
 
         public void Insert(CreditCardType model)
@@ -79,8 +69,7 @@ namespace MoneyAdministrator.Services
             var item = _unitOfWork.CreditCardTypeRepository.GetById(model.Id);
             if (item != null)
             {
-                item.Deleted = true;
-                _unitOfWork.CreditCardTypeRepository.Update(item);
+                _unitOfWork.CreditCardTypeRepository.Delete(item);
                 _unitOfWork.Save();
             }
         }

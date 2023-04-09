@@ -17,13 +17,13 @@ namespace MoneyAdministrator.Interfaces
         void SetCreditCardTypeList(List<CreditCardType> datasource);
         /// <summary>Envio los datos de las tarjetas de credito al GRD</summary>
         /// <param name="dataSource">DTOs para rellenar la GRD</param>
-        void GrdRefreshData(List<CreditCardDto> dataSource);
+        void GrdRefreshData(List<CreditCardViewDto> dataSource);
 
         //functions
         /// <summary>Obtengo el ID seleccionado</summary>
         int SelectedId { get; set; }
         /// <summary>Obtengo el nombre del banco</summary>
-        string EntityName { get; set; }
+        string BankEntityName { get; set; }
         /// <summary>Obtengo el tipo de tarjeta de credito</summary>
         CreditCardType SelectedCreditCardType { get; set; }
         /// <summary>Obtengo los ultimos 4 numeros de la tarjeta</summary>

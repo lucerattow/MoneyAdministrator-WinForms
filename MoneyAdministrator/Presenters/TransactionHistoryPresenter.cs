@@ -66,7 +66,7 @@ namespace MoneyAdministrator.Presenters
                 var transactionDetailService = new TransactionDetailService(_databasePath);
                 var transactionDetails = transactionDetailService.GetAll();
 
-                List<TransactionDto> dtos = new List<TransactionDto>();
+                List<TransactionViewDto> dtos = new List<TransactionViewDto>();
                 foreach (var transactionDetail in transactionDetails)
                 {
                     //Obtengo el valor maximo de la propiedad installment para esta transaccion
@@ -77,7 +77,7 @@ namespace MoneyAdministrator.Presenters
                     //Genero el string "1 / 6" que indica el numero de cuotas
                     string installments = maxInstallment > 1 ? $"{transactionDetail.Installment} / {maxInstallment}" : "";
 
-                    dtos.Add(new TransactionDto()
+                    dtos.Add(new TransactionViewDto()
                     {
                         Id = transactionDetail.Id,
                         Date = transactionDetail.Date,
@@ -363,10 +363,20 @@ namespace MoneyAdministrator.Presenters
 
         private void ButtonEntitySearchClick(object? sender, EventArgs e)
         {
-            var selectedId = new EntityPresenter(_databasePath).Show();
-            var entity = new EntityService(_databasePath).Get(selectedId);
-            if (entity != null)
-                _view.EntityName = entity.Name;
+            using (new CursorWait())
+            {
+                var entities = new EntityService(_databasePath).GetAll();
+                var resultPickerViewDtos = entities.Select(entity => new ResultPickerViewDto
+                {
+                    Id = entity.Id,
+                    Field1 = entity.Name
+                }).ToList();
+
+                var selectedId = new ResultPickerPresenter(resultPickerViewDtos).Show();
+
+                if (selectedId > 0)
+                    _view.EntityName = entities.Where(x => x.Id == selectedId).FirstOrDefault().Name;
+            }
         }
     }
 }

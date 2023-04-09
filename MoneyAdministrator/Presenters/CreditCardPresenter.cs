@@ -72,10 +72,10 @@ namespace MoneyAdministrator.Presenters
             {
                 var creditCards = new CreditCardService(_databasePath).GetAll();
 
-                List<CreditCardDto> dtos = new();
+                List<CreditCardViewDto> dtos = new();
                 foreach (var creditCard in creditCards)
                 {
-                    dtos.Add(new CreditCardDto()
+                    dtos.Add(new CreditCardViewDto()
                     {
                         Id = creditCard.Id,
                         BankEntityName = creditCard.Entity.Name,
@@ -87,11 +87,11 @@ namespace MoneyAdministrator.Presenters
             }
         }
 
-        private void SelectItem()
+        private void SelectTransaction()
         {
             var creditCard = new CreditCardService(_databasePath).Get(_view.SelectedId);
 
-            _view.EntityName = creditCard.Entity.Name;
+            _view.BankEntityName = creditCard.Entity.Name;
             _view.SelectedCreditCardType = creditCard.CreditCardType;
             _view.LastFourNumbers = creditCard.LastFourNumbers;
         }
@@ -99,7 +99,7 @@ namespace MoneyAdministrator.Presenters
         //events
         private void GrdDoubleClick(object? sender, EventArgs e)
         {
-            SelectItem();
+            SelectTransaction();
         }
 
         private void ButtonSelectClick(object? sender, EventArgs e)
@@ -114,11 +114,11 @@ namespace MoneyAdministrator.Presenters
                 try
                 {
                     //Inicializo los servicios
-                    var creditCardService = new CreditCardService(_databasePath);
+                    var creditCardnService = new CreditCardService(_databasePath);
                     var entityService = new EntityService(_databasePath);
 
                     //Obtengo los valores
-                    var entity = new Entity() { Name = _view.EntityName, EntityTypeId = 2 }; //EntityType = "Banco"
+                    var entity = new Entity() { Name = _view.BankEntityName, EntityTypeId = 2 }; //EntityType = "Banco"
                     var creditCardType = _view.SelectedCreditCardType;
                     var lastFourNumbers = _view.LastFourNumbers;
 
@@ -136,7 +136,7 @@ namespace MoneyAdministrator.Presenters
                         CreditCardTypeId = creditCardType.Id,
                         LastFourNumbers = lastFourNumbers,
                     };
-                    creditCardService.Insert(creditCard);
+                    creditCardnService.Insert(creditCard);
                 }
                 catch (Exception ex)
                 {
@@ -165,7 +165,7 @@ namespace MoneyAdministrator.Presenters
                     }
 
                     //Obtengo los valores
-                    var entity = new Entity() { Name = _view.EntityName, EntityTypeId = 2 }; //EntityType = "Banco"
+                    var entity = new Entity() { Name = _view.BankEntityName, EntityTypeId = 2 }; //EntityType = "Banco"
                     var creditCardType = _view.SelectedCreditCardType;
                     var lastFourNumbers = _view.LastFourNumbers;
 
@@ -220,10 +220,20 @@ namespace MoneyAdministrator.Presenters
 
         private void ButtonEntitySearchClick(object? sender, EventArgs e)
         {
-            var selectedId = new EntityPresenter(_databasePath).Show();
-            var entity = new EntityService(_databasePath).Get(selectedId);
-            if (entity != null)
-                _view.EntityName = entity.Name;
+            using (new CursorWait())
+            {
+                var entities = new EntityService(_databasePath).GetAll();
+                var resultPickerViewDtos = entities.Select(entity => new ResultPickerViewDto
+                {
+                    Id = entity.Id,
+                    Field1 = entity.Name
+                }).ToList();
+
+                var selectedId = new ResultPickerPresenter(resultPickerViewDtos).Show();
+
+                if (selectedId > 0)
+                    _view.BankEntityName = entities.Where(x => x.Id == selectedId).FirstOrDefault().Name;
+            }
         }
     }
 }

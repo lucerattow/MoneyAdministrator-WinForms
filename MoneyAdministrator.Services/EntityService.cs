@@ -14,40 +14,25 @@ namespace MoneyAdministrator.Services
     public class EntityService : IService<Entity>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly bool _showDeleted;
 
-        public EntityService(string databasePath, bool showDeleted = false) 
+        public EntityService(string databasePath) 
         {
-            _unitOfWork = new UnitOfWork(databasePath);
-            _showDeleted = showDeleted;
+            _unitOfWork = new UnitOfWork(databasePath);    
         }
 
         public List<Entity> GetAll()
         {
-            if (_showDeleted)
-                return _unitOfWork.EntityRepository.GetAll().ToList();
-            else
-                return _unitOfWork.EntityRepository.GetAll().Where(x => x.Deleted == false).ToList();
+            return _unitOfWork.EntityRepository.GetAll().ToList();
         }
 
         public Entity Get(int id)
         {
-            var item = _unitOfWork.EntityRepository.GetById(id);
-
-            if (!_showDeleted && item != null && item.Deleted)
-                return null;
-            else
-                return item;
+            return _unitOfWork.EntityRepository.GetById(id);
         }
 
         public Entity GetByName(string name)
         {
-            var item = _unitOfWork.EntityRepository.GetAll().Where(x => x.Name == name).FirstOrDefault();
-
-            if (!_showDeleted && item != null && item.Deleted)
-                return null;
-            else
-                return item;
+            return _unitOfWork.EntityRepository.GetAll().Where(x => x.Name == name).FirstOrDefault();
         }
 
         public void Insert(Entity model)
@@ -61,11 +46,6 @@ namespace MoneyAdministrator.Services
 
             if (item != null)
             {
-                //Revierto el estado Deleted o Actualizo el tipo de entidad
-                item.EntityTypeId = model.EntityTypeId;
-                item.Deleted = false;
-                _unitOfWork.EntityRepository.Update(item);
-
                 //Si el objeto ya existe, añado el id en el modelo
                 model.Id = item.Id;
             }
@@ -73,8 +53,8 @@ namespace MoneyAdministrator.Services
             {
                 //Agrego el modelo a la base de datos
                 _unitOfWork.EntityRepository.Insert(model);
+                _unitOfWork.Save();
             }
-            _unitOfWork.Save();
         }
 
         public void Update(Entity model)
@@ -95,8 +75,7 @@ namespace MoneyAdministrator.Services
             var item = _unitOfWork.EntityRepository.GetById(model.Id);
             if (item != null )
             {
-                item.Deleted = true;
-                _unitOfWork.EntityRepository.Update(item);
+                _unitOfWork.EntityRepository.Delete(item);
                 _unitOfWork.Save();
             }
         }

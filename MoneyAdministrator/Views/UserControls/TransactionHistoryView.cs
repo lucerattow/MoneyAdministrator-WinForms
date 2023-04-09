@@ -175,7 +175,7 @@ namespace MoneyAdministrator.Views
             _cbCurrency.DisplayMember = "Name";
         }
 
-        public void GrdRefreshData(List<TransactionDto> datasource)
+        public void GrdRefreshData(List<TransactionViewDto> datasource)
         {
             using (new CursorWait())
             using (new DataGridViewHide(_grd))
@@ -193,7 +193,7 @@ namespace MoneyAdministrator.Views
                 var row = 0;
                 for (var i = 12; i >= 1; i--)
                 {
-                    List<TransactionDto> monthTransactions = datasource
+                    List<TransactionViewDto> monthTransactions = datasource
                         .Where(x => x.Date.Month == i).OrderByDescending(x => x.Date.Day).ToList();
 
                     if (monthTransactions.Count != 0)

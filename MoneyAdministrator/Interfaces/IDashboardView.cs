@@ -22,7 +22,7 @@ namespace MoneyAdministrator.Interfaces
         //Methods
         /// <summary>Envio los datos de resumen al GRD del dashboard</summary>
         /// <param name="dashboardDtos">DTOs para rellenar la GRD del dashboard</param>
-        void GrdRefreshData(List<DashboardDto> dashboardDtos);
+        void GrdRefreshData(List<DashboardViewDto> dashboardDtos);
         /// <summary>Limpio los campos del formulario</summary>
         void ClearInputs();
         /// <summary>Ejecuto la logica de botones</summary>

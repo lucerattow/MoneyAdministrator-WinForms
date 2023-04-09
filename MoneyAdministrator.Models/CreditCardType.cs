@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -15,9 +14,6 @@ namespace MoneyAdministrator.Models
         [StringLength(25, MinimumLength = 3, ErrorMessage = "Credit card type must be between 3 and 25 characters")]
         [Required(ErrorMessage = "Credit card Type name is required")]
         public string Name { get; set; }
-
-        [DefaultValue(false)]
-        public bool Deleted { get; set; }
 
         //foreign keys all constraints
         public virtual IEnumerable<CreditCard> CreditCards { get; set; }

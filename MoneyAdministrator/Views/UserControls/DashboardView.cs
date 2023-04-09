@@ -125,7 +125,7 @@ namespace MoneyAdministrator.Views.UserControls
         }
 
         //methods
-        public void GrdRefreshData(List<DashboardDto> dashboardDtos)
+        public void GrdRefreshData(List<DashboardViewDto> dashboardDtos)
         {
             using (new CursorWait())
             using (new DataGridViewHide(_grd))
