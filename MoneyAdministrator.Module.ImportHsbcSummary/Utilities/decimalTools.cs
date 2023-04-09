@@ -10,7 +10,8 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary.Utilities
     {
         public static decimal ToDecimal(string input)
         {
-            if (decimal.TryParse(input, out decimal result))
+            input = input.Replace(",", ".");
+            if (!string.IsNullOrEmpty(input) && decimal.TryParse(input, out decimal result))
                 return result;
             else
                 return 0;

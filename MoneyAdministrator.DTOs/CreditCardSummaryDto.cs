@@ -15,6 +15,19 @@ namespace MoneyAdministrator.DTOs
         public DateTime NextDate { get; set; }
         public DateTime NextExpiration { get; set; }
         public decimal minimumPayment { get; set; }
-        public List<CreditCardSummaryDetailDto> CreditCardSummaries { get; set; }
+        public List<CreditCardSummaryDetailDto> CreditCardSummaryDetails { get; set; }
+
+        public void AddDetailDto(List<CreditCardSummaryDetailDto> creditCardSummaryDetailDto)
+        {
+            creditCardSummaryDetailDto.ForEach(x => AddDetailDto(x));
+        }
+
+        public void AddDetailDto(CreditCardSummaryDetailDto creditCardSummaryDetailDto)
+        {
+            if (CreditCardSummaryDetails == null)
+                CreditCardSummaryDetails = new List<CreditCardSummaryDetailDto>();
+
+            CreditCardSummaryDetails.Add(creditCardSummaryDetailDto);
+        }
     }
 }

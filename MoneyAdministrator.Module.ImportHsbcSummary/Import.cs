@@ -26,6 +26,12 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary
             _pdfFilePath = pdfFilePath;
         }
 
+        public static CreditCardSummaryDto GetDataFromPdf(string pdfFilePath)
+        {
+
+            return new Import(pdfFilePath).ExtractTextFromPdf();
+        }
+
         private CreditCardSummaryDto ExtractTextFromPdf()
         {
             var ccSummary = new CreditCardSummaryDto();
@@ -48,32 +54,10 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary
 
         private CreditCardSummaryDto GetCreditCardSummary(List<string> pages)
         {
-            var ccSummary = new CreditCardSummaryDto();
-            pages = GetValuesFromString.FilteredHeaderAndFooter(pages);
-
-            ccSummary = GetValuesFromString.GetGeneralSummaryData(pages[0]);
-
-            var consolidateSummary = GetValuesFromString.GetConsolidatedSummary(pages[0]);
-
-            return ccSummary;
+            //Retiro el Header y el Footer de cada pagina
+            var lines = CleanContent.FilterTrash(pages);
+            var result = GetValuesFromString.GetSummaryData(lines);
+            return result;
         }
-
-        //tengo que usar este metodo
-        public static CreditCardSummaryDto GetCreditCardSummaryDto(string pdfFilePath)
-        {
-            return new Import(pdfFilePath).ExtractTextFromPdf();
-        }
-    }
-
-    public class CreditCardSummaryDto2
-    {
-        public int Id { get; set; }
-        public DateTime Period { get; set; }
-        public DateTime Date { get; set; }
-        public DateTime Expiration { get; set; }
-        public DateTime NextDate { get; set; }
-        public DateTime NextExpiration { get; set; }
-        public decimal minimumPayment { get; set; }
-        public List<CreditCardSummaryDetailDto> CreditCardSummaries { get; set; }
     }
 }

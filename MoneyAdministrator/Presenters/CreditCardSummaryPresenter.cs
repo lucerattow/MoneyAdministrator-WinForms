@@ -55,7 +55,7 @@ namespace MoneyAdministrator.Presenters
                 {
                     try
                     {
-                        var creditCardSummaryDto = Import.GetCreditCardSummaryDto(openFileDialog.FileName);
+                        var creditCardSummaryDto = Import.GetDataFromPdf(openFileDialog.FileName);
                     }
                     catch (Exception ex)
                     {

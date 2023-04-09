@@ -14,10 +14,4 @@
     <ProjectReference Include="..\MoneyAdministrator.DTOs\MoneyAdministrator.DTOs.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="tessdata\spa.traineddata">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

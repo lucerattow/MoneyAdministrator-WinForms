@@ -1,104 +1,62 @@
-﻿using iText.Layout.Properties;
+﻿using iText.Kernel.Geom;
+using iText.Layout.Properties;
 using MoneyAdministrator.DTOs;
+using MoneyAdministrator.DTOs.Enums;
 using MoneyAdministrator.Module.ImportHsbcSummary.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Intrinsics.X86;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MoneyAdministrator.Module.ImportHsbcSummary
 {
     public static class GetValuesFromString
     {
-        public static List<string> FilteredHeaderAndFooter(List<string> pages)
-        {
-            List<string> result = new List<string>();
-
-            foreach (var page in pages)
-            {
-                var filtered = FilteredFooter(page);
-                filtered = FilteredHeader(filtered);
-
-                result.Add(filtered);
-            }
-
-            return result;
-        }
-
-        private static string FilteredFooter(string page)
-        {
-            List<string> result = new List<string>();
-            var lines = page.Split("\n").ToList();
-
-            foreach (var line in lines)
-            {
-                if (line.Contains("031 305 8 031 305 8 CERATTO LUCAS EZEQUIEL"))
-                    break;
-
-                result.Add(line);
-            }
-
-            return string.Join("\n", result.Where(x => !string.IsNullOrEmpty(x)));
-        }
-
-        private static string FilteredHeader(string page)
-        {
-            List<string> result = new List<string>();
-            var lines = page.Split("\n").ToList();
-
-            bool copy = !lines.Where(x => x.Contains("031 . 305 . 8")).Any();
-
-            foreach (var line in lines)
-            {
-                if (line.Contains("031 . 305 . 8"))
-                {
-                    copy = true;
-                    continue;
-                }
-
-                if (!copy)
-                    continue;
-
-                result.Add(line);
-            }
-
-            return string.Join("\n", result.Where(x => !string.IsNullOrEmpty(x)));
-        }
-
-        public static CreditCardSummaryDto GetGeneralSummaryData(string pageOne)
+        public static CreditCardSummaryDto GetSummaryData(List<string> lines)
         {
             var ccSummary = new CreditCardSummaryDto();
-            var lines = pageOne.Split("\n");
 
-            int index = 0;
-            foreach (var line in lines)
+            GetSummaryVariablesData(ref ccSummary, lines);
+
+            ccSummary.AddDetailDto(GetConsolidatedData(lines));
+            ccSummary.AddDetailDto(GetConsumptionsData(lines));
+            return ccSummary;
+        }
+
+        private static void GetSummaryVariablesData(ref CreditCardSummaryDto ccSummary, List<string> lines)
+        {
+            lines = CleanContent.GetSummaryPropertiesSectionString(lines);
+
+            for (int i = 0; i < lines.Count; i++)
             {
                 //Obtengo la fecha de cierre
-                if (index == 0)
+                if (i == 0)
                 {
-                    var date = line.Split(" ").ToList().Where(x => !string.IsNullOrEmpty(x)).ToList()[0];
+                    var date = lines[i].Split(" ").ToList().Where(x => !string.IsNullOrEmpty(x)).ToList()[0];
                     ccSummary.Date = DateTimeTools.ConvertToDateTime(date);
                 }
 
                 //Obtengo la fecha de vencimiento
-                if (index == 2)
+                if (i == 1)
                 {
-                    var date = line.Split(" ").ToList().Where(x => !string.IsNullOrEmpty(x)).ToList()[0];
+                    var date = lines[i].Split(" ").ToList().Where(x => !string.IsNullOrEmpty(x)).ToList()[0];
                     ccSummary.Expiration = DateTimeTools.ConvertToDateTime(date);
                 }
 
                 //Obtengo la proxima fecha de cierre
-                if (index == 4)
+                if (i == 2)
                 {
-                    var date = line.Split(" ").ToList().Where(x => !string.IsNullOrEmpty(x)).ToList()[3];
+                    var date = lines[i].Split(" ").ToList().Where(x => !string.IsNullOrEmpty(x)).ToList()[3];
                     ccSummary.NextDate = DateTimeTools.ConvertToDateTime(date);
                 }
 
                 //Obtengo la proxima fecha de vencimiento y el pago minimo
-                if (index == 6)
+                if (i == 3)
                 {
-                    var datePayment = line.Split(" ").ToList().Where(x => !string.IsNullOrEmpty(x)).ToList()[1];
+                    var datePayment = lines[i].Split(" ").ToList().Where(x => !string.IsNullOrEmpty(x)).ToList()[1];
 
                     //Fecha de vencimiento
                     var date = datePayment.Substring(datePayment.Length - 9);
@@ -108,37 +66,77 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary
                     var minimumPayment = datePayment.Substring(0, datePayment.Length - 9);
                     ccSummary.minimumPayment = decimalTools.ToDecimal(minimumPayment);
                 }
-
-                index++;
             }
-
-            return ccSummary;
         }
 
-        public static string GetConsolidatedSummary(string pageOne)
+        public static List<CreditCardSummaryDetailDto> GetConsolidatedData(List<string> lines)
         {
-            var lines = pageOne.Split("\n").ToList();
-            var result = new List<string>();
+            var results = new List<CreditCardSummaryDetailDto>();
+            var resultType = CreditCardSummaryDetailDtoType.Summary;
 
-            bool copy = false;
-            int index = 0;
-            foreach (var line in lines)
+            string data = CleanContent.GetConsolidatedSectionString(lines);
+            var dataLines = data.Split("\n");
+
+            for (int i = 0; i < dataLines.Count(); i++)
             {
-                if (line.Contains("RESUMEN CONSOLIDADO"))
-                    copy = true;
-
-                if (line.Contains("DETALLE DEL MES"))
-                    break;
-
-                if (!copy)
+                if (dataLines.Contains("SUBTOTAL"))
+                {
+                    resultType = CreditCardSummaryDetailDtoType.TaxesAndMaintenance;
                     continue;
+                }
 
-                result.Add(line);
+                var ccSummaryDetail = new CreditCardSummaryDetailDto();
+                ccSummaryDetail.Type = resultType;
 
-                index++;
+                //Obtengo la fecha
+                if (!dataLines[i].StartsWith(" "))
+                {
+                    var date = dataLines[i].Substring(0, 9);
+                    ccSummaryDetail.Date = DateTimeTools.ConvertToDateTime(date);
+                }
+
+                //Elimino el espacio de la fecha
+                dataLines[i] = dataLines[i].Substring(22, dataLines[i].Length - 22);
+
+                //Obtengo la descripcion
+                int index = dataLines[i].IndexOf("  ");
+                ccSummaryDetail.Description = dataLines[i].Substring(0, index);
+
+                //Elimino la descripcion
+                dataLines[i] = dataLines[i].Substring(index);
+
+                //Obtengo las monedas
+                var length = dataLines[i].Length > 12 ? 12 : dataLines[i].Length;
+
+                ccSummaryDetail.AmountArs = decimalTools.ToDecimal(dataLines[i].Substring(0, length));
+
+                if (length > 12)
+                    ccSummaryDetail.AmountUsd = decimalTools.ToDecimal(dataLines[i].Substring(length));
+
+                results.Add(ccSummaryDetail);
             }
 
-            return string.Join("\n", result.Where(x => !string.IsNullOrEmpty(x)));
+            return results;
+        }
+
+        public static List<CreditCardSummaryDetailDto> GetConsumptionsData(List<string> lines)
+        {
+            var results = new List<CreditCardSummaryDetailDto>();
+            var resultType = CreditCardSummaryDetailDtoType.Details;
+
+            string data = CleanContent.GetConsolidatedSectionString(lines);
+
+            var dataLines = data.Split("\n");
+
+            for (int i = 0; i < dataLines.Count(); i++)
+            {
+                var ccSummaryDetail = new CreditCardSummaryDetailDto();
+                ccSummaryDetail.Type = resultType;
+
+                results.Add(ccSummaryDetail);
+            }
+
+            return results;
         }
     }
 }
