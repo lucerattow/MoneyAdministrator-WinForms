@@ -42,7 +42,7 @@ namespace MoneyAdministrator.Interfaces
         void SetCurrenciesList(List<Currency> datasource);
         /// <summary>Envio los datos de las transacciones al GRD de transaccionHistory</summary>
         /// <param name="datasource">DTOs para rellenar la GRD de transaccionHistory</param>
-        void GrdRefreshData(List<TransactionViewDto> datasource);
+        void GrdRefreshData(List<TransactionDto> datasource);
         /// <summary>Ejecuto la logica de botones</summary>
         void ButtonsLogic();
 

@@ -83,6 +83,36 @@ namespace MoneyAdministrator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap card_credit_two {
+            get {
+                object obj = ResourceManager.GetObject("card_credit_two", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap creditcards {
+            get {
+                object obj = ResourceManager.GetObject("creditcards", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap creditcards1 {
+            get {
+                object obj = ResourceManager.GetObject("creditcards1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap disk_blue_shadow {
             get {
                 object obj = ResourceManager.GetObject("disk_blue_shadow", resourceCulture);
@@ -146,6 +176,26 @@ namespace MoneyAdministrator.Properties {
         internal static System.Drawing.Bitmap document_forbidden_shadow {
             get {
                 object obj = ResourceManager.GetObject("document_forbidden_shadow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap document_into {
+            get {
+                object obj = ResourceManager.GetObject("document_into", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap document_into_shadow {
+            get {
+                object obj = ResourceManager.GetObject("document_into_shadow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

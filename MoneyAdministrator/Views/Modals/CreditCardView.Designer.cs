@@ -33,13 +33,13 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this._grd = new System.Windows.Forms.DataGridView();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
+            this._lblCreditCardType = new System.Windows.Forms.Label();
             this._cbCreditCardType = new System.Windows.Forms.ComboBox();
-            this._lblOrigin = new System.Windows.Forms.Label();
+            this._lblEntityName = new System.Windows.Forms.Label();
             this._btnEntitySearch = new System.Windows.Forms.Button();
             this._txtEntityName = new System.Windows.Forms.TextBox();
             this._txtLastFourNumbers = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this._lblLastFourNumbers = new System.Windows.Forms.Label();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this._tsbSelect = new System.Windows.Forms.ToolStripButton();
             this._tsbInsert = new System.Windows.Forms.ToolStripButton();
@@ -94,13 +94,13 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.panel1.Controls.Add(this.label2);
+            this.panel1.Controls.Add(this._lblCreditCardType);
             this.panel1.Controls.Add(this._cbCreditCardType);
-            this.panel1.Controls.Add(this._lblOrigin);
+            this.panel1.Controls.Add(this._lblEntityName);
             this.panel1.Controls.Add(this._btnEntitySearch);
             this.panel1.Controls.Add(this._txtEntityName);
             this.panel1.Controls.Add(this._txtLastFourNumbers);
-            this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this._lblLastFourNumbers);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 27);
             this.panel1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -108,15 +108,15 @@
             this.panel1.Size = new System.Drawing.Size(563, 61);
             this.panel1.TabIndex = 21;
             // 
-            // label2
+            // _lblCreditCardType
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(237, 5);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(60, 20);
-            this.label2.TabIndex = 27;
-            this.label2.Text = "Entidad";
+            this._lblCreditCardType.AutoSize = true;
+            this._lblCreditCardType.Location = new System.Drawing.Point(237, 5);
+            this._lblCreditCardType.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this._lblCreditCardType.Name = "_lblCreditCardType";
+            this._lblCreditCardType.Size = new System.Drawing.Size(60, 20);
+            this._lblCreditCardType.TabIndex = 27;
+            this._lblCreditCardType.Text = "Entidad";
             // 
             // _cbCreditCardType
             // 
@@ -127,15 +127,15 @@
             this._cbCreditCardType.Size = new System.Drawing.Size(181, 28);
             this._cbCreditCardType.TabIndex = 26;
             // 
-            // _lblOrigin
+            // _lblEntityName
             // 
-            this._lblOrigin.AutoSize = true;
-            this._lblOrigin.Location = new System.Drawing.Point(1, 5);
-            this._lblOrigin.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this._lblOrigin.Name = "_lblOrigin";
-            this._lblOrigin.Size = new System.Drawing.Size(60, 20);
-            this._lblOrigin.TabIndex = 23;
-            this._lblOrigin.Text = "Entidad";
+            this._lblEntityName.AutoSize = true;
+            this._lblEntityName.Location = new System.Drawing.Point(1, 5);
+            this._lblEntityName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this._lblEntityName.Name = "_lblEntityName";
+            this._lblEntityName.Size = new System.Drawing.Size(60, 20);
+            this._lblEntityName.TabIndex = 23;
+            this._lblEntityName.Text = "Entidad";
             // 
             // _btnEntitySearch
             // 
@@ -163,14 +163,14 @@
             this._txtLastFourNumbers.Size = new System.Drawing.Size(130, 27);
             this._txtLastFourNumbers.TabIndex = 19;
             // 
-            // label1
+            // _lblLastFourNumbers
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(424, 5);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(133, 20);
-            this.label1.TabIndex = 18;
-            this.label1.Text = "Ultimos 4 numeros";
+            this._lblLastFourNumbers.AutoSize = true;
+            this._lblLastFourNumbers.Location = new System.Drawing.Point(424, 5);
+            this._lblLastFourNumbers.Name = "_lblLastFourNumbers";
+            this._lblLastFourNumbers.Size = new System.Drawing.Size(133, 20);
+            this._lblLastFourNumbers.TabIndex = 18;
+            this._lblLastFourNumbers.Text = "Ultimos 4 numeros";
             // 
             // toolStrip1
             // 
@@ -253,7 +253,7 @@
             this.MinimumSize = new System.Drawing.Size(590, 265);
             this.Name = "CreditCardView";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "ResultPickerView";
+            this.Text = "CreditCardView";
             this._pnlContainer.ResumeLayout(false);
             this._pnlContainer.PerformLayout();
             this.panel2.ResumeLayout(false);
@@ -273,14 +273,14 @@
         private ToolStripButton _tsbClear;
         private DataGridView _grd;
         private TextBox _txtLastFourNumbers;
-        private Label label1;
+        private Label _lblLastFourNumbers;
         private ToolStripButton _tsbSelect;
         private Panel panel1;
-        private Label _lblOrigin;
+        private Label _lblEntityName;
         private Button _btnEntitySearch;
         private TextBox _txtEntityName;
         private ComboBox _cbCreditCardType;
-        private Label label2;
+        private Label _lblCreditCardType;
         private Panel panel2;
         private ToolStripButton _tsbInsert;
         private ToolStripButton _tsbUpdate;
