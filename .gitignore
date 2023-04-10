@@ -23,6 +23,3 @@ _ReSharper*/
 
 # Carpetas de Visual Studio
 .vs/
-
-# Carpeta con datos sensibles para test
-.test/
