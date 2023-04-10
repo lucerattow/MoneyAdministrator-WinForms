@@ -19,39 +19,32 @@ namespace MoneyAdministrator.Utilities
             }
         }
 
-        public static void PaintDecimal(DataGridView grd, int row, int col)
+        public static void PaintDecimal(DataGridView grd, int row, int col, bool inverted = false)
         {
             var strValue = string.Concat(grd.Rows[row].Cells[col].Value.ToString()
                 .Where(x => char.IsDigit(x) || x == ',' || x == '-'));
 
+            Color positive = Color.Green;
+            Color negative = Color.FromArgb(150, 0, 0);
+
             if (decimal.TryParse(strValue, out decimal value))
             {
                 if (value > 0)
-                    grd.Rows[row].Cells[col].Style.ForeColor = Color.Green;
+                    grd.Rows[row].Cells[col].Style.ForeColor = inverted ? negative : positive;
                 else if (value < 0)
-                    grd.Rows[row].Cells[col].Style.ForeColor = Color.FromArgb(150, 0, 0);
+                    grd.Rows[row].Cells[col].Style.ForeColor = inverted ? positive : negative;
                 else
                     grd.Rows[row].Cells[col].Style.ForeColor = Color.FromArgb(80, 80, 80);
             }
         }
 
-        public static void PaintDecimal(DataGridView grd, int row, string col)
+        public static void PaintDecimal(DataGridView grd, int row, string col, bool inverted = false)
         {
-            var strValue = string.Concat(grd.Rows[row].Cells[col].Value.ToString()
-                .Where(x => char.IsDigit(x) || x == ',' || x == '-'));
-
-            if (decimal.TryParse(strValue, out decimal value))
-            {
-                if (value > 0)
-                    grd.Rows[row].Cells[col].Style.ForeColor = Color.Green;
-                else if (value < 0)
-                    grd.Rows[row].Cells[col].Style.ForeColor = Color.FromArgb(150, 0, 0);
-                else
-                    grd.Rows[row].Cells[col].Style.ForeColor = Color.FromArgb(80, 80, 80);
-            }
+            var index = grd.Columns[col].Index;
+            PaintDecimal(grd, row, index, inverted);
         }
 
-        public static void PaintCurrentDate(DataGridView grd, int row, int col)
+        public static void PaintCurrentDate(DataGridView grd, int row, int col, bool inverted = false)
         {
             string Date = grd.Rows[row].Cells[col].Value.ToString();
             if (Date.Length >= 7)

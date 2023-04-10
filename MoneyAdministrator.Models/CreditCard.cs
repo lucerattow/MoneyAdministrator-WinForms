@@ -30,6 +30,6 @@ namespace MoneyAdministrator.Models
         public virtual CreditCardType CreditCardType { get; set; }
 
         //foreign keys all constraints
-        public virtual IEnumerable<CCResume> CCResume { get; set; }
+        public virtual IEnumerable<CCSummary> CCSumaries { get; set; }
     }
 }

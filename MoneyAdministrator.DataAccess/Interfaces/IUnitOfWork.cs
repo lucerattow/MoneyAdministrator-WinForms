@@ -9,8 +9,8 @@ namespace MoneyAdministrator.DataAccess.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        IRepository<CCResume> CCResumeRepository { get; }
-        IRepository<CCResumeDetail> CCResumeDetailRepository { get; }
+        IRepository<CCSummary> CCResumeRepository { get; }
+        IRepository<CCSummaryDetail> CCResumeDetailRepository { get; }
         IRepository<CreditCard> CreditCardRepository { get; }
         IRepository<CreditCardType> CreditCardTypeRepository { get; }
         IRepository<Currency> CurrencyRepository { get; }

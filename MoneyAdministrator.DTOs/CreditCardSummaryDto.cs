@@ -14,7 +14,7 @@ namespace MoneyAdministrator.DTOs
         public DateTime Expiration { get; set; }
         public DateTime NextDate { get; set; }
         public DateTime NextExpiration { get; set; }
-        public decimal minimumPayment { get; set; }
+        public decimal MinimumPayment { get; set; }
         public List<CreditCardSummaryDetailDto> CreditCardSummaryDetails { get; set; }
 
         public void AddDetailDto(List<CreditCardSummaryDetailDto> creditCardSummaryDetailDto)

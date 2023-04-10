@@ -8,8 +8,8 @@ namespace MoneyAdministrator.DataAccess
     {
         private string _databasePath;
 
-        public DbSet<CCResumeDetail> CCResumeDetails { get; set; }
-        public DbSet<CCResume> CCResumes { get; set; }
+        public DbSet<CCSummaryDetail> CCSummaryDetails { get; set; }
+        public DbSet<CCSummary> CCSummaries { get; set; }
         public DbSet<CreditCardType> CreditCardTypes { get; set; }
         public DbSet<CreditCard> CreditCards { get; set; }
         public DbSet<Currency> Currencies { get; set; }

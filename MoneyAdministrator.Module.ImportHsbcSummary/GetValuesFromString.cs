@@ -37,6 +37,14 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary
                 {
                     var date = lines[i].Split(" ").ToList().Where(x => !string.IsNullOrEmpty(x)).ToList()[0];
                     ccSummary.Date = DateTimeTools.ConvertToDateTime(date);
+
+                    //Obtengo el periodo
+                    int month = 0;
+                    if (ccSummary.Date.Day >= 20)
+                        month = ccSummary.Date.Month + 1;
+                    else
+                        month = ccSummary.Date.Month;
+                    ccSummary.Period = new DateTime(ccSummary.Date.Year, month, 1);
                 }
 
                 //Obtengo la fecha de vencimiento
@@ -64,7 +72,7 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary
 
                     //Pago minimo
                     var minimumPayment = datePayment.Substring(0, datePayment.Length - 9);
-                    ccSummary.minimumPayment = decimalTools.ToDecimal(minimumPayment);
+                    ccSummary.MinimumPayment = decimalTools.ToDecimal(minimumPayment);
                 }
             }
         }
@@ -74,12 +82,11 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary
             var results = new List<CreditCardSummaryDetailDto>();
             var resultType = CreditCardSummaryDetailDtoType.Summary;
 
-            string data = CleanContent.GetConsolidatedSectionString(lines);
-            var dataLines = data.Split("\n");
+            List<string> data = CleanContent.GetConsolidatedSectionString(lines);
 
-            for (int i = 0; i < dataLines.Count(); i++)
+            for (int i = 0; i < data.Count(); i++)
             {
-                if (dataLines.Contains("SUBTOTAL"))
+                if (data[i].Contains("SUBTOTAL"))
                 {
                     resultType = CreditCardSummaryDetailDtoType.TaxesAndMaintenance;
                     continue;
@@ -89,29 +96,28 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary
                 ccSummaryDetail.Type = resultType;
 
                 //Obtengo la fecha
-                if (!dataLines[i].StartsWith(" "))
+                if (!data[i].StartsWith(" "))
                 {
-                    var date = dataLines[i].Substring(0, 9);
+                    var date = data[i].Substring(0, 9);
                     ccSummaryDetail.Date = DateTimeTools.ConvertToDateTime(date);
                 }
 
                 //Elimino el espacio de la fecha
-                dataLines[i] = dataLines[i].Substring(22, dataLines[i].Length - 22);
+                data[i] = data[i].Substring(22, data[i].Length - 22);
 
                 //Obtengo la descripcion
-                int index = dataLines[i].IndexOf("  ");
-                ccSummaryDetail.Description = dataLines[i].Substring(0, index);
+                int index = data[i].IndexOf("  ");
+                ccSummaryDetail.Description = data[i].Substring(0, index);
 
                 //Elimino la descripcion
-                dataLines[i] = dataLines[i].Substring(index);
+                data[i] = data[i].Substring(index);
 
-                //Obtengo las monedas
-                var length = dataLines[i].Length > 12 ? 12 : dataLines[i].Length;
+                ccSummaryDetail.Installments = "";
 
-                ccSummaryDetail.AmountArs = decimalTools.ToDecimal(dataLines[i].Substring(0, length));
-
-                if (length > 12)
-                    ccSummaryDetail.AmountUsd = decimalTools.ToDecimal(dataLines[i].Substring(length));
+                //Ontengo los montos
+                var length = data[i].Length > 12 ? 12 : data[i].Length;
+                ccSummaryDetail.AmountArs = decimalTools.ToDecimal(data[i].Substring(0, length));
+                ccSummaryDetail.AmountUsd = data[i].Length > 12 ? decimalTools.ToDecimal(data[i].Substring(length)) : 0;
 
                 results.Add(ccSummaryDetail);
             }
@@ -124,19 +130,108 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary
             var results = new List<CreditCardSummaryDetailDto>();
             var resultType = CreditCardSummaryDetailDtoType.Details;
 
-            string data = CleanContent.GetConsolidatedSectionString(lines);
+            List<string> data = CleanContent.GetDetailsSectionString(lines);
 
-            var dataLines = data.Split("\n");
-
-            for (int i = 0; i < dataLines.Count(); i++)
+            for (int i = 0; i < data.Count(); i++)
             {
+                if (data[i].Contains("FECHA      COMPRAS DEL MES"))
+                {
+                    resultType = CreditCardSummaryDetailDtoType.Details;
+                    continue;
+                }
+                else if (data[i].Contains("FECHA      CUOTAS DEL MES"))
+                {
+                    resultType = CreditCardSummaryDetailDtoType.Installments;
+                    continue;
+                }
+                else if (data[i].Contains("FECHA      DEBITOS AUTOMATICOS"))
+                {
+                    resultType = CreditCardSummaryDetailDtoType.AutomaticDebits;
+                    continue;
+                }
+
                 var ccSummaryDetail = new CreditCardSummaryDetailDto();
-                ccSummaryDetail.Type = resultType;
+
+                if (resultType == CreditCardSummaryDetailDtoType.Details || resultType == CreditCardSummaryDetailDtoType.AutomaticDebits)
+                    ccSummaryDetail = GetDetailsDto(data[i], resultType);
+                else if (resultType == CreditCardSummaryDetailDtoType.Installments)
+                    ccSummaryDetail = GetInstallmentsDto(data[i], resultType);
+
 
                 results.Add(ccSummaryDetail);
             }
 
             return results;
+        }
+
+        private static CreditCardSummaryDetailDto GetDetailsDto(string line, CreditCardSummaryDetailDtoType type)
+        {
+            var ccSummaryDetail = new CreditCardSummaryDetailDto();
+            ccSummaryDetail.Type = type;
+
+            //Obtengo la fecha
+            if (!line.StartsWith(" "))
+            {
+                var date = line.Substring(0, 9);
+                ccSummaryDetail.Date = DateTimeTools.ConvertToDateTime(date);
+            }
+
+            //Elimino el espacio de la fecha
+            line = line.Substring(10);
+
+            //Obtengo la descripcion
+            ccSummaryDetail.Description = line.Substring(0, 38).TrimEnd();
+
+            //Elimino el espacio de la descripcion
+            line = line.Substring(45);
+
+            //Asigno un valor vacio para no dejarlo null
+            ccSummaryDetail.Installments = "";
+
+            //Obtengo los montos
+            var length = line.Length > 12 ? 12 : line.Length;
+            ccSummaryDetail.AmountArs = decimalTools.ToDecimal(line.Substring(0, length));
+            ccSummaryDetail.AmountUsd = line.Length > 12 ? decimalTools.ToDecimal(line.Substring(length)) : 0;
+
+            return ccSummaryDetail;
+        }
+
+        private static CreditCardSummaryDetailDto GetInstallmentsDto(string line, CreditCardSummaryDetailDtoType type)
+        {
+            var ccSummaryDetail = new CreditCardSummaryDetailDto();
+            ccSummaryDetail.Type = type;
+
+            //Obtengo la fecha
+            if (!line.StartsWith(" "))
+            {
+                var date = line.Substring(0, 9);
+                ccSummaryDetail.Date = DateTimeTools.ConvertToDateTime(date);
+            }
+            line = line.Substring(10); //Elimino el espacio de la fecha
+
+            //Obtengo la descripcion
+            ccSummaryDetail.Description = line.Substring(0, 34).TrimEnd();
+            line = line.Substring(34); //Elimino el espacio de la descripcion
+
+            //Obtengo las cuotas
+            ccSummaryDetail.Installments = line.Substring(0, 5);
+            //Antes de eliminar el espacio, compruebo si tengo codigo de cupon
+            bool haveCupon = false;
+
+            if (line[7] != ' ')
+                haveCupon = true;
+
+            if (haveCupon)
+                line = line.Substring(11); //Elimino el espacio de las cuotas y cupon
+            else
+                line = line.Substring(5); //Elimino el espacio de las cuotas
+
+            //Obtengo los montos
+            var length = line.Length > 12 ? 12 : line.Length;
+            ccSummaryDetail.AmountArs = decimalTools.ToDecimal(line.Substring(0, length));
+            ccSummaryDetail.AmountUsd = line.Length > 12 ? decimalTools.ToDecimal(line.Substring(length)) : 0;
+
+            return ccSummaryDetail;
         }
     }
 }

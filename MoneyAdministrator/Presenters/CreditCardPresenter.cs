@@ -19,7 +19,6 @@ namespace MoneyAdministrator.Presenters
         //fields
         private ICreditCardView _view;
         private string _databasePath;
-        private Action _closeView;
 
         //properties
         public ICreditCardView View
@@ -27,10 +26,9 @@ namespace MoneyAdministrator.Presenters
             get { return _view; }
         }
 
-        public CreditCardPresenter(string databasePath, Action closeView)
+        public CreditCardPresenter(string databasePath)
         {
             _databasePath = databasePath;
-            _closeView = closeView;
             _view = new CreditCardView();
 
             AssosiateEvents();
@@ -39,17 +37,21 @@ namespace MoneyAdministrator.Presenters
         }
 
         //methods
-        public bool Show()
+        public int Show()
         {
             if (_view == null)
                 throw new Exception("Ocurrio un error al intentar abrir el popup");
 
-            return _view.ShowDialog() == DialogResult.OK;
+            if (_view.ShowDialog() == DialogResult.OK)
+                return _view.SelectedId;
+            else
+                return -1;
         }
 
         private void AssosiateEvents()
         {
             _view.GrdDoubleClick += GrdDoubleClick;
+            _view.ButtonSelectClick += ButtonSelectClick;
             _view.ButtonInsertClick += ButtonInsertClick;
             _view.ButtonUpdateClick += ButtonUpdateClick;
             _view.ButtonDeleteClick += ButtonDeleteClick;

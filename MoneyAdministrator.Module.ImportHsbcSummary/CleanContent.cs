@@ -27,6 +27,8 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary
                 results.AddRange(page.Split("\n").ToList());
             }
 
+            results = FilteredLastText(results);
+
             //para ver la data final
             string plainText = string.Join("\n", results);
 
@@ -73,6 +75,23 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary
             return string.Join("\n", result.Where(x => !string.IsNullOrEmpty(x)));
         }
 
+        public static List<string> FilteredLastText(List<string> lines)
+        {
+            List<string> result = new List<string>();
+
+            bool copy = !lines.Where(x => x.Contains("TOTAL TITULAR      CERATTO LUCAS EZEQUIEL")).Any();
+            
+            foreach (var line in lines)
+            {
+                if (line.Contains("TOTAL TITULAR      CERATTO LUCAS EZEQUIEL"))
+                    break;
+
+                result.Add(line);
+            }
+
+            return result;
+        }
+
         public static List<string> GetSummaryPropertiesSectionString(List<string> lines)
         {
             var results = new List<string>();
@@ -88,7 +107,7 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary
             return results;
         }
 
-        public static string GetConsolidatedSectionString(List<string> lines)
+        public static List<string> GetConsolidatedSectionString(List<string> lines)
         {
             var results = new List<string>();
 
@@ -123,12 +142,33 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary
 
             //No elimino "SUBTOTAL" para usarlo de separador.
 
-            return string.Join("\n", results.Where(x => !string.IsNullOrEmpty(x)));
+            return results.Where(x => !string.IsNullOrEmpty(x)).ToList();
         }
 
-        public static string GetDetailsSectionString(List<string> lines)
+        public static List<string> GetDetailsSectionString(List<string> lines)
         {
-            return "";
+            var results = new List<string>();
+
+            //Obtengo las lineas
+            bool copy = false;
+            int index = 0;
+            foreach (var line in lines)
+            {
+                if (line.Contains("DETALLE DEL MES"))
+                {
+                    copy = true;
+                    continue;
+                }
+
+                if (!copy)
+                    continue;
+
+                results.Add(line);
+
+                index++;
+            }
+
+            return results.Where(x => !string.IsNullOrEmpty(x)).ToList();
         }
     }
 }

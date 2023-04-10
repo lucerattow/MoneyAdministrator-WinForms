@@ -10,32 +10,32 @@ using System.Threading.Tasks;
 
 namespace MoneyAdministrator.Services
 {
-    public class CCResumeDetailService : IService<CCResumeDetail>
+    public class CCSummaryDetailService : IService<CCSummaryDetail>
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public CCResumeDetailService(string databasePath)
+        public CCSummaryDetailService(string databasePath)
         {
             _unitOfWork = new UnitOfWork(databasePath);
         }
 
-        public List<CCResumeDetail> GetAll()
+        public List<CCSummaryDetail> GetAll()
         {
             return _unitOfWork.CCResumeDetailRepository.GetAll().ToList();
         }
 
-        public CCResumeDetail Get(int id)
+        public CCSummaryDetail Get(int id)
         {
             return _unitOfWork.CCResumeDetailRepository.GetById(id);
         }
 
-        public void Insert(CCResumeDetail model)
+        public void Insert(CCSummaryDetail model)
         {
             //Valido el modelo
             Utilities.ModelValidator.Validate(model);
 
             //Compruebo si el resumen existe
-            var ccResume = _unitOfWork.CCResumeRepository.GetById(model.CCResumeId);
+            var ccResume = _unitOfWork.CCResumeRepository.GetById(model.CCSummaryId);
             if (ccResume == null)
                 throw new Exception("There is no credit card resume with that id");
 
@@ -44,7 +44,7 @@ namespace MoneyAdministrator.Services
             _unitOfWork.Save();
         }
 
-        public void Update(CCResumeDetail model)
+        public void Update(CCSummaryDetail model)
         {
             //Valido el modelo
             Utilities.ModelValidator.Validate(model);
@@ -57,7 +57,7 @@ namespace MoneyAdministrator.Services
             }
         }
 
-        public void Delete(CCResumeDetail model)
+        public void Delete(CCSummaryDetail model)
         {
             var item = _unitOfWork.CCResumeDetailRepository.GetById(model.Id);
             if (item != null)

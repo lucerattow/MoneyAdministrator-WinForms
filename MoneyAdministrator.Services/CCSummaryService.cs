@@ -10,26 +10,26 @@ using System.Threading.Tasks;
 
 namespace MoneyAdministrator.Services
 {
-    public class CCResumeService : IService<CCResume>
+    public class CCSummaryService : IService<CCSummary>
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public CCResumeService(string databasePath)
+        public CCSummaryService(string databasePath)
         {
             _unitOfWork = new UnitOfWork(databasePath);
         }
 
-        public List<CCResume> GetAll()
+        public List<CCSummary> GetAll()
         {
             return _unitOfWork.CCResumeRepository.GetAll().ToList();
         }
 
-        public CCResume Get(int id)
+        public CCSummary Get(int id)
         {
             return _unitOfWork.CCResumeRepository.GetById(id);
         }
 
-        public void Insert(CCResume model)
+        public void Insert(CCSummary model)
         {
             //Valido el modelo
             Utilities.ModelValidator.Validate(model);
@@ -51,7 +51,7 @@ namespace MoneyAdministrator.Services
             }
         }
 
-        public void Update(CCResume model)
+        public void Update(CCSummary model)
         {
             //Valido el modelo
             Utilities.ModelValidator.Validate(model);
@@ -64,7 +64,7 @@ namespace MoneyAdministrator.Services
             }
         }
 
-        public void Delete(CCResume model)
+        public void Delete(CCSummary model)
         {
             var item = _unitOfWork.CCResumeRepository.GetById(model.Id);
             if (item != null)

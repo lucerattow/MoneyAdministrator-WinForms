@@ -28,7 +28,6 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary
 
         public static CreditCardSummaryDto GetDataFromPdf(string pdfFilePath)
         {
-
             return new Import(pdfFilePath).ExtractTextFromPdf();
         }
 

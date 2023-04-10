@@ -12,8 +12,8 @@ namespace MoneyAdministrator.DataAccess
     {
         private readonly AppDbContext _context;
 
-        private IRepository<CCResume>? _ccResumeRepository;
-        private IRepository<CCResumeDetail>? _ccResumeDetailRepository;
+        private IRepository<CCSummary>? _ccResumeRepository;
+        private IRepository<CCSummaryDetail>? _ccResumeDetailRepository;
         private IRepository<CreditCard>? _creditCardRepository;
         private IRepository<CreditCardType>? _creditCardTypeRepository;
         private IRepository<Currency>? _currencyRepository;
@@ -29,8 +29,8 @@ namespace MoneyAdministrator.DataAccess
             _context = new AppDbContext(databasePath);
         }
 
-        public IRepository<CCResume> CCResumeRepository => _ccResumeRepository ??= new Repository<CCResume>(_context);
-        public IRepository<CCResumeDetail> CCResumeDetailRepository => _ccResumeDetailRepository ??= new Repository<CCResumeDetail>(_context);
+        public IRepository<CCSummary> CCResumeRepository => _ccResumeRepository ??= new Repository<CCSummary>(_context);
+        public IRepository<CCSummaryDetail> CCResumeDetailRepository => _ccResumeDetailRepository ??= new Repository<CCSummaryDetail>(_context);
         public IRepository<CreditCard> CreditCardRepository => _creditCardRepository ??= new Repository<CreditCard>(_context);
         public IRepository<CreditCardType> CreditCardTypeRepository => _creditCardTypeRepository ??= new Repository<CreditCardType>(_context);
         public IRepository<Currency> CurrencyRepository => _currencyRepository ??= new Repository<Currency>(_context);

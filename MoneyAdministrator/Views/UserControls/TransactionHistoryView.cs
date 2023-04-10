@@ -20,7 +20,8 @@ namespace MoneyAdministrator.Views
             "6 Meses",
             "12 Meses"
         };
-        
+
+        //grd columns width
         private const int _colWidthDate = 90;
         private const int _colWidthEntity = 210;
         private const int _colWidthInstall = 60;
