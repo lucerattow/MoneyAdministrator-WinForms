@@ -12,22 +12,22 @@ namespace MoneyAdministrator.Models
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Emisor bank is required")]
-        public int EntityId { get; set; }
+        [Required(ErrorMessage = "Falta especificar el banco emisor de la tarjeta de crédito")]
+        public int CreditCardBankId { get; set; }
 
-        [Required(ErrorMessage = "Emisor enterprise is required")]
-        public int CreditCardTypeId { get; set; }
+        [Required(ErrorMessage = "Falta especificar la marca de la tarjeta de crédito")]
+        public int CreditCardBrandId { get; set; }
 
-        [Required(ErrorMessage = "Last four numbers is required")]
+        [Required(ErrorMessage = "Falta ingresar los últimos 4 números de la tarjeta de crédito")]
         public int LastFourNumbers { get; set; }
 
         [DefaultValue(false)]
         public bool Deleted { get; set; }
 
         //foreign keys
-        public virtual Entity Entity { get; set; }
+        public virtual CreditCardBank CreditCardBank { get; set; }
 
-        public virtual CreditCardType CreditCardType { get; set; }
+        public virtual CreditCardBrand CreditCardBrand { get; set; }
 
         //foreign keys all constraints
         public virtual IEnumerable<CCSummary> CCSumaries { get; set; }

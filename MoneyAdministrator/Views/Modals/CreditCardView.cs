@@ -1,4 +1,4 @@
-﻿using MoneyAdministrator.DTOs;
+﻿using MoneyAdministrator.Common.DTOs;
 using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Models;
 using MoneyAdministrator.Services.Utilities;
@@ -19,18 +19,36 @@ namespace MoneyAdministrator.Views.Modals
 
         //properties
         public int SelectedId
-        { 
+        {
             get => _selectedId;
             set => _selectedId = value;
         }
-        public string EntityName
+        public CreditCardBank CreditCardBank
         {
-            get => _txtEntityName.Text;
-            set => _txtEntityName.Text = value;
+            get
+            {
+                var bank = (CreditCardBank)_cbBank.SelectedItem;
+                if (bank == null)
+                {
+                    bank = new CreditCardBank
+                    {
+                        Name = _cbBank.Text,
+                    };
+                }
+                return bank;
+            }
+            set
+            {
+                var index = _cbBank.FindStringExact(value.Name);
+                _cbBank.SelectedIndex = _cbBank.FindStringExact(value.Name);
+
+                if (index != -1)
+                    _cbBank.Text = value.Name;
+            }
         }
-        public CreditCardType SelectedCreditCardType
+        public CreditCardBrand CreditCardBrand
         {
-            get => (CreditCardType)_cbCreditCardType.SelectedItem;
+            get => (CreditCardBrand)_cbCreditCardType.SelectedItem;
             set => _cbCreditCardType.SelectedIndex = _cbCreditCardType.FindStringExact(value.Name);
         }
         public int LastFourNumbers
@@ -81,9 +99,15 @@ namespace MoneyAdministrator.Views.Modals
             }
         }
 
-        public void SetCreditCardTypeList(List<CreditCardType> datasource)
+        public void CreditCardBankRefreshData(List<CreditCardBank> datasource)
         {
-            _cbCreditCardType.DataSource = datasource;
+            _cbBank.DataSource = datasource.OrderBy(x => x.Name);
+            _cbBank.DisplayMember = "Name";
+        }
+
+        public void CreditCardBrandRefreshData(List<CreditCardBrand> datasource)
+        {
+            _cbCreditCardType.DataSource = datasource.OrderBy(x => x.Name); ;
             _cbCreditCardType.DisplayMember = "Name";
         }
 
@@ -99,7 +123,7 @@ namespace MoneyAdministrator.Views.Modals
         private void ClearInputs()
         {
             _selectedId = 0;
-            _txtEntityName.Text = "";
+            _cbBank.Text = "";
             _cbCreditCardType.SelectedIndex = 0;
             _txtLastFourNumbers.Text = "";
             ButtonsLogic();
@@ -148,7 +172,6 @@ namespace MoneyAdministrator.Views.Modals
         {
             _grd.CellMouseDoubleClick += (sender, e) => GrdDoubleClick?.Invoke(sender, e);
             _tsbSelect.Click += (sender, e) => ButtonSelectClick?.Invoke(sender, e);
-            _btnEntitySearch.Click += (sender, e) => ButtonEntitySearchClick?.Invoke(sender, e);
         }
 
         //events

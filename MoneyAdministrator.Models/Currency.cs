@@ -14,8 +14,8 @@ namespace MoneyAdministrator.Models
         //Properties
         public int Id { get; set; }
 
-        [StringLength(3, MinimumLength = 3, ErrorMessage = "Currency name need 3 cacarteres")]
-        [Required(ErrorMessage = "Currency name is required")]
+        [StringLength(3, MinimumLength = 3, ErrorMessage = "El nombre de la moneda debe tener 3 caracteres")]
+        [Required(ErrorMessage = "Falta ingresar el nombre de la moneda")]
         public string Name { get; set; }
 
         //foreign keys all constraints

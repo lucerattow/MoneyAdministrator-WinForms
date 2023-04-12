@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MoneyAdministrator.DTOs
+namespace MoneyAdministrator.Common.DTOs
 {
     public class CreditCardSummaryDetailDto
     {
-        public CreditCardSummaryDetailDtoType Type { get; set; }
+        public CreditCardSummaryDetailType Type { get; set; }
         public DateTime Date { get; set; }
         public string Description { get; set; }
         public string Installments { get; set; }

@@ -46,7 +46,7 @@ namespace MoneyAdministrator.Services
 
             //Compruebo si el objeto ya existe
             var item = _unitOfWork.CreditCardRepository.GetAll()
-                .Where(x => x.EntityId == model.EntityId && x.CreditCardTypeId == model.CreditCardTypeId).FirstOrDefault();
+                .Where(x => x.CreditCardBankId == model.CreditCardBankId && x.CreditCardBrandId == model.CreditCardBrandId).FirstOrDefault();
 
             if (item != null)
             {

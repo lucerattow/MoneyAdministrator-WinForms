@@ -1,4 +1,4 @@
-﻿namespace MoneyAdministrator.DTOs
+﻿namespace MoneyAdministrator.Common.DTOs
 {
     public class TransactionDto
     {

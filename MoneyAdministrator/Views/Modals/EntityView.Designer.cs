@@ -29,203 +29,194 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EntityView));
-            this._pnlContainer = new System.Windows.Forms.Panel();
-            this._grd = new System.Windows.Forms.DataGridView();
-            this._txtName = new System.Windows.Forms.TextBox();
-            this._lblName = new System.Windows.Forms.Label();
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this._tsbSelect = new System.Windows.Forms.ToolStripButton();
-            this._tsbClear = new System.Windows.Forms.ToolStripButton();
-            this._cbEntityType = new System.Windows.Forms.ComboBox();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this._lblEntityType = new System.Windows.Forms.Label();
-            this._tsbInsert = new System.Windows.Forms.ToolStripButton();
-            this._tsbUpdate = new System.Windows.Forms.ToolStripButton();
-            this._tsbDelete = new System.Windows.Forms.ToolStripButton();
-            this._pnlContainer.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this._grd)).BeginInit();
-            this.toolStrip1.SuspendLayout();
-            this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.SuspendLayout();
+            _pnlContainer = new Panel();
+            panel2 = new Panel();
+            _grd = new DataGridView();
+            panel1 = new Panel();
+            _lblEntityType = new Label();
+            _txtName = new TextBox();
+            _cbEntityType = new ComboBox();
+            _lblName = new Label();
+            toolStrip1 = new ToolStrip();
+            _tsbSelect = new ToolStripButton();
+            _tsbInsert = new ToolStripButton();
+            _tsbUpdate = new ToolStripButton();
+            _tsbDelete = new ToolStripButton();
+            _tsbClear = new ToolStripButton();
+            _pnlContainer.SuspendLayout();
+            panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)_grd).BeginInit();
+            panel1.SuspendLayout();
+            toolStrip1.SuspendLayout();
+            SuspendLayout();
             // 
             // _pnlContainer
             // 
-            this._pnlContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this._pnlContainer.BackColor = System.Drawing.Color.White;
-            this._pnlContainer.Controls.Add(this.panel2);
-            this._pnlContainer.Controls.Add(this.panel1);
-            this._pnlContainer.Controls.Add(this.toolStrip1);
-            this._pnlContainer.Location = new System.Drawing.Point(6, 7);
-            this._pnlContainer.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this._pnlContainer.Name = "_pnlContainer";
-            this._pnlContainer.Size = new System.Drawing.Size(562, 363);
-            this._pnlContainer.TabIndex = 0;
-            // 
-            // _grd
-            // 
-            this._grd.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this._grd.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this._grd.Location = new System.Drawing.Point(5, 5);
-            this._grd.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this._grd.Name = "_grd";
-            this._grd.RowTemplate.Height = 25;
-            this._grd.Size = new System.Drawing.Size(552, 265);
-            this._grd.TabIndex = 20;
-            this._grd.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this._grd_CellMouseDoubleClick);
-            // 
-            // _txtName
-            // 
-            this._txtName.Location = new System.Drawing.Point(5, 29);
-            this._txtName.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this._txtName.Name = "_txtName";
-            this._txtName.Size = new System.Drawing.Size(189, 27);
-            this._txtName.TabIndex = 19;
-            // 
-            // _lblName
-            // 
-            this._lblName.AutoSize = true;
-            this._lblName.Location = new System.Drawing.Point(1, 5);
-            this._lblName.Name = "_lblName";
-            this._lblName.Size = new System.Drawing.Size(64, 20);
-            this._lblName.TabIndex = 18;
-            this._lblName.Text = "Nombre";
-            // 
-            // toolStrip1
-            // 
-            this.toolStrip1.BackColor = System.Drawing.Color.White;
-            this.toolStrip1.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this._tsbSelect,
-            this._tsbInsert,
-            this._tsbUpdate,
-            this._tsbDelete,
-            this._tsbClear});
-            this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Padding = new System.Windows.Forms.Padding(6, 0, 1, 0);
-            this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.toolStrip1.Size = new System.Drawing.Size(562, 27);
-            this.toolStrip1.TabIndex = 17;
-            this.toolStrip1.Text = "toolStrip1";
-            // 
-            // _tsbSelect
-            // 
-            this._tsbSelect.Image = global::MoneyAdministrator.Properties.Resources.document_check_shadow;
-            this._tsbSelect.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this._tsbSelect.Name = "_tsbSelect";
-            this._tsbSelect.Size = new System.Drawing.Size(105, 24);
-            this._tsbSelect.Text = "Seleccionar";
-            // 
-            // _tsbClear
-            // 
-            this._tsbClear.Image = global::MoneyAdministrator.Properties.Resources.document_shadow;
-            this._tsbClear.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this._tsbClear.Name = "_tsbClear";
-            this._tsbClear.Size = new System.Drawing.Size(79, 24);
-            this._tsbClear.Text = "Limpiar";
-            // 
-            // _cbEntityType
-            // 
-            this._cbEntityType.FormattingEnabled = true;
-            this._cbEntityType.Location = new System.Drawing.Point(200, 29);
-            this._cbEntityType.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this._cbEntityType.Name = "_cbEntityType";
-            this._cbEntityType.Size = new System.Drawing.Size(205, 28);
-            this._cbEntityType.TabIndex = 27;
-            // 
-            // panel1
-            // 
-            this.panel1.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.panel1.Controls.Add(this._lblEntityType);
-            this.panel1.Controls.Add(this._txtName);
-            this.panel1.Controls.Add(this._cbEntityType);
-            this.panel1.Controls.Add(this._lblName);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 27);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(562, 61);
-            this.panel1.TabIndex = 28;
+            _pnlContainer.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            _pnlContainer.BackColor = Color.White;
+            _pnlContainer.Controls.Add(panel2);
+            _pnlContainer.Controls.Add(panel1);
+            _pnlContainer.Controls.Add(toolStrip1);
+            _pnlContainer.Location = new Point(6, 7);
+            _pnlContainer.Margin = new Padding(3, 4, 3, 4);
+            _pnlContainer.Name = "_pnlContainer";
+            _pnlContainer.Size = new Size(562, 363);
+            _pnlContainer.TabIndex = 0;
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this._grd);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(0, 88);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(562, 275);
-            this.panel2.TabIndex = 29;
+            panel2.Controls.Add(_grd);
+            panel2.Dock = DockStyle.Fill;
+            panel2.Location = new Point(0, 88);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(562, 275);
+            panel2.TabIndex = 29;
+            // 
+            // _grd
+            // 
+            _grd.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            _grd.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            _grd.Location = new Point(5, 5);
+            _grd.Margin = new Padding(3, 4, 3, 4);
+            _grd.Name = "_grd";
+            _grd.RowTemplate.Height = 25;
+            _grd.Size = new Size(552, 265);
+            _grd.TabIndex = 20;
+            _grd.CellMouseDoubleClick += _grd_CellMouseDoubleClick;
+            // 
+            // panel1
+            // 
+            panel1.BackColor = SystemColors.ButtonFace;
+            panel1.Controls.Add(_lblEntityType);
+            panel1.Controls.Add(_txtName);
+            panel1.Controls.Add(_cbEntityType);
+            panel1.Controls.Add(_lblName);
+            panel1.Dock = DockStyle.Top;
+            panel1.Location = new Point(0, 27);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(562, 61);
+            panel1.TabIndex = 28;
             // 
             // _lblEntityType
             // 
-            this._lblEntityType.AutoSize = true;
-            this._lblEntityType.Location = new System.Drawing.Point(196, 5);
-            this._lblEntityType.Name = "_lblEntityType";
-            this._lblEntityType.Size = new System.Drawing.Size(115, 20);
-            this._lblEntityType.TabIndex = 28;
-            this._lblEntityType.Text = "Tipo de entidad";
+            _lblEntityType.AutoSize = true;
+            _lblEntityType.Location = new Point(196, 5);
+            _lblEntityType.Name = "_lblEntityType";
+            _lblEntityType.Size = new Size(115, 20);
+            _lblEntityType.TabIndex = 28;
+            _lblEntityType.Text = "Tipo de entidad";
+            // 
+            // _txtName
+            // 
+            _txtName.Location = new Point(5, 29);
+            _txtName.Margin = new Padding(3, 4, 3, 4);
+            _txtName.Name = "_txtName";
+            _txtName.Size = new Size(189, 27);
+            _txtName.TabIndex = 19;
+            // 
+            // _cbEntityType
+            // 
+            _cbEntityType.FormattingEnabled = true;
+            _cbEntityType.Location = new Point(200, 29);
+            _cbEntityType.Margin = new Padding(3, 4, 3, 4);
+            _cbEntityType.Name = "_cbEntityType";
+            _cbEntityType.Size = new Size(205, 28);
+            _cbEntityType.TabIndex = 27;
+            // 
+            // _lblName
+            // 
+            _lblName.AutoSize = true;
+            _lblName.Location = new Point(1, 5);
+            _lblName.Name = "_lblName";
+            _lblName.Size = new Size(64, 20);
+            _lblName.TabIndex = 18;
+            _lblName.Text = "Nombre";
+            // 
+            // toolStrip1
+            // 
+            toolStrip1.BackColor = Color.White;
+            toolStrip1.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+            toolStrip1.GripStyle = ToolStripGripStyle.Hidden;
+            toolStrip1.Items.AddRange(new ToolStripItem[] { _tsbSelect, _tsbInsert, _tsbUpdate, _tsbDelete, _tsbClear });
+            toolStrip1.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
+            toolStrip1.Location = new Point(0, 0);
+            toolStrip1.Name = "toolStrip1";
+            toolStrip1.Padding = new Padding(6, 0, 1, 0);
+            toolStrip1.RenderMode = ToolStripRenderMode.System;
+            toolStrip1.Size = new Size(562, 27);
+            toolStrip1.TabIndex = 17;
+            toolStrip1.Text = "toolStrip1";
+            // 
+            // _tsbSelect
+            // 
+            _tsbSelect.Image = Properties.Resources.document_check_shadow;
+            _tsbSelect.ImageTransparentColor = Color.Magenta;
+            _tsbSelect.Name = "_tsbSelect";
+            _tsbSelect.Size = new Size(105, 24);
+            _tsbSelect.Text = "Seleccionar";
             // 
             // _tsbInsert
             // 
-            this._tsbInsert.Image = global::MoneyAdministrator.Properties.Resources.document_add_shadow;
-            this._tsbInsert.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this._tsbInsert.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this._tsbInsert.Name = "_tsbInsert";
-            this._tsbInsert.Size = new System.Drawing.Size(64, 24);
-            this._tsbInsert.Text = "Crear";
-            this._tsbInsert.Click += new System.EventHandler(this._tsbInsert_Click);
+            _tsbInsert.Image = Properties.Resources.document_add_shadow;
+            _tsbInsert.ImageAlign = ContentAlignment.MiddleLeft;
+            _tsbInsert.ImageTransparentColor = Color.Magenta;
+            _tsbInsert.Name = "_tsbInsert";
+            _tsbInsert.Size = new Size(64, 24);
+            _tsbInsert.Text = "Crear";
+            _tsbInsert.Click += _tsbInsert_Click;
             // 
             // _tsbUpdate
             // 
-            this._tsbUpdate.Image = global::MoneyAdministrator.Properties.Resources.document_edit_shadow;
-            this._tsbUpdate.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this._tsbUpdate.Name = "_tsbUpdate";
-            this._tsbUpdate.Size = new System.Drawing.Size(93, 24);
-            this._tsbUpdate.Text = "Modificar";
-            this._tsbUpdate.Click += new System.EventHandler(this._tsbUpdate_Click);
+            _tsbUpdate.Image = Properties.Resources.document_edit_shadow;
+            _tsbUpdate.ImageTransparentColor = Color.Magenta;
+            _tsbUpdate.Name = "_tsbUpdate";
+            _tsbUpdate.Size = new Size(93, 24);
+            _tsbUpdate.Text = "Modificar";
+            _tsbUpdate.Click += _tsbUpdate_Click;
             // 
             // _tsbDelete
             // 
-            this._tsbDelete.Image = global::MoneyAdministrator.Properties.Resources.document_error_shadow;
-            this._tsbDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this._tsbDelete.Name = "_tsbDelete";
-            this._tsbDelete.Size = new System.Drawing.Size(83, 24);
-            this._tsbDelete.Text = "Eliminar";
-            this._tsbDelete.Click += new System.EventHandler(this._tsbDelete_Click);
+            _tsbDelete.Image = Properties.Resources.document_error_shadow;
+            _tsbDelete.ImageTransparentColor = Color.Magenta;
+            _tsbDelete.Name = "_tsbDelete";
+            _tsbDelete.Size = new Size(83, 24);
+            _tsbDelete.Text = "Eliminar";
+            _tsbDelete.Click += _tsbDelete_Click;
+            // 
+            // _tsbClear
+            // 
+            _tsbClear.Image = Properties.Resources.document_shadow;
+            _tsbClear.ImageTransparentColor = Color.Magenta;
+            _tsbClear.Name = "_tsbClear";
+            _tsbClear.Size = new Size(79, 24);
+            _tsbClear.Text = "Limpiar";
+            _tsbClear.Click += _tsbClear_Click;
             // 
             // EntityView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.ClientSize = new System.Drawing.Size(574, 376);
-            this.Controls.Add(this._pnlContainer);
-            this.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "EntityView";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "EntityView";
-            this._pnlContainer.ResumeLayout(false);
-            this._pnlContainer.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this._grd)).EndInit();
-            this.toolStrip1.ResumeLayout(false);
-            this.toolStrip1.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.ControlDark;
+            ClientSize = new Size(574, 376);
+            Controls.Add(_pnlContainer);
+            Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            Margin = new Padding(3, 4, 3, 4);
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "EntityView";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "EntityView";
+            _pnlContainer.ResumeLayout(false);
+            _pnlContainer.PerformLayout();
+            panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)_grd).EndInit();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            toolStrip1.ResumeLayout(false);
+            toolStrip1.PerformLayout();
+            ResumeLayout(false);
         }
 
         #endregion

@@ -5,6 +5,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MoneyAdministrator.DTOs\MoneyAdministrator.DTOs.csproj" />
+    <ProjectReference Include="..\MoneyAdministrator.Common\MoneyAdministrator.Common.csproj" />
   </ItemGroup>
 </Project>

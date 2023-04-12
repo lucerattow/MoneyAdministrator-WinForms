@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MoneyAdministrator.Module.ImportHsbcSummary
+﻿namespace MoneyAdministrator.ImportPdfSummary.Banks.Supervielle
 {
     public class CleanContent
     {
@@ -80,7 +74,7 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary
             List<string> result = new List<string>();
 
             bool copy = !lines.Where(x => x.Contains("TOTAL TITULAR      CERATTO LUCAS EZEQUIEL")).Any();
-            
+
             foreach (var line in lines)
             {
                 if (line.Contains("TOTAL TITULAR      CERATTO LUCAS EZEQUIEL"))
@@ -100,7 +94,7 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary
             int index = 0;
             for (int i = 0; i < lines.Count; i++)
             {
-                if (i == 0 || i == 2 || i == 4 || i == 6) 
+                if (i == 0 || i == 2 || i == 4 || i == 6)
                     results.Add(lines[i]);
             }
 

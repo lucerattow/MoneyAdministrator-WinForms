@@ -11,19 +11,15 @@ namespace MoneyAdministrator.Models
     public class Transaction
     {
         //Properties
-        [DisplayName("Transaction ID")]
         public int Id { get; set; }
 
-        [DisplayName("Entity")]
-        [Required(ErrorMessage = "Entity ID is required")]
+        [Required(ErrorMessage = "Falta especificar el tipo de entidad")]
         public int EntityId { get; set; }
 
-        [DisplayName("Currency")]
-        [Required(ErrorMessage = "Currency ID is required")]
+        [Required(ErrorMessage = "Falta especificar la moneda")]
         public int CurrencyId { get; set; }
 
-        [DisplayName("Description")]
-        [StringLength(150, ErrorMessage = "Transaction description cannot exceed 150 characters.")]
+        [StringLength(150, ErrorMessage = "La descripción no puede superar los 150 caracteres")]
         public string Description { get; set; }
 
         //foraign keys

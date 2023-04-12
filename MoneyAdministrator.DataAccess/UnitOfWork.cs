@@ -15,7 +15,8 @@ namespace MoneyAdministrator.DataAccess
         private IRepository<CCSummary>? _ccResumeRepository;
         private IRepository<CCSummaryDetail>? _ccResumeDetailRepository;
         private IRepository<CreditCard>? _creditCardRepository;
-        private IRepository<CreditCardType>? _creditCardTypeRepository;
+        private IRepository<CreditCardBank>? _creditCardBankRepository;
+        private IRepository<CreditCardBrand>? _creditCardTypeRepository;
         private IRepository<Currency>? _currencyRepository;
         private IRepository<CurrencyValue>? _currencyValueRepository;
         private IRepository<Entity>? _entityRepository;
@@ -32,7 +33,8 @@ namespace MoneyAdministrator.DataAccess
         public IRepository<CCSummary> CCResumeRepository => _ccResumeRepository ??= new Repository<CCSummary>(_context);
         public IRepository<CCSummaryDetail> CCResumeDetailRepository => _ccResumeDetailRepository ??= new Repository<CCSummaryDetail>(_context);
         public IRepository<CreditCard> CreditCardRepository => _creditCardRepository ??= new Repository<CreditCard>(_context);
-        public IRepository<CreditCardType> CreditCardTypeRepository => _creditCardTypeRepository ??= new Repository<CreditCardType>(_context);
+        public IRepository<CreditCardBank> CreditCardBankRepository => _creditCardBankRepository ??= new Repository<CreditCardBank>(_context);
+        public IRepository<CreditCardBrand> CreditCardTypeRepository => _creditCardTypeRepository ??= new Repository<CreditCardBrand>(_context);
         public IRepository<Currency> CurrencyRepository => _currencyRepository ??= new Repository<Currency>(_context);
         public IRepository<CurrencyValue> CurrencyValueRepository => _currencyValueRepository ??= new Repository<CurrencyValue>(_context);
         public IRepository<Entity> EntityRepository => _entityRepository ??= new Repository<Entity>(_context);

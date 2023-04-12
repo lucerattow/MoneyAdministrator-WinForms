@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 
 namespace MoneyAdministrator.Models
 {
-    public class CreditCardType
+    public class CreditCardBank
     {
         public int Id { get; set; }
 
-        [StringLength(25, MinimumLength = 3, ErrorMessage = "Credit card type must be between 3 and 25 characters")]
-        [Required(ErrorMessage = "Credit card Type name is required")]
+        [StringLength(25, MinimumLength = 3, ErrorMessage = "El banco emisor debe tener entre 3 y 25 caracteres")]
+        [Required(ErrorMessage = "Falta ingresar el nombre del banco emisor")]
         public string Name { get; set; }
 
         [DefaultValue(false)]
-        public bool Deleted { get; set; }
+        public bool ImportSupport { get; set; }
 
         //foreign keys all constraints
         public virtual IEnumerable<CreditCard> CreditCards { get; set; }

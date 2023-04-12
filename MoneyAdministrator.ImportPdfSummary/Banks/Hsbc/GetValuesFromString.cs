@@ -1,17 +1,8 @@
-﻿using iText.Kernel.Geom;
-using iText.Layout.Properties;
-using MoneyAdministrator.DTOs;
+﻿using MoneyAdministrator.Common.DTOs;
 using MoneyAdministrator.DTOs.Enums;
 using MoneyAdministrator.Module.ImportHsbcSummary.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Intrinsics.X86;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace MoneyAdministrator.Module.ImportHsbcSummary
+namespace MoneyAdministrator.ImportPdfSummary.Banks.Hsbc
 {
     public static class GetValuesFromString
     {
@@ -80,7 +71,7 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary
         public static List<CreditCardSummaryDetailDto> GetConsolidatedData(List<string> lines)
         {
             var results = new List<CreditCardSummaryDetailDto>();
-            var resultType = CreditCardSummaryDetailDtoType.Summary;
+            var resultType = CreditCardSummaryDetailType.Summary;
 
             List<string> data = CleanContent.GetConsolidatedSectionString(lines);
 
@@ -88,7 +79,7 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary
             {
                 if (data[i].Contains("SUBTOTAL"))
                 {
-                    resultType = CreditCardSummaryDetailDtoType.TaxesAndMaintenance;
+                    resultType = CreditCardSummaryDetailType.TaxesAndMaintenance;
                     continue;
                 }
 
@@ -128,7 +119,7 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary
         public static List<CreditCardSummaryDetailDto> GetConsumptionsData(List<string> lines)
         {
             var results = new List<CreditCardSummaryDetailDto>();
-            var resultType = CreditCardSummaryDetailDtoType.Details;
+            var resultType = CreditCardSummaryDetailType.Details;
 
             List<string> data = CleanContent.GetDetailsSectionString(lines);
 
@@ -136,25 +127,25 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary
             {
                 if (data[i].Contains("FECHA      COMPRAS DEL MES"))
                 {
-                    resultType = CreditCardSummaryDetailDtoType.Details;
+                    resultType = CreditCardSummaryDetailType.Details;
                     continue;
                 }
                 else if (data[i].Contains("FECHA      CUOTAS DEL MES"))
                 {
-                    resultType = CreditCardSummaryDetailDtoType.Installments;
+                    resultType = CreditCardSummaryDetailType.Installments;
                     continue;
                 }
                 else if (data[i].Contains("FECHA      DEBITOS AUTOMATICOS"))
                 {
-                    resultType = CreditCardSummaryDetailDtoType.AutomaticDebits;
+                    resultType = CreditCardSummaryDetailType.AutomaticDebits;
                     continue;
                 }
 
                 var ccSummaryDetail = new CreditCardSummaryDetailDto();
 
-                if (resultType == CreditCardSummaryDetailDtoType.Details || resultType == CreditCardSummaryDetailDtoType.AutomaticDebits)
+                if (resultType == CreditCardSummaryDetailType.Details || resultType == CreditCardSummaryDetailType.AutomaticDebits)
                     ccSummaryDetail = GetDetailsDto(data[i], resultType);
-                else if (resultType == CreditCardSummaryDetailDtoType.Installments)
+                else if (resultType == CreditCardSummaryDetailType.Installments)
                     ccSummaryDetail = GetInstallmentsDto(data[i], resultType);
 
 
@@ -164,7 +155,7 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary
             return results;
         }
 
-        private static CreditCardSummaryDetailDto GetDetailsDto(string line, CreditCardSummaryDetailDtoType type)
+        private static CreditCardSummaryDetailDto GetDetailsDto(string line, CreditCardSummaryDetailType type)
         {
             var ccSummaryDetail = new CreditCardSummaryDetailDto();
             ccSummaryDetail.Type = type;
@@ -196,7 +187,7 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary
             return ccSummaryDetail;
         }
 
-        private static CreditCardSummaryDetailDto GetInstallmentsDto(string line, CreditCardSummaryDetailDtoType type)
+        private static CreditCardSummaryDetailDto GetInstallmentsDto(string line, CreditCardSummaryDetailType type)
         {
             var ccSummaryDetail = new CreditCardSummaryDetailDto();
             ccSummaryDetail.Type = type;

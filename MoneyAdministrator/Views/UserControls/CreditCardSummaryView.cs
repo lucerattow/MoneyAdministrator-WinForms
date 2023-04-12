@@ -1,4 +1,4 @@
-﻿using MoneyAdministrator.DTOs;
+﻿using MoneyAdministrator.Common.DTOs;
 using MoneyAdministrator.DTOs.Enums;
 using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Models;
@@ -31,7 +31,7 @@ namespace MoneyAdministrator.Views
             set
             {
                 _txtCreditCard.Tag = value;
-                _txtCreditCard.Text = $"{value.Entity.Name} {value.CreditCardType.Name} *{value.LastFourNumbers}";
+                _txtCreditCard.Text = $"{value.CreditCardBank.Name} {value.CreditCardBrand.Name} *{value.LastFourNumbers}";
             }
         }
         public List<CreditCardSummaryDetailDto> CCSummaryDetailDtos
@@ -218,15 +218,15 @@ namespace MoneyAdministrator.Views
                 if (datasource.Count <= 0)
                     return;
 
-                GrdRefreshDataDetailed(datasource, CreditCardSummaryDetailDtoType.Summary);
-                GrdRefreshDataDetailed(datasource, CreditCardSummaryDetailDtoType.Details);
-                GrdRefreshDataDetailed(datasource, CreditCardSummaryDetailDtoType.Installments);
-                GrdRefreshDataDetailed(datasource, CreditCardSummaryDetailDtoType.AutomaticDebits);
-                GrdRefreshDataDetailed(datasource, CreditCardSummaryDetailDtoType.TaxesAndMaintenance);
+                GrdRefreshDataDetailed(datasource, CreditCardSummaryDetailType.Summary);
+                GrdRefreshDataDetailed(datasource, CreditCardSummaryDetailType.Details);
+                GrdRefreshDataDetailed(datasource, CreditCardSummaryDetailType.Installments);
+                GrdRefreshDataDetailed(datasource, CreditCardSummaryDetailType.AutomaticDebits);
+                GrdRefreshDataDetailed(datasource, CreditCardSummaryDetailType.TaxesAndMaintenance);
             }
         }
 
-        private void GrdRefreshDataDetailed(List<CreditCardSummaryDetailDto> datasource, CreditCardSummaryDetailDtoType type)
+        private void GrdRefreshDataDetailed(List<CreditCardSummaryDetailDto> datasource, CreditCardSummaryDetailType type)
         {
             //Guardo los colores de los separadores
             Color separatorBackColor = Color.FromArgb(116, 27, 71);
@@ -241,19 +241,19 @@ namespace MoneyAdministrator.Views
             string separatorText = "";
             switch (type)
             {
-                case CreditCardSummaryDetailDtoType.Summary:
+                case CreditCardSummaryDetailType.Summary:
                     separatorText = "Resumen";
                     break;
-                case CreditCardSummaryDetailDtoType.Details:
+                case CreditCardSummaryDetailType.Details:
                     separatorText = "Consumos";
                     break;
-                case CreditCardSummaryDetailDtoType.Installments:
+                case CreditCardSummaryDetailType.Installments:
                     separatorText = "Consumos en Cuotas";
                     break;
-                case CreditCardSummaryDetailDtoType.AutomaticDebits:
+                case CreditCardSummaryDetailType.AutomaticDebits:
                     separatorText = "Debitos Automaticos";
                     break;
-                case CreditCardSummaryDetailDtoType.TaxesAndMaintenance:
+                case CreditCardSummaryDetailType.TaxesAndMaintenance:
                     separatorText = "Mantenimiento e Impuestos";
                     break;
             }
@@ -293,8 +293,9 @@ namespace MoneyAdministrator.Views
         public void ButtonsLogic()
         {
             bool creditCardLoaded = CreditCard != null;
+            bool compHsbcMastercard = CreditCard?.CreditCardBrandId == 2;
 
-            _tsbImport.Enabled = creditCardLoaded;
+            _tsbImport.Enabled = creditCardLoaded && compHsbcMastercard;
             _tsbInsert.Enabled = creditCardLoaded && _importedSummary;
             _tsbDelete.Enabled = creditCardLoaded && !_importedSummary;
         }

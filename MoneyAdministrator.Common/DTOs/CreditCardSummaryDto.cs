@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MoneyAdministrator.DTOs
+namespace MoneyAdministrator.Common.DTOs
 {
     public class CreditCardSummaryDto
     {

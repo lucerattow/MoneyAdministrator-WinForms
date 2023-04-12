@@ -1,4 +1,4 @@
-﻿using MoneyAdministrator.DTOs;
+﻿using MoneyAdministrator.Common.DTOs;
 using MoneyAdministrator.Models;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace MoneyAdministrator.Interfaces
         /// <summary>Obtengo el nombre del registro</summary>
         string EntityName { get; set; }
         /// <summary>Obtengo el tipo de entidad</summary>
-        EntityType SelectedEntityType { get; set; }
+        EntityType EntityType { get; set; }
         /// <summary>Retorna el resultado del ShowDialog</summary>
         DialogResult DialogResult { get; set; }
 

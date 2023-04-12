@@ -1,4 +1,4 @@
-﻿using MoneyAdministrator.DTOs;
+﻿using MoneyAdministrator.Common.DTOs;
 using MoneyAdministrator.Models;
 using System;
 using System.Collections.Generic;

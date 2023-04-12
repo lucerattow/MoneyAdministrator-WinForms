@@ -1,12 +1,11 @@
-﻿using MoneyAdministrator.DTOs;
+﻿using MoneyAdministrator.Common.DTOs;
 using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Models;
-using MoneyAdministrator.Module.ImportHsbcSummary;
 using MoneyAdministrator.Services;
 using MoneyAdministrator.Utilities;
 using MoneyAdministrator.Utilities.Disposable;
 using MoneyAdministrator.Views;
-using MoneyAdministrator.Views.UserControls;
+using MoneyAdministrator.ImportPdfSummary;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -106,8 +105,8 @@ namespace MoneyAdministrator.Presenters
                 {
                     try
                     {
-                        var creditCardSummaryDto = Import.GetDataFromPdf(openFileDialog.FileName);
-                        OpenCreditCardSummary(creditCardSummaryDto);
+                        //var creditCardSummaryDto = Import.GetDataFromPdf(openFileDialog.FileName);
+                        //OpenCreditCardSummary(creditCardSummaryDto);
                         _view.ImportedSummary = true;
                     }
                     catch (Exception ex)

@@ -11,26 +11,19 @@ namespace MoneyAdministrator.Models
     public class TransactionDetail
     {
         //Columnas
-        [DisplayName("Transaction detail ID")]
-        [Required(ErrorMessage = "Transaction detail ID is required")]
         public int Id { get; set; }
 
-        [DisplayName("Transaction ID")]
-        [Required(ErrorMessage = "Transaction ID is required")]
+        [Required(ErrorMessage = "Falta especificar la transacción")]
         public int TransactionId { get; set; }
 
-        [DisplayName("Transaction date")]
-        [Required(ErrorMessage = "Transaction date is required")]
+        [Required(ErrorMessage = "Falta ingresar la fecha de la transacción")]
         public DateTime Date { get; set; }
 
-        [DisplayName("Amount")]
-        [Required(ErrorMessage = "Transaction amount is required")]
+        [Required(ErrorMessage = "Falta ingresar el monto de la transacción")]
         public decimal Amount { get; set; }
 
-        [DisplayName("Installment")]
         public int Installment { get; set; }
 
-        [DisplayName("Frequency")]
         public int Frequency { get; set; }
 
         //foreign keys

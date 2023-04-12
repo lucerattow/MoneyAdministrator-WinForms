@@ -20,9 +20,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MoneyAdministrator.CustomControls\MoneyAdministrator.CustomControls.csproj" />
-    <ProjectReference Include="..\MoneyAdministrator.DTOs\MoneyAdministrator.DTOs.csproj" />
+    <ProjectReference Include="..\MoneyAdministrator.Common\MoneyAdministrator.Common.csproj" />
+    <ProjectReference Include="..\MoneyAdministrator.ImportPdfSummary\MoneyAdministrator.ImportPdfSummary.csproj" />
     <ProjectReference Include="..\MoneyAdministrator.Models\MoneyAdministrator.Models.csproj" />
-    <ProjectReference Include="..\MoneyAdministrator.Module.ImportHsbcSummary\MoneyAdministrator.Module.ImportHsbcSummary.csproj" />
     <ProjectReference Include="..\MoneyAdministrator.Services\MoneyAdministrator.Services.csproj" />
   </ItemGroup>
   <ItemGroup>

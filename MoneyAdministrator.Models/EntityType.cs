@@ -13,8 +13,8 @@ namespace MoneyAdministrator.Models
 
         public int Id { get; set; }
 
-        [StringLength(25, MinimumLength = 3, ErrorMessage = "Entity name must be between 3 and 25 characters")]
-        [Required(ErrorMessage = "Name for the entity type is required")]
+        [StringLength(25, MinimumLength = 3, ErrorMessage = "El tipo de entidad debe tener entre 3 y 25 caracteres")]
+        [Required(ErrorMessage = "Falta indicar el nombre del tipo de entidad")]
         public string Name { get; set; }
 
         [DefaultValue(false)]

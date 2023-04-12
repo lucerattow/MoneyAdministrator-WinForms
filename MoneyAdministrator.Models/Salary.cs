@@ -12,10 +12,10 @@ namespace MoneyAdministrator.Models
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Date is required")]
+        [Required(ErrorMessage = "Falta ingresar la fecha")]
         public DateTime Date { get; set; }
 
-        [Required(ErrorMessage = "Currency is required")]
+        [Required(ErrorMessage = "Falta especificar la moneda")]
         public int CurrencyId { get; set; }
 
         public decimal Value { get; set; }

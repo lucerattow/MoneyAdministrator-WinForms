@@ -1,4 +1,4 @@
-﻿using MoneyAdministrator.DTOs;
+﻿using MoneyAdministrator.Common.DTOs;
 using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Models;
 using MoneyAdministrator.Services;
@@ -16,13 +16,17 @@ namespace MoneyAdministrator.Presenters
     public class EntityPresenter
     {
         //fields
+        private const int BankTypeId = 2;
+
         private readonly IEntityView? _view;
         private string _databasePath;
+        private bool _onlyBanks;
         private List<EntityDto> _dataSource;
 
-        public EntityPresenter(string databasePath)
+        public EntityPresenter(string databasePath, bool onlyBanks = false)
         {
             _databasePath = databasePath;
+            _onlyBanks = onlyBanks;
             _view = new EntityView();
 
             AssosiateEvents();
@@ -56,7 +60,12 @@ namespace MoneyAdministrator.Presenters
             using (new CursorWait())
             {
                 var service = new EntityTypeService(_databasePath);
+
                 var entities = service.GetAll();
+
+                if (_onlyBanks)
+                    entities = entities.Where(x => x.Id == BankTypeId).ToList();
+
                 this._view.SetEntityTypeList(entities);
             }
         }
@@ -66,6 +75,9 @@ namespace MoneyAdministrator.Presenters
             using (new CursorWait())
             {
                 var entities = new EntityService(_databasePath).GetAll();
+
+                if (_onlyBanks)
+                    entities = entities.Where(x => x.EntityTypeId == BankTypeId).ToList();
 
                 List<EntityDto> dtos = new();
                 foreach (var entity in entities)
@@ -86,7 +98,7 @@ namespace MoneyAdministrator.Presenters
             var entity = new EntityService(_databasePath).Get(_view.SelectedId);
 
             _view.EntityName = entity.Name;
-            _view.SelectedEntityType = entity.EntityType;
+            _view.EntityType = entity.EntityType;
         }
 
         //events
@@ -112,7 +124,7 @@ namespace MoneyAdministrator.Presenters
 
                     //Obtengo los valores
                     var entityName = _view.EntityName;
-                    var entityType = _view.SelectedEntityType;
+                    var entityType = _view.EntityType;
 
                     //Compruebo si el tipo de entidad ya existe, si no existe la inserto
                     var searchEntityType = entityTypeService.GetByName(entityType.Name);
@@ -158,7 +170,7 @@ namespace MoneyAdministrator.Presenters
 
                     //Obtengo los valores
                     var entityName = _view.EntityName;
-                    var entityType = _view.SelectedEntityType;
+                    var entityType = _view.EntityType;
 
                     //Compruebo si el tipo de entidad ya existe, si no existe la inserto
                     var searchEntityType = entityTypeService.GetByName(entityType.Name);

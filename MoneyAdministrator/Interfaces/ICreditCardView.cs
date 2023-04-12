@@ -1,4 +1,4 @@
-﻿using MoneyAdministrator.DTOs;
+﻿using MoneyAdministrator.Common.DTOs;
 using MoneyAdministrator.Models;
 using MoneyAdministrator.Services.Utilities;
 using System;
@@ -12,9 +12,12 @@ namespace MoneyAdministrator.Interfaces
     public interface ICreditCardView
     {
         //methods
+        /// <summary>Envio los datos del banco de la tarjeta de credito al ComboBox</summary>
+        /// <param name="datasource">Lista de bancos</param>
+        void CreditCardBankRefreshData(List<CreditCardBank> datasource);
         /// <summary>Envio los datos de los tipos de tarjeta de credito al ComboBox</summary>
-        /// <param name="datasource">Lista de tarjetas de credito</param>
-        void SetCreditCardTypeList(List<CreditCardType> datasource);
+        /// <param name="datasource">Lista marcas de tarjetas de credito</param>
+        void CreditCardBrandRefreshData(List<CreditCardBrand> datasource);
         /// <summary>Envio los datos de las tarjetas de credito al GRD</summary>
         /// <param name="dataSource">DTOs para rellenar la GRD</param>
         void GrdRefreshData(List<CreditCardDto> dataSource);
@@ -23,9 +26,9 @@ namespace MoneyAdministrator.Interfaces
         /// <summary>Obtengo el ID seleccionado</summary>
         int SelectedId { get; set; }
         /// <summary>Obtengo el nombre del banco</summary>
-        string EntityName { get; set; }
+        CreditCardBank CreditCardBank { get; set; }
         /// <summary>Obtengo el tipo de tarjeta de credito</summary>
-        CreditCardType SelectedCreditCardType { get; set; }
+        CreditCardBrand CreditCardBrand { get; set; }
         /// <summary>Obtengo los ultimos 4 numeros de la tarjeta</summary>
         int LastFourNumbers { get; set; }
         /// <summary>Retorna el resultado del ShowDialog</summary>
@@ -41,6 +44,5 @@ namespace MoneyAdministrator.Interfaces
         event EventHandler ButtonInsertClick;
         event EventHandler ButtonUpdateClick;
         event EventHandler ButtonDeleteClick;
-        event EventHandler ButtonEntitySearchClick;
     }
 }

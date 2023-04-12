@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MoneyAdministrator.DTOs.Enums
 {
-    public enum CreditCardSummaryDetailDtoType
+    public enum CreditCardSummaryDetailType
     {
         Summary = 0,
         AutomaticDebits = 1,

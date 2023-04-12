@@ -1,4 +1,4 @@
-﻿using MoneyAdministrator.DTOs;
+﻿using MoneyAdministrator.Common.DTOs;
 using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Models;
 using MoneyAdministrator.Utilities;
@@ -17,7 +17,7 @@ namespace MoneyAdministrator.Views.Modals
 
         //properties
         public int SelectedId
-        { 
+        {
             get => _selectedId;
             set => _selectedId = value;
         }
@@ -26,7 +26,7 @@ namespace MoneyAdministrator.Views.Modals
             get => _txtName.Text;
             set => _txtName.Text = value;
         }
-        public EntityType SelectedEntityType
+        public EntityType EntityType
         {
             get
             {
@@ -34,7 +34,7 @@ namespace MoneyAdministrator.Views.Modals
                 if (entity == null)
                 {
                     entity = new EntityType
-                    { 
+                    {
                         Name = _cbEntityType.Text,
                     };
                 }
@@ -47,7 +47,7 @@ namespace MoneyAdministrator.Views.Modals
 
                 if (index != -1)
                     _cbEntityType.Text = value.Name;
-            } 
+            }
         }
 
         public new DialogResult DialogResult
@@ -174,6 +174,11 @@ namespace MoneyAdministrator.Views.Modals
         private void _tsbDelete_Click(object sender, EventArgs e)
         {
             ButtonDeleteClick?.Invoke(sender, e);
+            ClearInputs();
+        }
+
+        private void _tsbClear_Click(object sender, EventArgs e)
+        {
             ClearInputs();
         }
 

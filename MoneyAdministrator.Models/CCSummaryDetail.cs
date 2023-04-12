@@ -12,13 +12,13 @@ namespace MoneyAdministrator.Models
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Se requiere un resumen de tarjeta de credito")]
+        [Required(ErrorMessage = "Falta especificar el resumen")]
         public int CCSummaryId { get; set; }
 
-        [Required(ErrorMessage = "Se requiere el tipo de detalle")]
-        public CreditCardSummaryDetailDtoType Type { get; set; }
+        [Required(ErrorMessage = "Falta especificar el tipo de detalle")]
+        public CreditCardSummaryDetailType Type { get; set; }
 
-        [Required(ErrorMessage = "Se requiere la fecha del detalle")]
+        [Required(ErrorMessage = "Falta ingresar la fecha del detalle")]
         public DateTime Date { get; set; }
 
         public string Description { get; set; }
