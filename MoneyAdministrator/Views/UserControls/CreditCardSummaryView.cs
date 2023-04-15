@@ -13,6 +13,7 @@ namespace MoneyAdministrator.Views
     public partial class CreditCardResumesView : UserControl, ICreditCardSummaryView
     {
         //fields
+        private bool _importSupport = false;
         private bool _importedSummary = false;
         private int _selectedSummaryId = 0;
         private List<CreditCardSummaryDetailDto> _CCSummaryDetailDtos;
@@ -32,6 +33,7 @@ namespace MoneyAdministrator.Views
             {
                 _txtCreditCard.Tag = value;
                 _txtCreditCard.Text = $"{value.CreditCardBank.Name} {value.CreditCardBrand.Name} *{value.LastFourNumbers}";
+                _importSupport = value.CreditCardBank.ImportSupport;
             }
         }
         public List<CreditCardSummaryDetailDto> CCSummaryDetailDtos
@@ -293,9 +295,10 @@ namespace MoneyAdministrator.Views
         public void ButtonsLogic()
         {
             bool creditCardLoaded = CreditCard != null;
-            bool compHsbcMastercard = CreditCard?.CreditCardBrandId == 2;
+            bool? _importSupport = CreditCard?.CreditCardBank.ImportSupport;
+            bool importSupport = _importSupport ?? false;
 
-            _tsbImport.Enabled = creditCardLoaded && compHsbcMastercard;
+            _tsbImport.Enabled = creditCardLoaded && importSupport;
             _tsbInsert.Enabled = creditCardLoaded && _importedSummary;
             _tsbDelete.Enabled = creditCardLoaded && !_importedSummary;
         }
@@ -304,6 +307,7 @@ namespace MoneyAdministrator.Views
         {
             ClearSummaryInputs();
 
+            _importSupport = false;
             _tvSummaryList.Nodes.Clear();
 
             _txtCreditCard.Tag = null;

@@ -3,21 +3,40 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MoneyAdministrator.Module.ImportHsbcSummary.Utilities
 {
     public static class decimalTools
     {
-        public static decimal ToDecimal(string input)
+        public static decimal ParseDecimal(string input)
         {
-            decimal result = 0;
+            input = input.Trim();
 
-            input = input.Replace(",", ".");
-            if (!string.IsNullOrEmpty(input) && decimal.TryParse(input, NumberStyles.Float, CultureInfo.InvariantCulture, out result))
-                return result;
-            else
+            if (string.IsNullOrEmpty(input))
                 return 0;
+
+            string decimalSeparator = input.Substring(input.Length - 3, 1);
+            string thousandSeparator = decimalSeparator == "." ? "," : ".";
+
+            input = input.Replace(thousandSeparator, string.Empty);
+
+            // Verificar si el símbolo negativo está presente y eliminar los posibles símbolos negativos adicionales
+            bool isNegative = input.StartsWith("-");
+            input = Regex.Replace(input, "-", string.Empty);
+
+            if (isNegative)
+            {
+                input = "-" + input;
+            }
+
+            if (decimal.TryParse(input, NumberStyles.Float, new CultureInfo("en-US") { NumberFormat = { NumberDecimalSeparator = decimalSeparator } }, out decimal result))
+            {
+                return result;
+            }
+
+            return 0;
         }
     }
 }

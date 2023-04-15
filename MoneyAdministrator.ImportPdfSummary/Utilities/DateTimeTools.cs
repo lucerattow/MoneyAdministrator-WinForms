@@ -60,10 +60,27 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary.Utilities
             return string.Join("-", dateParts);
         }
 
-        public static DateTime ConvertToDateTime(string date)
+        public static DateTime ConvertToDateTime(string date, string format)
         {
-            date = ConvertDateFormat(date);
-            return DateTime.ParseExact(date, "dd-MM-yy", CultureInfo.GetCultureInfo("es-ES"));
+            if (format == "dd-MMM-yy")
+            {
+                date = ConvertDateFormat(date);
+                format = "dd-MM-yy";
+            }
+            return DateTime.ParseExact(date, format, CultureInfo.GetCultureInfo("es-ES"));
+        }
+
+        public static bool TestDate(string date, string format)
+        {
+            try
+            {
+                var _ = ConvertToDateTime(date, format);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

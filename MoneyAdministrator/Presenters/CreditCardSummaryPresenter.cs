@@ -105,8 +105,11 @@ namespace MoneyAdministrator.Presenters
                 {
                     try
                     {
-                        //var creditCardSummaryDto = Import.GetDataFromPdf(openFileDialog.FileName);
-                        //OpenCreditCardSummary(creditCardSummaryDto);
+                        string filePath = openFileDialog.FileName;
+                        string bankName = _view.CreditCard.CreditCardBank.Name;
+                        string brandName = _view.CreditCard.CreditCardBrand.Name;
+                        var creditCardSummaryDto = new Import(filePath, bankName, brandName);
+                        OpenCreditCardSummary(creditCardSummaryDto.ExtractTextFromPdf());
                         _view.ImportedSummary = true;
                     }
                     catch (Exception ex)

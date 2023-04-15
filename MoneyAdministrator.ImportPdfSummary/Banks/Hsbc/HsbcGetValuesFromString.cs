@@ -1,10 +1,12 @@
 ﻿using MoneyAdministrator.Common.DTOs;
 using MoneyAdministrator.DTOs.Enums;
+using MoneyAdministrator.ImportPdfSummary.Banks.Supervielle;
+using MoneyAdministrator.ImportPdfSummary.Dtos;
 using MoneyAdministrator.Module.ImportHsbcSummary.Utilities;
 
 namespace MoneyAdministrator.ImportPdfSummary.Banks.Hsbc
 {
-    public static class GetValuesFromString
+    public static class HsbcGetValuesFromString
     {
         public static CreditCardSummaryDto GetSummaryData(List<string> lines)
         {
@@ -19,7 +21,7 @@ namespace MoneyAdministrator.ImportPdfSummary.Banks.Hsbc
 
         private static void GetSummaryVariablesData(ref CreditCardSummaryDto ccSummary, List<string> lines)
         {
-            lines = CleanContent.GetSummaryPropertiesSectionString(lines);
+            lines = HsbcCleanContent.GetSummaryPropertiesSectionString(lines);
 
             for (int i = 0; i < lines.Count; i++)
             {
@@ -27,7 +29,7 @@ namespace MoneyAdministrator.ImportPdfSummary.Banks.Hsbc
                 if (i == 0)
                 {
                     var date = lines[i].Split(" ").ToList().Where(x => !string.IsNullOrEmpty(x)).ToList()[0];
-                    ccSummary.Date = DateTimeTools.ConvertToDateTime(date);
+                    ccSummary.Date = DateTimeTools.ConvertToDateTime(date, "dd-MMM-yy");
 
                     //Obtengo el periodo
                     int month = 0;
@@ -42,14 +44,14 @@ namespace MoneyAdministrator.ImportPdfSummary.Banks.Hsbc
                 if (i == 1)
                 {
                     var date = lines[i].Split(" ").ToList().Where(x => !string.IsNullOrEmpty(x)).ToList()[0];
-                    ccSummary.Expiration = DateTimeTools.ConvertToDateTime(date);
+                    ccSummary.Expiration = DateTimeTools.ConvertToDateTime(date, "dd-MMM-yy");
                 }
 
                 //Obtengo la proxima fecha de cierre
                 if (i == 2)
                 {
                     var date = lines[i].Split(" ").ToList().Where(x => !string.IsNullOrEmpty(x)).ToList()[3];
-                    ccSummary.NextDate = DateTimeTools.ConvertToDateTime(date);
+                    ccSummary.NextDate = DateTimeTools.ConvertToDateTime(date, "dd-MMM-yy");
                 }
 
                 //Obtengo la proxima fecha de vencimiento y el pago minimo
@@ -59,11 +61,11 @@ namespace MoneyAdministrator.ImportPdfSummary.Banks.Hsbc
 
                     //Fecha de vencimiento
                     var date = datePayment.Substring(datePayment.Length - 9);
-                    ccSummary.NextExpiration = DateTimeTools.ConvertToDateTime(date);
+                    ccSummary.NextExpiration = DateTimeTools.ConvertToDateTime(date, "dd-MMM-yy");
 
                     //Pago minimo
                     var minimumPayment = datePayment.Substring(0, datePayment.Length - 9);
-                    ccSummary.MinimumPayment = decimalTools.ToDecimal(minimumPayment);
+                    ccSummary.MinimumPayment = decimalTools.ParseDecimal(minimumPayment);
                 }
             }
         }
@@ -73,7 +75,7 @@ namespace MoneyAdministrator.ImportPdfSummary.Banks.Hsbc
             var results = new List<CreditCardSummaryDetailDto>();
             var resultType = CreditCardSummaryDetailType.Summary;
 
-            List<string> data = CleanContent.GetConsolidatedSectionString(lines);
+            List<string> data = HsbcCleanContent.GetConsolidatedSectionString(lines);
 
             for (int i = 0; i < data.Count(); i++)
             {
@@ -90,7 +92,7 @@ namespace MoneyAdministrator.ImportPdfSummary.Banks.Hsbc
                 if (!data[i].StartsWith(" "))
                 {
                     var date = data[i].Substring(0, 9);
-                    ccSummaryDetail.Date = DateTimeTools.ConvertToDateTime(date);
+                    ccSummaryDetail.Date = DateTimeTools.ConvertToDateTime(date, "dd-MMM-yy");
                 }
 
                 //Elimino el espacio de la fecha
@@ -107,8 +109,8 @@ namespace MoneyAdministrator.ImportPdfSummary.Banks.Hsbc
 
                 //Ontengo los montos
                 var length = data[i].Length > 12 ? 12 : data[i].Length;
-                ccSummaryDetail.AmountArs = decimalTools.ToDecimal(data[i].Substring(0, length));
-                ccSummaryDetail.AmountUsd = data[i].Length > 12 ? decimalTools.ToDecimal(data[i].Substring(length)) : 0;
+                ccSummaryDetail.AmountArs = decimalTools.ParseDecimal(data[i].Substring(0, length));
+                ccSummaryDetail.AmountUsd = data[i].Length > 12 ? decimalTools.ParseDecimal(data[i].Substring(length)) : 0;
 
                 results.Add(ccSummaryDetail);
             }
@@ -121,7 +123,7 @@ namespace MoneyAdministrator.ImportPdfSummary.Banks.Hsbc
             var results = new List<CreditCardSummaryDetailDto>();
             var resultType = CreditCardSummaryDetailType.Details;
 
-            List<string> data = CleanContent.GetDetailsSectionString(lines);
+            List<string> data = HsbcCleanContent.GetDetailsSectionString(lines);
 
             for (int i = 0; i < data.Count(); i++)
             {
@@ -164,7 +166,7 @@ namespace MoneyAdministrator.ImportPdfSummary.Banks.Hsbc
             if (!line.StartsWith(" "))
             {
                 var date = line.Substring(0, 9);
-                ccSummaryDetail.Date = DateTimeTools.ConvertToDateTime(date);
+                ccSummaryDetail.Date = DateTimeTools.ConvertToDateTime(date, "dd-MMM-yy");
             }
 
             //Elimino el espacio de la fecha
@@ -181,8 +183,8 @@ namespace MoneyAdministrator.ImportPdfSummary.Banks.Hsbc
 
             //Obtengo los montos
             var length = line.Length > 12 ? 12 : line.Length;
-            ccSummaryDetail.AmountArs = decimalTools.ToDecimal(line.Substring(0, length));
-            ccSummaryDetail.AmountUsd = line.Length > 12 ? decimalTools.ToDecimal(line.Substring(length)) : 0;
+            ccSummaryDetail.AmountArs = decimalTools.ParseDecimal(line.Substring(0, length));
+            ccSummaryDetail.AmountUsd = line.Length > 12 ? decimalTools.ParseDecimal(line.Substring(length)) : 0;
 
             return ccSummaryDetail;
         }
@@ -196,7 +198,7 @@ namespace MoneyAdministrator.ImportPdfSummary.Banks.Hsbc
             if (!line.StartsWith(" "))
             {
                 var date = line.Substring(0, 9);
-                ccSummaryDetail.Date = DateTimeTools.ConvertToDateTime(date);
+                ccSummaryDetail.Date = DateTimeTools.ConvertToDateTime(date, "dd-MMM-yy");
             }
             line = line.Substring(10); //Elimino el espacio de la fecha
 
@@ -219,8 +221,8 @@ namespace MoneyAdministrator.ImportPdfSummary.Banks.Hsbc
 
             //Obtengo los montos
             var length = line.Length > 12 ? 12 : line.Length;
-            ccSummaryDetail.AmountArs = decimalTools.ToDecimal(line.Substring(0, length));
-            ccSummaryDetail.AmountUsd = line.Length > 12 ? decimalTools.ToDecimal(line.Substring(length)) : 0;
+            ccSummaryDetail.AmountArs = decimalTools.ParseDecimal(line.Substring(0, length));
+            ccSummaryDetail.AmountUsd = line.Length > 12 ? decimalTools.ParseDecimal(line.Substring(length)) : 0;
 
             return ccSummaryDetail;
         }

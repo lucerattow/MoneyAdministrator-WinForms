@@ -11,55 +11,26 @@ namespace MoneyAdministrator.ImportPdfSummary
     {
         private readonly string _pdfFilePath;
         private readonly string _bankName;
-        private readonly ImportFromBank _importFromBank;
+        private readonly string _brandName;
 
-        public Import(string pdfFilePath, string importFromBank) 
+        public Import(string pdfFilePath, string bankName, string brandName) 
         {
             _pdfFilePath = pdfFilePath;
-            _bankName = importFromBank;
-
-            importFromBank = importFromBank.Replace(" ", "").ToLower();
-
-            if (string.IsNullOrEmpty(importFromBank))
-                throw new ArgumentNullException("Se requiere un nombre de banco");
-
-            else if (importFromBank == ImportFromBank.HSBC.ToString().ToLower())
-                _importFromBank = ImportFromBank.HSBC;
-
-            else if (importFromBank == ImportFromBank.Supervielle.ToString().ToLower())
-                _importFromBank = ImportFromBank.Supervielle;
+            _bankName = bankName.ToLower();
+            _brandName = brandName.ToLower();
         }
 
         public CreditCardSummaryDto ExtractTextFromPdf()
         {
-            var pages = GetPageLinesFromPdf();
-
-            switch (_importFromBank)
+            switch (_bankName)
             {
-                case ImportFromBank.HSBC:
-                    return HsbcImporter.ImportFromHsbc(pages);
-                case ImportFromBank.Supervielle:
-                    return SupervielleImporter.ImportFromSupervielle(pages);
+                case "hsbc":
+                    return HsbcImporter.ImportFromHsbc(_pdfFilePath, _brandName);
+                case "supervielle":
+                    return SpvImporter.ImportFromSupervielle(_pdfFilePath, _brandName);
                 default:
                     throw new Exception($"No es posible importar los resumenes de su tarjeta para el banco {_bankName}");
             }
-        }
-
-        private List<string> GetPageLinesFromPdf()
-        {
-            var result = new List<string>();
-
-            using (PdfReader reader = new PdfReader(_pdfFilePath))
-            using (PdfDocument pdfDocument = new PdfDocument(reader))
-            {
-                for (int i = 1; i <= pdfDocument.GetNumberOfPages(); ++i)
-                {
-                    PdfPage page = pdfDocument.GetPage(i);
-                    result.Add(PdfTextExtractor.GetTextFromPage(page));
-                }
-            }
-
-            return result;
         }
     }
 }

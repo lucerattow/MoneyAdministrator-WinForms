@@ -1,18 +1,17 @@
 ﻿using MoneyAdministrator.Common.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MoneyAdministrator.ImportPdfSummary.Banks.Supervielle;
+using MoneyAdministrator.ImportPdfSummary.Dtos;
 
 namespace MoneyAdministrator.ImportPdfSummary.Banks.Hsbc
 {
     public static class HsbcImporter
     {
-        public static CreditCardSummaryDto ImportFromHsbc(List<string> pages)
+        public static CreditCardSummaryDto ImportFromHsbc(string pdfPathFile, string brandName)
         {
-            var lines = CleanContent.FilterTrash(pages);
-            return GetValuesFromString.GetSummaryData(lines);
+            var getStringFromPdf = new HsbcGetStringFromPdf(pdfPathFile);
+            var pages = getStringFromPdf.GetAllTextFromPdf();
+            var lines = HsbcCleanContent.FilterTrash(pages);
+            return HsbcGetValuesFromString.GetSummaryData(lines);
         }
     }
 }

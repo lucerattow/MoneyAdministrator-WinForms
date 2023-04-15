@@ -34,9 +34,22 @@ namespace MoneyAdministrator.Services
             //Valido el modelo
             Utilities.ModelValidator.Validate(model);
 
+            var cc_bankId = 0;
+            var cc_brandId = 0;
+
+            var creditCardService = new CreditCardService(_unitOfWork);
+            var creditCard = creditCardService.Get(model.CreditCardId);
+            if (creditCard != null)
+            {
+                cc_bankId = creditCard.CreditCardBankId;
+                cc_brandId = creditCard.CreditCardBrandId;
+            }
+
             //Compruebo si el objeto ya existe
             var item = _unitOfWork.CCResumeRepository.GetAll()
-                .Where(x => x.Period == model.Period).FirstOrDefault();
+                .Where(x => x.Period == model.Period && 
+                    x.CreditCard.CreditCardBankId == cc_bankId &&
+                    x.CreditCard.CreditCardBrandId == cc_brandId).FirstOrDefault();
 
             if (item != null)
             {

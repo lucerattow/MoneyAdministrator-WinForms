@@ -1,6 +1,13 @@
-﻿namespace MoneyAdministrator.ImportPdfSummary.Banks.Supervielle
+﻿using iText.Kernel.Pdf.Canvas.Parser;
+using iText.Kernel.Pdf;
+using iText.Kernel.Pdf.Canvas.Parser.Listener;
+using iText.Kernel.Pdf.Canvas.Parser.Filter;
+using iText.Kernel.Geom;
+using System.Text.RegularExpressions;
+
+namespace MoneyAdministrator.ImportPdfSummary.Banks.Hsbc
 {
-    public class CleanContent
+    public class HsbcCleanContent
     {
         public static List<string> FilterTrash(List<string> pages)
         {

@@ -101,13 +101,13 @@ namespace MoneyAdministrator.Views.Modals
 
         public void CreditCardBankRefreshData(List<CreditCardBank> datasource)
         {
-            _cbBank.DataSource = datasource.OrderBy(x => x.Name);
+            _cbBank.DataSource = datasource.OrderBy(x => x.Name).ToList();
             _cbBank.DisplayMember = "Name";
         }
 
         public void CreditCardBrandRefreshData(List<CreditCardBrand> datasource)
         {
-            _cbCreditCardType.DataSource = datasource.OrderBy(x => x.Name); ;
+            _cbCreditCardType.DataSource = datasource.OrderBy(x => x.Name).ToList();
             _cbCreditCardType.DisplayMember = "Name";
         }
 

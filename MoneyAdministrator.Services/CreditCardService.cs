@@ -21,6 +21,12 @@ namespace MoneyAdministrator.Services
             _showDeleted = showDeleted;
         }
 
+        public CreditCardService(IUnitOfWork unitOfWork, bool showDeleted = false)
+        {
+            _unitOfWork = unitOfWork;
+            _showDeleted = showDeleted;
+        }
+
         public List<CreditCard> GetAll()
         {
             if (_showDeleted)
