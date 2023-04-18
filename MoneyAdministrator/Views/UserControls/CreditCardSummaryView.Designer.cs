@@ -286,9 +286,9 @@ namespace MoneyAdministrator.Views
             label5.Location = new Point(126, 60);
             label5.Margin = new Padding(4, 0, 4, 0);
             label5.Name = "label5";
-            label5.Size = new Size(124, 20);
+            label5.Size = new Size(119, 20);
             label5.TabIndex = 22;
-            label5.Text = "Proximo resumen";
+            label5.Text = "Priximo resumen";
             // 
             // _dtpDateNext
             // 
