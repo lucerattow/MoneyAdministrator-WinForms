@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MoneyAdministrator.ImportPdfSummary.Enums
+namespace MoneyAdministrator.Import.Summary
 {
-    public enum ImportFromBank
+    internal static class ModuleConstants
     {
-        HSBC,
-        Supervielle
+        public static int DayStartPeriod = 16;
     }
 }

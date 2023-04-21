@@ -6,13 +6,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace MoneyAdministrator.Module.ImportHsbcSummary.Utilities
+namespace MoneyAdministrator.Import.Summary.Utilities.TypeTools
 {
-    public static class decimalTools
+    internal class DecimalTools
     {
-        public static decimal ParseDecimal(string input)
+        public static decimal Convert(string input)
         {
             input = input.Trim();
+            input = StringTools.GetNumbersFromString(input);
 
             if (string.IsNullOrEmpty(input))
                 return 0;

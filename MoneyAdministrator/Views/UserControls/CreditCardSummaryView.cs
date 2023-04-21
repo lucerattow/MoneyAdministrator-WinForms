@@ -282,8 +282,8 @@ namespace MoneyAdministrator.Views
                     date != "0001-01-01" ? date : "",
                     ccSummaryDetail.Description,
                     ccSummaryDetail.Installments,
-                    ccSummaryDetail.AmountArs,
-                    ccSummaryDetail.AmountUsd,
+                    ccSummaryDetail.AmountArs.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
+                    ccSummaryDetail.AmountUsd.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
                 });
 
                 //Pinto el monto segun corresponda

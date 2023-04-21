@@ -4,23 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MoneyAdministrator.ImportPdfSummary.Dtos
+namespace MoneyAdministrator.Import.Summary.DTOs
 {
-    public class TransactionsTableDto
+    internal class TextExtractionDto
     {
         public List<string> AllText { get; set; }
         public List<string> Installments { get; set; }
         public List<string> Date { get; set; }
-        public List<string> Ars { get; set; }
-        public List<string> Usd { get; set; }
+        public List<string> AmountArs { get; set; }
+        public List<string> AmountUsd { get; set; }
 
-        public TransactionsTableDto() 
-        { 
+        public TextExtractionDto()
+        {
             AllText = new List<string>();
             Installments = new List<string>();
             Date = new List<string>();
-            Ars = new List<string>();
-            Usd = new List<string>();
+            AmountArs = new List<string>();
+            AmountUsd = new List<string>();
         }
     }
 }

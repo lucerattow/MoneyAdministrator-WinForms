@@ -50,8 +50,7 @@ namespace MoneyAdministrator.DataAccess
             );
             modelBuilder.Entity<CreditCardBrand>().HasData(
                 new CreditCardBrand { Id = 1, Name = "Visa" },
-                new CreditCardBrand { Id = 2, Name = "MasterCard" },
-                new CreditCardBrand { Id = 3, Name = "American Express" }
+                new CreditCardBrand { Id = 2, Name = "MasterCard" }
             );
         }
     }

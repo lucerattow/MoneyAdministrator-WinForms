@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MoneyAdministrator.Module.ImportHsbcSummary.Utilities
+namespace MoneyAdministrator.Import.Summary.Utilities.TypeTools
 {
     internal class DateTimeTools
     {
@@ -60,7 +60,7 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary.Utilities
             return string.Join("-", dateParts);
         }
 
-        public static DateTime ConvertToDateTime(string date, string format)
+        public static DateTime Convert(string date, string format)
         {
             if (format == "dd-MMM-yy")
             {
@@ -74,7 +74,7 @@ namespace MoneyAdministrator.Module.ImportHsbcSummary.Utilities
         {
             try
             {
-                var _ = ConvertToDateTime(date, format);
+                var _ = Convert(date, format);
                 return true;
             }
             catch
