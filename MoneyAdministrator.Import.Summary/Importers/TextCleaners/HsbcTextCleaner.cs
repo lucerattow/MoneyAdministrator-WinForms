@@ -116,6 +116,12 @@ namespace MoneyAdministrator.Import.Summary.Importers.TextCleaners
                 {
                     var date = line.Split(" ")[0];
                     result.Add($"DATE:{date}");
+
+                    var totalArs = line.Split(" ")[1];
+                    result.Add($"TOTAL_ARS:{totalArs}");
+
+                    var totalUsd = line.Split(" ")[2];
+                    result.Add($"TOTAL_USD:{totalUsd}");
                 }
 
                 if (i == 2)

@@ -6,4 +6,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="itext7" Version="7.2.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MoneyAdministrator.Common\MoneyAdministrator.Common.csproj" />
+  </ItemGroup>
+
 </Project>

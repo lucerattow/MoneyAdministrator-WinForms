@@ -14,6 +14,8 @@ namespace MoneyAdministrator.Common.DTOs
         public DateTime Expiration { get; set; }
         public DateTime NextDate { get; set; }
         public DateTime NextExpiration { get; set; }
+        public decimal TotalArs { get; set; }
+        public decimal TotalUsd { get; set; }
         public decimal MinimumPayment { get; set; }
         public List<CreditCardSummaryDetailDto> CreditCardSummaryDetails { get; set; }
 

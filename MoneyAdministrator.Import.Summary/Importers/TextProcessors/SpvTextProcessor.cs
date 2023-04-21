@@ -27,7 +27,7 @@ namespace MoneyAdministrator.Import.Summary.Importers.TextProcessors
         {
             var summary = new CreditCardSummaryDto();
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 7; i++)
             {
                 var key = lines[i].Split(":")[0];
                 var value = lines[i].Split(":")[1];
@@ -59,6 +59,14 @@ namespace MoneyAdministrator.Import.Summary.Importers.TextProcessors
                     case "DATE_NEXT_EXP":
                         //Proximo vencimiento
                         summary.NextExpiration = DateTimeTools.Convert(value, "yyyy-MM-dd");
+                        continue;
+                    case "TOTAL_ARS":
+                        //Saldo total Ars
+                        summary.TotalArs = DecimalTools.Convert(value);
+                        continue;
+                    case "TOTAL_USD":
+                        //Saldo total Usd
+                        summary.TotalUsd = DecimalTools.Convert(value);
                         continue;
                     case "MIN_PAY":
                         //Pago minimo

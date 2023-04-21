@@ -5,7 +5,6 @@ using MoneyAdministrator.Services;
 using MoneyAdministrator.Utilities;
 using MoneyAdministrator.Utilities.Disposable;
 using MoneyAdministrator.Views;
-using MoneyAdministrator.ImportPdfSummary;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -82,8 +81,8 @@ namespace MoneyAdministrator.Presenters
                 _view.NextDate = dto.NextDate;
                 _view.NextExpiration = dto.NextExpiration;
 
-                _view.TotalArs = dto.CreditCardSummaryDetails.Select(x => x.AmountArs).Sum();
-                _view.TotalUsd = dto.CreditCardSummaryDetails.Select(x => x.AmountUsd).Sum();
+                _view.TotalArs = dto.TotalArs;
+                _view.TotalUsd = dto.TotalUsd;
                 _view.minimumPayment = dto.MinimumPayment;
 
                 _view.CCSummaryDetailDtos = dto.CreditCardSummaryDetails;
@@ -108,8 +107,9 @@ namespace MoneyAdministrator.Presenters
                         string filePath = openFileDialog.FileName;
                         string bankName = _view.CreditCard.CreditCardBank.Name;
                         string brandName = _view.CreditCard.CreditCardBrand.Name;
-                        var creditCardSummaryDto = new Import(filePath, bankName, brandName);
-                        OpenCreditCardSummary(creditCardSummaryDto.ExtractTextFromPdf());
+                        var importer = new Import.Summary.Execute(bankName, brandName);
+                        var summaryDto = importer.ExtractDataFromPDF(filePath);
+                        OpenCreditCardSummary(summaryDto);
                         _view.ImportedSummary = true;
                     }
                     catch (Exception ex)

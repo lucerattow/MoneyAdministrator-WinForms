@@ -139,6 +139,12 @@ namespace MoneyAdministrator.Import.Summary.Importers.TextCleaners
                     var dateExp = line.Split(" ")[0];
                     result.Add($"DATE_EXP:{dateExp}");
 
+                    var totalArs = line.Split(" ")[1];
+                    result.Add($"TOTAL_ARS:{totalArs}");
+
+                    var totalUsd = line.Split(" ")[2];
+                    result.Add($"TOTAL_USD:{totalUsd}");
+
                     var minPay = line.Split(" ")[3];
                     result.Add($"MIN_PAY:{minPay}");
                 }
@@ -253,6 +259,8 @@ namespace MoneyAdministrator.Import.Summary.Importers.TextCleaners
                     if (count == 1)
                         result.Add("::DETAILS::");
                     if (count == 2)
+                        result.Add("::TAXES::");
+                    if (count == 3)
                         break;
                     count++;
                     continue;
@@ -284,6 +292,8 @@ namespace MoneyAdministrator.Import.Summary.Importers.TextCleaners
                     if (count == 1)
                         result.Add("::DETAILS::");
                     if (count == 2)
+                        result.Add("::TAXES::");
+                    if (count == 3)
                         break;
                     count++;
                     continue;
