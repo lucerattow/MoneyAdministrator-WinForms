@@ -25,7 +25,8 @@ namespace MoneyAdministrator.Import.Summary.Importers.TextProcessors
 
         private static CreditCardSummaryDto GetSummaryVariablesData(List<string> lines)
         {
-            var summary = new CreditCardSummaryDto();
+            var dto = new SummaryVariablesDto();
+            dto.DateFormat = "dd-MMM-yy";
 
             for (int i = 0; i < 7; i++)
             {
@@ -36,46 +37,36 @@ namespace MoneyAdministrator.Import.Summary.Importers.TextProcessors
                 {
                     case "DATE":
                         //Fecha de resumen
-                        summary.Date = DateTimeTools.Convert(value, "dd-MMM-yy");
-
-                        //Periodo
-                        int month = summary.Date.Day >= ModuleConstants.DayStartPeriod ? summary.Date.Month + 1 : summary.Date.Month;
-                        int year = summary.Date.Year;
-                        if (month == 13)
-                        {
-                            month = 1;
-                            year++;
-                        }
-                        summary.Period = new DateTime(year, month, 1);
+                        dto.Date = value;
                         continue;
                     case "DATE_EXP":
                         //Fecha de vencimiento
-                        summary.Expiration = DateTimeTools.Convert(value, "dd-MMM-yy");
+                        dto.DateExpiration = value;
                         continue;
                     case "DATE_NEXT":
                         //Proximo cierre
-                        summary.NextDate = DateTimeTools.Convert(value, "dd-MMM-yy");
+                        dto.DateNext = value;
                         continue;
                     case "DATE_NEXT_EXP":
                         //Proximo vencimiento
-                        summary.NextExpiration = DateTimeTools.Convert(value, "dd-MMM-yy");
+                        dto.DateNextExpiration = value;
                         continue;
                     case "TOTAL_ARS":
                         //Saldo total Ars
-                        summary.TotalArs = DecimalTools.Convert(value);
+                        dto.TotalArs = value; //Convierto el valor en negativo
                         continue;
                     case "TOTAL_USD":
                         //Saldo total Usd
-                        summary.TotalUsd = DecimalTools.Convert(value);
+                        dto.TotalUsd = value; //Convierto el valor en negativo
                         continue;
                     case "MIN_PAY":
                         //Pago minimo
-                        summary.MinimumPayment = DecimalTools.Convert(value);
+                        dto.MinimumPayment = value; //Convierto el valor en negativo
                         continue;
                 }
             }
 
-            return summary;
+            return ParseDto.GetCreditCardSummaryDto(dto);
         }
 
         private static List<CreditCardSummaryDetailDto> GetAllData(List<string> lines)

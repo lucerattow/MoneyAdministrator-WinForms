@@ -14,7 +14,7 @@ namespace MoneyAdministrator.Interfaces
         //methods
         /// <summary>Envio los datos del banco de la tarjeta de credito al ComboBox</summary>
         /// <param name="datasource">Lista de bancos</param>
-        void CreditCardBankRefreshData(List<CreditCardBank> datasource);
+        void CreditCardEntityRefreshData(List<Entity> datasource);
         /// <summary>Envio los datos de los tipos de tarjeta de credito al ComboBox</summary>
         /// <param name="datasource">Lista marcas de tarjetas de credito</param>
         void CreditCardBrandRefreshData(List<CreditCardBrand> datasource);
@@ -26,7 +26,7 @@ namespace MoneyAdministrator.Interfaces
         /// <summary>Obtengo el ID seleccionado</summary>
         int SelectedId { get; set; }
         /// <summary>Obtengo el nombre del banco</summary>
-        CreditCardBank CreditCardBank { get; set; }
+        Entity Entity { get; set; }
         /// <summary>Obtengo el tipo de tarjeta de credito</summary>
         CreditCardBrand CreditCardBrand { get; set; }
         /// <summary>Obtengo los ultimos 4 numeros de la tarjeta</summary>

@@ -34,6 +34,7 @@ namespace MoneyAdministrator.Views
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreditCardResumesView));
             _toolStripButton = new ToolStrip();
             _tsbImport = new ToolStripButton();
+            _tsbNewPay = new ToolStripButton();
             _tsbInsert = new ToolStripButton();
             _tsbDelete = new ToolStripButton();
             _tsbClear = new ToolStripButton();
@@ -42,6 +43,12 @@ namespace MoneyAdministrator.Views
             panel3 = new Panel();
             _grd = new DataGridView();
             panel2 = new Panel();
+            _txtDateNextExpiration = new TextBox();
+            _txtDateExpiration = new TextBox();
+            _txtDateNext = new TextBox();
+            _txtDate = new TextBox();
+            _txtOutstandingArs = new CustomControls.MoneyTextBox();
+            label8 = new Label();
             _txtMinimumPayment = new CustomControls.MoneyTextBox();
             label7 = new Label();
             _txtTotalArs = new CustomControls.MoneyTextBox();
@@ -49,13 +56,9 @@ namespace MoneyAdministrator.Views
             _txtTotalUsd = new CustomControls.MoneyTextBox();
             _lblAmount = new Label();
             label4 = new Label();
-            _dtpDateNextExpiration = new DateTimePicker();
             label5 = new Label();
-            _dtpDateNext = new DateTimePicker();
             label3 = new Label();
-            _dtpDateExpiration = new DateTimePicker();
             label2 = new Label();
-            _dtpDate = new DateTimePicker();
             _lblDatePeriod = new Label();
             _dtpDatePeriod = new DateTimePicker();
             _lblCreditCardName = new Label();
@@ -79,7 +82,7 @@ namespace MoneyAdministrator.Views
             _toolStripButton.BackColor = Color.White;
             _toolStripButton.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
             _toolStripButton.GripStyle = ToolStripGripStyle.Hidden;
-            _toolStripButton.Items.AddRange(new ToolStripItem[] { _tsbImport, _tsbInsert, _tsbDelete, _tsbClear, _tsbExit });
+            _toolStripButton.Items.AddRange(new ToolStripItem[] { _tsbImport, _tsbNewPay, _tsbInsert, _tsbDelete, _tsbClear, _tsbExit });
             _toolStripButton.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
             _toolStripButton.Location = new Point(0, 0);
             _toolStripButton.Name = "_toolStripButton";
@@ -97,6 +100,15 @@ namespace MoneyAdministrator.Views
             _tsbImport.Size = new Size(147, 24);
             _tsbImport.Text = "Importar resumen";
             _tsbImport.Click += _tsbImport_Click;
+            // 
+            // _tsbNewPay
+            // 
+            _tsbNewPay.Image = Properties.Resources.money_envelope_add_shadow;
+            _tsbNewPay.ImageTransparentColor = Color.Magenta;
+            _tsbNewPay.Name = "_tsbNewPay";
+            _tsbNewPay.Size = new Size(113, 24);
+            _tsbNewPay.Text = "Pagar tarjeta";
+            _tsbNewPay.Click += _tsbNewPay_Click;
             // 
             // _tsbInsert
             // 
@@ -166,6 +178,12 @@ namespace MoneyAdministrator.Views
             // panel2
             // 
             panel2.BackColor = SystemColors.ButtonFace;
+            panel2.Controls.Add(_txtDateNextExpiration);
+            panel2.Controls.Add(_txtDateExpiration);
+            panel2.Controls.Add(_txtDateNext);
+            panel2.Controls.Add(_txtDate);
+            panel2.Controls.Add(_txtOutstandingArs);
+            panel2.Controls.Add(label8);
             panel2.Controls.Add(_txtMinimumPayment);
             panel2.Controls.Add(label7);
             panel2.Controls.Add(_txtTotalArs);
@@ -173,13 +191,9 @@ namespace MoneyAdministrator.Views
             panel2.Controls.Add(_txtTotalUsd);
             panel2.Controls.Add(_lblAmount);
             panel2.Controls.Add(label4);
-            panel2.Controls.Add(_dtpDateNextExpiration);
             panel2.Controls.Add(label5);
-            panel2.Controls.Add(_dtpDateNext);
             panel2.Controls.Add(label3);
-            panel2.Controls.Add(_dtpDateExpiration);
             panel2.Controls.Add(label2);
-            panel2.Controls.Add(_dtpDate);
             panel2.Controls.Add(_lblDatePeriod);
             panel2.Controls.Add(_dtpDatePeriod);
             panel2.Dock = DockStyle.Top;
@@ -188,24 +202,84 @@ namespace MoneyAdministrator.Views
             panel2.Size = new Size(716, 122);
             panel2.TabIndex = 13;
             // 
+            // _txtDateNextExpiration
+            // 
+            _txtDateNextExpiration.Location = new Point(235, 83);
+            _txtDateNextExpiration.Name = "_txtDateNextExpiration";
+            _txtDateNextExpiration.Size = new Size(100, 27);
+            _txtDateNextExpiration.TabIndex = 42;
+            _txtDateNextExpiration.KeyPress += _txt_KeyPress;
+            // 
+            // _txtDateExpiration
+            // 
+            _txtDateExpiration.Location = new Point(235, 29);
+            _txtDateExpiration.Name = "_txtDateExpiration";
+            _txtDateExpiration.Size = new Size(100, 27);
+            _txtDateExpiration.TabIndex = 41;
+            _txtDateExpiration.KeyPress += _txt_KeyPress;
+            // 
+            // _txtDateNext
+            // 
+            _txtDateNext.Location = new Point(129, 83);
+            _txtDateNext.Name = "_txtDateNext";
+            _txtDateNext.Size = new Size(100, 27);
+            _txtDateNext.TabIndex = 40;
+            _txtDateNext.KeyPress += _txt_KeyPress;
+            // 
+            // _txtDate
+            // 
+            _txtDate.Location = new Point(129, 29);
+            _txtDate.Name = "_txtDate";
+            _txtDate.Size = new Size(100, 27);
+            _txtDate.TabIndex = 39;
+            _txtDate.KeyPress += _txt_KeyPress;
+            // 
+            // _txtOutstandingArs
+            // 
+            _txtOutstandingArs.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            _txtOutstandingArs.Colored = true;
+            _txtOutstandingArs.ForeColor = Color.FromArgb(80, 80, 80);
+            _txtOutstandingArs.Location = new Point(425, 83);
+            _txtOutstandingArs.Name = "_txtOutstandingArs";
+            _txtOutstandingArs.OperatorSymbol = "-";
+            _txtOutstandingArs.Size = new Size(140, 27);
+            _txtOutstandingArs.TabIndex = 38;
+            _txtOutstandingArs.Tag = "";
+            _txtOutstandingArs.Text = "-0,00 $";
+            _txtOutstandingArs.TextAlign = HorizontalAlignment.Right;
+            _txtOutstandingArs.KeyPress += _txt_KeyPress;
+            // 
+            // label8
+            // 
+            label8.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label8.AutoSize = true;
+            label8.Location = new Point(421, 59);
+            label8.Margin = new Padding(4, 0, 4, 0);
+            label8.Name = "label8";
+            label8.Size = new Size(118, 20);
+            label8.TabIndex = 37;
+            label8.Text = "Saldo pendiente";
+            // 
             // _txtMinimumPayment
             // 
             _txtMinimumPayment.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             _txtMinimumPayment.Colored = true;
             _txtMinimumPayment.ForeColor = Color.FromArgb(80, 80, 80);
-            _txtMinimumPayment.Location = new Point(441, 84);
+            _txtMinimumPayment.Location = new Point(571, 83);
             _txtMinimumPayment.Name = "_txtMinimumPayment";
             _txtMinimumPayment.OperatorSymbol = "-";
-            _txtMinimumPayment.Size = new Size(132, 27);
+            _txtMinimumPayment.Size = new Size(140, 27);
             _txtMinimumPayment.TabIndex = 36;
             _txtMinimumPayment.Tag = "";
             _txtMinimumPayment.Text = "-0,00 $";
+            _txtMinimumPayment.TextAlign = HorizontalAlignment.Right;
+            _txtMinimumPayment.KeyPress += _txt_KeyPress;
             // 
             // label7
             // 
             label7.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label7.AutoSize = true;
-            label7.Location = new Point(438, 60);
+            label7.Location = new Point(567, 59);
             label7.Margin = new Padding(4, 0, 4, 0);
             label7.Name = "label7";
             label7.Size = new Size(97, 20);
@@ -217,19 +291,21 @@ namespace MoneyAdministrator.Views
             _txtTotalArs.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             _txtTotalArs.Colored = true;
             _txtTotalArs.ForeColor = Color.FromArgb(80, 80, 80);
-            _txtTotalArs.Location = new Point(441, 29);
+            _txtTotalArs.Location = new Point(425, 29);
             _txtTotalArs.Name = "_txtTotalArs";
             _txtTotalArs.OperatorSymbol = "-";
-            _txtTotalArs.Size = new Size(132, 27);
+            _txtTotalArs.Size = new Size(140, 27);
             _txtTotalArs.TabIndex = 34;
             _txtTotalArs.Tag = "";
             _txtTotalArs.Text = "-0,00 $";
+            _txtTotalArs.TextAlign = HorizontalAlignment.Right;
+            _txtTotalArs.KeyPress += _txt_KeyPress;
             // 
             // label6
             // 
             label6.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label6.AutoSize = true;
-            label6.Location = new Point(438, 5);
+            label6.Location = new Point(421, 5);
             label6.Margin = new Padding(4, 0, 4, 0);
             label6.Name = "label6";
             label6.Size = new Size(73, 20);
@@ -241,19 +317,21 @@ namespace MoneyAdministrator.Views
             _txtTotalUsd.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             _txtTotalUsd.Colored = true;
             _txtTotalUsd.ForeColor = Color.FromArgb(80, 80, 80);
-            _txtTotalUsd.Location = new Point(579, 29);
+            _txtTotalUsd.Location = new Point(571, 29);
             _txtTotalUsd.Name = "_txtTotalUsd";
             _txtTotalUsd.OperatorSymbol = "-";
-            _txtTotalUsd.Size = new Size(132, 27);
+            _txtTotalUsd.Size = new Size(140, 27);
             _txtTotalUsd.TabIndex = 32;
             _txtTotalUsd.Tag = "";
             _txtTotalUsd.Text = "-0,00 $";
+            _txtTotalUsd.TextAlign = HorizontalAlignment.Right;
+            _txtTotalUsd.KeyPress += _txt_KeyPress;
             // 
             // _lblAmount
             // 
             _lblAmount.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             _lblAmount.AutoSize = true;
-            _lblAmount.Location = new Point(576, 5);
+            _lblAmount.Location = new Point(567, 5);
             _lblAmount.Margin = new Padding(4, 0, 4, 0);
             _lblAmount.Name = "_lblAmount";
             _lblAmount.Size = new Size(75, 20);
@@ -263,22 +341,12 @@ namespace MoneyAdministrator.Views
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(274, 60);
+            label4.Location = new Point(232, 60);
             label4.Margin = new Padding(4, 0, 4, 0);
             label4.Name = "label4";
-            label4.Size = new Size(150, 20);
+            label4.Size = new Size(91, 20);
             label4.TabIndex = 24;
-            label4.Text = "Proximo Vencimiento";
-            // 
-            // _dtpDateNextExpiration
-            // 
-            _dtpDateNextExpiration.CustomFormat = " yyyy-MM-dd";
-            _dtpDateNextExpiration.Format = DateTimePickerFormat.Custom;
-            _dtpDateNextExpiration.Location = new Point(277, 84);
-            _dtpDateNextExpiration.Margin = new Padding(4);
-            _dtpDateNextExpiration.Name = "_dtpDateNextExpiration";
-            _dtpDateNextExpiration.Size = new Size(140, 27);
-            _dtpDateNextExpiration.TabIndex = 25;
+            label4.Text = "Proximo Vto";
             // 
             // label5
             // 
@@ -286,39 +354,19 @@ namespace MoneyAdministrator.Views
             label5.Location = new Point(126, 60);
             label5.Margin = new Padding(4, 0, 4, 0);
             label5.Name = "label5";
-            label5.Size = new Size(119, 20);
+            label5.Size = new Size(100, 20);
             label5.TabIndex = 22;
-            label5.Text = "Priximo resumen";
-            // 
-            // _dtpDateNext
-            // 
-            _dtpDateNext.CustomFormat = " yyyy-MM-dd";
-            _dtpDateNext.Format = DateTimePickerFormat.Custom;
-            _dtpDateNext.Location = new Point(129, 84);
-            _dtpDateNext.Margin = new Padding(4);
-            _dtpDateNext.Name = "_dtpDateNext";
-            _dtpDateNext.Size = new Size(140, 27);
-            _dtpDateNext.TabIndex = 23;
+            label5.Text = "Priximo cierre";
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(274, 5);
+            label3.Location = new Point(232, 5);
             label3.Margin = new Padding(4, 0, 4, 0);
             label3.Name = "label3";
             label3.Size = new Size(91, 20);
             label3.TabIndex = 20;
             label3.Text = "Vencimiento";
-            // 
-            // _dtpDateExpiration
-            // 
-            _dtpDateExpiration.CustomFormat = " yyyy-MM-dd";
-            _dtpDateExpiration.Format = DateTimePickerFormat.Custom;
-            _dtpDateExpiration.Location = new Point(277, 29);
-            _dtpDateExpiration.Margin = new Padding(4);
-            _dtpDateExpiration.Name = "_dtpDateExpiration";
-            _dtpDateExpiration.Size = new Size(140, 27);
-            _dtpDateExpiration.TabIndex = 21;
             // 
             // label2
             // 
@@ -326,19 +374,9 @@ namespace MoneyAdministrator.Views
             label2.Location = new Point(126, 5);
             label2.Margin = new Padding(4, 0, 4, 0);
             label2.Name = "label2";
-            label2.Size = new Size(107, 20);
+            label2.Size = new Size(88, 20);
             label2.TabIndex = 18;
-            label2.Text = "Fecha resumen";
-            // 
-            // _dtpDate
-            // 
-            _dtpDate.CustomFormat = " yyyy-MM-dd";
-            _dtpDate.Format = DateTimePickerFormat.Custom;
-            _dtpDate.Location = new Point(129, 29);
-            _dtpDate.Margin = new Padding(4);
-            _dtpDate.Name = "_dtpDate";
-            _dtpDate.Size = new Size(140, 27);
-            _dtpDate.TabIndex = 19;
+            label2.Text = "Fecha cierre";
             // 
             // _lblDatePeriod
             // 
@@ -357,7 +395,7 @@ namespace MoneyAdministrator.Views
             _dtpDatePeriod.Location = new Point(5, 29);
             _dtpDatePeriod.Margin = new Padding(4);
             _dtpDatePeriod.Name = "_dtpDatePeriod";
-            _dtpDatePeriod.Size = new Size(116, 27);
+            _dtpDatePeriod.Size = new Size(118, 27);
             _dtpDatePeriod.TabIndex = 17;
             _dtpDatePeriod.ValueChanged += _dtpDatePeriod_ValueChanged;
             // 
@@ -476,13 +514,9 @@ namespace MoneyAdministrator.Views
         private Label _lblDatePeriod;
         private DateTimePicker _dtpDatePeriod;
         private Label label4;
-        private DateTimePicker _dtpDateNextExpiration;
         private Label label5;
-        private DateTimePicker _dtpDateNext;
         private Label label3;
-        private DateTimePicker _dtpDateExpiration;
         private Label label2;
-        private DateTimePicker _dtpDate;
         private CustomControls.MoneyTextBox _txtMinimumPayment;
         private Label label7;
         private CustomControls.MoneyTextBox _txtTotalArs;
@@ -492,5 +526,12 @@ namespace MoneyAdministrator.Views
         private ToolStripButton _tsbInsert;
         private ToolStripButton _tsbDelete;
         private ImageList imagesTreeView;
+        private CustomControls.MoneyTextBox _txtOutstandingArs;
+        private Label label8;
+        private ToolStripButton _tsbNewPay;
+        private TextBox _txtDateNextExpiration;
+        private TextBox _txtDateExpiration;
+        private TextBox _txtDateNext;
+        private TextBox _txtDate;
     }
 }

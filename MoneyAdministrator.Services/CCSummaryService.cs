@@ -19,6 +19,11 @@ namespace MoneyAdministrator.Services
             _unitOfWork = new UnitOfWork(databasePath);
         }
 
+        public CCSummaryService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
         public List<CCSummary> GetAll()
         {
             return _unitOfWork.CCResumeRepository.GetAll().ToList();
@@ -34,21 +39,21 @@ namespace MoneyAdministrator.Services
             //Valido el modelo
             Utilities.ModelValidator.Validate(model);
 
-            var cc_bankId = 0;
+            var cc_entityId = 0;
             var cc_brandId = 0;
 
             var creditCardService = new CreditCardService(_unitOfWork);
             var creditCard = creditCardService.Get(model.CreditCardId);
             if (creditCard != null)
             {
-                cc_bankId = creditCard.CreditCardBankId;
+                cc_entityId = creditCard.EntityId;
                 cc_brandId = creditCard.CreditCardBrandId;
             }
 
             //Compruebo si el objeto ya existe
             var item = _unitOfWork.CCResumeRepository.GetAll()
                 .Where(x => x.Period == model.Period && 
-                    x.CreditCard.CreditCardBankId == cc_bankId &&
+                    x.CreditCard.EntityId == cc_entityId &&
                     x.CreditCard.CreditCardBrandId == cc_brandId).FirstOrDefault();
 
             if (item != null)

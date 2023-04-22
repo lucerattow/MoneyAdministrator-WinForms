@@ -1,4 +1,5 @@
 ﻿using MoneyAdministrator.Common.DTOs;
+using MoneyAdministrator.Common.Utilities.TypeTools;
 using MoneyAdministrator.DTOs.Enums;
 using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Models;
@@ -6,18 +7,13 @@ using MoneyAdministrator.Utilities;
 using MoneyAdministrator.Utilities.Disposable;
 using System.Configuration;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace MoneyAdministrator.Views
 {
     public partial class CreditCardResumesView : UserControl, ICreditCardSummaryView
     {
-        //fields
-        private bool _importSupport = false;
-        private bool _importedSummary = false;
-        private int _selectedSummaryId = 0;
-        private List<CreditCardSummaryDetailDto> _CCSummaryDetailDtos;
-
         //grd columns width
         private const int _colWidthDate = 90;
         private const int _colWidthInstall = 60;
@@ -25,32 +21,32 @@ namespace MoneyAdministrator.Views
         private const int _colWidthAmountUsd = 120;
         private const int _colWidthTotal = _colWidthDate + _colWidthInstall + _colWidthAmountArs + _colWidthAmountUsd;
 
+        //fields
+        private CreditCard _creditCard;
+
+        private bool _summaryImported = false;
+        private int _selectedSummaryId = 0;
+        private List<CreditCardSummaryDetailDto> _CCSummaryDetailDtos;
+
         //properties
         public CreditCard CreditCard
         {
-            get => (CreditCard)_txtCreditCard.Tag;
+            get => _creditCard;
             set
             {
-                _txtCreditCard.Tag = value;
-                _txtCreditCard.Text = $"{value.CreditCardBank.Name} {value.CreditCardBrand.Name} *{value.LastFourNumbers}";
-                _importSupport = value.CreditCardBank.ImportSupport;
+                _creditCard = value;
+                if (value != null)
+                    _txtCreditCard.Text = $"{value.Entity.Name} {value.CreditCardBrand.Name} *{value.LastFourNumbers}";
+                else
+                    _txtCreditCard.Text = "";
             }
         }
-        public List<CreditCardSummaryDetailDto> CCSummaryDetailDtos
-        {
-            get => _CCSummaryDetailDtos;
-            set
-            {
-                _CCSummaryDetailDtos = value;
-                GrdRefreshData();
-            }
-        }
-        public int SelectedSummaryId
+
+        public int CCSummaryId
         {
             get => _selectedSummaryId;
             set => _selectedSummaryId = value;
         }
-
         public DateTime Period
         {
             get => _dtpDatePeriod.Value;
@@ -58,23 +54,23 @@ namespace MoneyAdministrator.Views
         }
         public DateTime Date
         {
-            get => _dtpDate.Value;
-            set => _dtpDate.Value = value;
+            get => DateTimeTools.Convert(_txtDate.Text, ConfigurationManager.AppSettings["DateFormat"]);
+            set => _txtDate.Text = value.ToString(ConfigurationManager.AppSettings["DateFormat"]);
         }
         public DateTime Expiration
         {
-            get => _dtpDateExpiration.Value;
-            set => _dtpDateExpiration.Value = value;
+            get => DateTimeTools.Convert(_txtDateExpiration.Text, ConfigurationManager.AppSettings["DateFormat"]);
+            set => _txtDateExpiration.Text = value.ToString(ConfigurationManager.AppSettings["DateFormat"]);
         }
         public DateTime NextDate
         {
-            get => _dtpDateNext.Value;
-            set => _dtpDateNext.Value = value;
+            get => DateTimeTools.Convert(_txtDateNext.Text, ConfigurationManager.AppSettings["DateFormat"]);
+            set => _txtDateNext.Text = value.ToString(ConfigurationManager.AppSettings["DateFormat"]);
         }
         public DateTime NextExpiration
         {
-            get => _dtpDateNextExpiration.Value;
-            set => _dtpDateNextExpiration.Value = value;
+            get => DateTimeTools.Convert(_txtDateNextExpiration.Text, ConfigurationManager.AppSettings["DateFormat"]);
+            set => _txtDateNextExpiration.Text = value.ToString(ConfigurationManager.AppSettings["DateFormat"]);
         }
         public decimal TotalArs
         {
@@ -145,11 +141,44 @@ namespace MoneyAdministrator.Views
                 _txtMinimumPayment.Text = value.ToString("N2");
             }
         }
-
-        public bool ImportedSummary
+        public decimal OutstandingArs
         {
-            get => _importedSummary;
-            set => _importedSummary = value;
+            get
+            {
+                var numbers = new string(_txtOutstandingArs.Text.Where(char.IsDigit).ToArray());
+                var value = decimal.Parse(numbers) / 100;
+
+                var oper = _txtOutstandingArs.OperatorSymbol;
+                if (oper == "-" && value > 0 || oper == "+" && value < 0)
+                    value *= -1;
+
+                return value;
+            }
+            set
+            {
+                if (value >= 0)
+                    _txtOutstandingArs.OperatorSymbol = "+";
+                else
+                    _txtOutstandingArs.OperatorSymbol = "-";
+
+                _txtOutstandingArs.Text = value.ToString("N2");
+            }
+        }
+
+        public List<CreditCardSummaryDetailDto> CCSummaryDetailDtos
+        {
+            get => _CCSummaryDetailDtos;
+            set
+            {
+                _CCSummaryDetailDtos = value;
+                GrdRefreshData();
+            }
+        }
+
+        public bool SummaryImported
+        {
+            get => _summaryImported;
+            set => _summaryImported = value;
         }
 
         public CreditCardResumesView()
@@ -287,31 +316,30 @@ namespace MoneyAdministrator.Views
                 });
 
                 //Pinto el monto segun corresponda
-                PaintDgvCells.PaintDecimal(_grd, row, "amountArs", true);
-                PaintDgvCells.PaintDecimal(_grd, row, "amountUsd", true);
+                PaintDgvCells.PaintDecimal(_grd, row, "amountArs");
+                PaintDgvCells.PaintDecimal(_grd, row, "amountUsd");
             }
         }
 
         public void ButtonsLogic()
         {
             bool creditCardLoaded = CreditCard != null;
-            bool? _importSupport = CreditCard?.CreditCardBank.ImportSupport;
-            bool importSupport = _importSupport ?? false;
+            bool importSupport = Import.Summary.Compatibility.Banks.Where(x => x.Name == CreditCard?.Entity.Name.ToLower()).Any();
+            bool selectedSummary = _selectedSummaryId != 0;
 
             _tsbImport.Enabled = creditCardLoaded && importSupport;
-            _tsbInsert.Enabled = creditCardLoaded && _importedSummary;
-            _tsbDelete.Enabled = creditCardLoaded && !_importedSummary;
+            _tsbInsert.Enabled = creditCardLoaded && _summaryImported;
+            _tsbNewPay.Enabled = creditCardLoaded && selectedSummary;
+            _tsbDelete.Enabled = creditCardLoaded && selectedSummary;
         }
 
         private void ClearInputs()
         {
             ClearSummaryInputs();
 
-            _importSupport = false;
+            CreditCard = null;
             _tvSummaryList.Nodes.Clear();
 
-            _txtCreditCard.Tag = null;
-            _txtCreditCard.Text = "";
 
             ButtonsLogic();
         }
@@ -320,17 +348,17 @@ namespace MoneyAdministrator.Views
         {
             _grd.Rows.Clear();
             _dtpDatePeriod.Value = DateTime.Now;
-            _dtpDate.Value = DateTime.Now;
-            _dtpDateExpiration.Value = DateTime.Now;
-            _dtpDateNext.Value = DateTime.Now;
-            _dtpDateNextExpiration.Value = DateTime.Now;
+            _txtDate.Text = "";
+            _txtDateExpiration.Text = "";
+            _txtDateNext.Text = "";
+            _txtDateNextExpiration.Text = "";
 
             _txtTotalArs.Text = "0";
             _txtTotalUsd.Text = "0";
             _txtMinimumPayment.Text = "0";
 
             _selectedSummaryId = 0;
-            _importedSummary = false;
+            _summaryImported = false;
 
             ButtonsLogic();
         }
@@ -346,29 +374,6 @@ namespace MoneyAdministrator.Views
             _txtCreditCard.Text = "";
 
             _dtpDatePeriod.CustomFormat = ConfigurationManager.AppSettings["DateFormatPeriod"];
-            _dtpDate.CustomFormat = ConfigurationManager.AppSettings["DateFormat"];
-            _dtpDateExpiration.CustomFormat = ConfigurationManager.AppSettings["DateFormat"];
-            _dtpDateNext.CustomFormat = ConfigurationManager.AppSettings["DateFormat"];
-            _dtpDateNextExpiration.CustomFormat = ConfigurationManager.AppSettings["DateFormat"];
-
-            _dtpDatePeriod.Value = DateTime.Now;
-            _dtpDate.Value = DateTime.Now;
-            _dtpDateExpiration.Value = DateTime.Now;
-            _dtpDateNext.Value = DateTime.Now;
-            _dtpDateNextExpiration.Value = DateTime.Now;
-
-            _txtTotalArs.Text = "0";
-            _txtTotalUsd.Text = "0";
-            _txtMinimumPayment.Text = "0";
-
-            _dtpDate.Enabled = false;
-            _dtpDateExpiration.Enabled = false;
-            _dtpDateNext.Enabled = false;
-            _dtpDateNextExpiration.Enabled = false;
-
-            _txtTotalArs.Enabled = false;
-            _txtTotalUsd.Enabled = false;
-            _txtMinimumPayment.Enabled = false;
 
             _tvSummaryList.ImageList = imagesTreeView;
 
@@ -429,17 +434,22 @@ namespace MoneyAdministrator.Views
             ButtonsLogic();
         }
 
+        private void _tsbNewPay_Click(object sender, EventArgs e)
+        {
+            ButtonNewPayClick.Invoke(sender, e);
+        }
+
         private void _tsbInsert_Click(object sender, EventArgs e)
         {
             ButtonInsertClick.Invoke(sender, e);
-            ImportedSummary = false;
+            SummaryImported = false;
             ButtonsLogic();
         }
 
         private void _tsbDelete_Click(object sender, EventArgs e)
         {
             ButtonDeleteClick.Invoke(sender, e);
-            ImportedSummary = false;
+            SummaryImported = false;
             ClearSummaryInputs();
         }
 
@@ -452,11 +462,6 @@ namespace MoneyAdministrator.Views
         {
             ButtonSearchCreditCardClick.Invoke(sender, e);
             ButtonsLogic();
-        }
-
-        private void CreditCardResumesView_Resize(object sender, EventArgs e)
-        {
-            _grd.Columns["description"].Width = _grd.Width - _colWidthTotal - 19;
         }
 
         private void _tvSummaryList_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -475,7 +480,18 @@ namespace MoneyAdministrator.Views
             _dtpDatePeriod.Value = new DateTime(date.Year, date.Month, 1);
         }
 
+        private void CreditCardResumesView_Resize(object sender, EventArgs e)
+        {
+            _grd.Columns["description"].Width = _grd.Width - _colWidthTotal - 19;
+        }
+
+        private void _txt_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
+
         public event EventHandler ButtonImportClick;
+        public event EventHandler ButtonNewPayClick;
         public event EventHandler ButtonInsertClick;
         public event EventHandler ButtonDeleteClick;
         public event EventHandler ButtonExitClick;

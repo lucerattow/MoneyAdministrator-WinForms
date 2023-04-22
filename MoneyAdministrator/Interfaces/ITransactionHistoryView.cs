@@ -35,6 +35,8 @@ namespace MoneyAdministrator.Interfaces
         bool IsService { get; set; }
         /// <summary>Indica si la transaccion es nueva o si se esta editando</summary>
         bool Editing { get; set; }
+        /// <summary>Indica si esta permitido editar la transaccion</summary>
+        bool IsCreditCardSummaryOutstanding { get; set; }
 
         //methods
         /// <summary>Envio los datos de las monedas al ComboBox de transaccionHistory</summary>
@@ -49,6 +51,7 @@ namespace MoneyAdministrator.Interfaces
         //events
         event EventHandler GrdDoubleClick;
         event EventHandler ButtonInsertClick;
+        event EventHandler ButtonNewPayClick;
         event EventHandler ButtonUpdateClick;
         event EventHandler ButtonDeleteClick;
         event EventHandler ButtonExitClick;

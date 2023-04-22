@@ -13,7 +13,7 @@ namespace MoneyAdministrator.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Falta especificar el banco emisor de la tarjeta de crédito")]
-        public int CreditCardBankId { get; set; }
+        public int EntityId { get; set; }
 
         [Required(ErrorMessage = "Falta especificar la marca de la tarjeta de crédito")]
         public int CreditCardBrandId { get; set; }
@@ -25,7 +25,7 @@ namespace MoneyAdministrator.Models
         public bool Deleted { get; set; }
 
         //foreign keys
-        public virtual CreditCardBank CreditCardBank { get; set; }
+        public virtual Entity Entity { get; set; }
 
         public virtual CreditCardBrand CreditCardBrand { get; set; }
 

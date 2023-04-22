@@ -212,7 +212,14 @@ namespace MoneyAdministrator.Presenters
                     }
 
                     //Establezco la entidad como eliminada
-                    entityService.Delete(entity);
+                    try
+                    {
+                        entityService.Delete(entity);
+                    }
+                    catch (Exception ex)
+                    {
+                        CommonMessageBox.errorMessageShow(ex.Message, MessageBoxButtons.OK);
+                    }
 
                     //Si ninguna de las entidades restantes contiene el tipo de la entidad borrada, elimino el tipado
                     var entities = entityService.GetAll().Where(x => x.EntityTypeId == entity.EntityTypeId);

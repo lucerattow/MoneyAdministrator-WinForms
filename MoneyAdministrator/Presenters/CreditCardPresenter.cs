@@ -4,13 +4,7 @@ using MoneyAdministrator.Models;
 using MoneyAdministrator.Services;
 using MoneyAdministrator.Utilities;
 using MoneyAdministrator.Utilities.Disposable;
-using MoneyAdministrator.Views;
 using MoneyAdministrator.Views.Modals;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MoneyAdministrator.Presenters
 {
@@ -32,7 +26,7 @@ namespace MoneyAdministrator.Presenters
             _view = new CreditCardView();
 
             AssosiateEvents();
-            CreditCardBankRefreshData();
+            CreditCardEntityRefreshData();
             CreditCardBrandRefreshData();
             GrdRefreshData();
         }
@@ -58,13 +52,13 @@ namespace MoneyAdministrator.Presenters
             _view.ButtonDeleteClick += ButtonDeleteClick;
         }
 
-        private void CreditCardBankRefreshData()
+        private void CreditCardEntityRefreshData()
         {
             using (new CursorWait())
             {
-                var service = new CreditCardBankService(_databasePath);
-                var entities = service.GetAll();
-                this._view.CreditCardBankRefreshData(entities);
+                var service = new EntityService(_databasePath);
+                var entities = service.GetAll().Where(x => x.EntityTypeId == 2).ToList(); //Filtro por bancos
+                this._view.CreditCardEntityRefreshData(entities);
             }
         }
 
@@ -90,8 +84,8 @@ namespace MoneyAdministrator.Presenters
                     dtos.Add(new CreditCardDto()
                     {
                         Id = creditCard.Id,
-                        BankEntityName = creditCard.CreditCardBank.Name,
-                        CreditCardTypeName = creditCard.CreditCardBrand.Name,
+                        BankEntityName = creditCard.Entity.Name,
+                        CreditCardBrandName = creditCard.CreditCardBrand.Name,
                         LastFourNumbers = $"●●●● ●●●● ●●●● {creditCard.LastFourNumbers}",
                     });
                 }
@@ -103,7 +97,7 @@ namespace MoneyAdministrator.Presenters
         {
             var creditCard = new CreditCardService(_databasePath).Get(_view.SelectedId);
 
-            _view.CreditCardBank = creditCard.CreditCardBank;
+            _view.Entity = creditCard.Entity;
             _view.CreditCardBrand = creditCard.CreditCardBrand;
             _view.LastFourNumbers = creditCard.LastFourNumbers;
         }
@@ -127,24 +121,30 @@ namespace MoneyAdministrator.Presenters
                 {
                     //Inicializo los servicios
                     var creditCardService = new CreditCardService(_databasePath);
-                    var creditCardBankService = new CreditCardBankService(_databasePath);
+                    var entityService = new EntityService(_databasePath);
 
                     //Obtengo los valores
-                    var creditCardBank = _view.CreditCardBank;
+                    var entity = _view.Entity;
                     var creditCardBrand = _view.CreditCardBrand;
                     var lastFourNumbers = _view.LastFourNumbers;
 
                     //Compruebo el banco ya existe, si no existe la inserto
-                    var searchBank = creditCardBankService.GetByName(creditCardBank.Name);
-                    if (searchBank == null)
-                        creditCardBankService.Insert(creditCardBank);
+                    var searchEntity = entityService.GetByName(entity.Name);
+                    if (searchEntity is null)
+                        entityService.Insert(entity);
                     else
-                        creditCardBank.Id = searchBank.Id;
+                    {
+                        entity.Id = searchEntity.Id;
+
+                        //Actualizo la entidad para convertirla en un banco
+                        searchEntity.EntityTypeId = 2;
+                        entityService.Update(searchEntity);
+                    }
 
                     //Inserto la tarjeta de credito
                     var creditCard = new CreditCard()
                     {
-                        CreditCardBankId = creditCardBank.Id,
+                        EntityId = entity.Id,
                         CreditCardBrandId = creditCardBrand.Id,
                         LastFourNumbers = lastFourNumbers,
                     };
@@ -154,7 +154,7 @@ namespace MoneyAdministrator.Presenters
                 {
                     CommonMessageBox.errorMessageShow(ex.Message, MessageBoxButtons.OK);
                 }
-                CreditCardBankRefreshData();
+                CreditCardEntityRefreshData();
                 GrdRefreshData();
             }
         }
@@ -167,7 +167,7 @@ namespace MoneyAdministrator.Presenters
                 {
                     //Inicializo los servicios
                     var creditCardService = new CreditCardService(_databasePath);
-                    var creditCardBankService = new CreditCardBankService(_databasePath);
+                    var entityService = new EntityService(_databasePath);
 
                     //Compruebo que la tarjeta de credito existe
                     var creditCard = creditCardService.Get(_view.SelectedId);
@@ -178,19 +178,19 @@ namespace MoneyAdministrator.Presenters
                     }
 
                     //Obtengo los valores
-                    var creditCardBank = _view.CreditCardBank;
+                    var entity = _view.Entity;
                     var creditCardType = _view.CreditCardBrand;
                     var lastFourNumbers = _view.LastFourNumbers;
 
                     //Compruebo el banco ya existe, si no existe la inserto
-                    var searchBank = creditCardBankService.GetByName(creditCardBank.Name);
-                    if (searchBank == null)
-                        creditCardBankService.Insert(creditCardBank);
+                    var searchEntity = entityService.GetByName(entity.Name);
+                    if (searchEntity == null)
+                        entityService.Insert(entity);
                     else
-                        creditCardBank.Id = searchBank.Id;
+                        entity.Id = searchEntity.Id;
 
                     //Modifico la tarjeta de credito
-                    creditCard.CreditCardBankId = creditCardBank.Id;
+                    creditCard.EntityId = entity.Id;
                     creditCard.CreditCardBrandId = creditCardType.Id;
                     creditCard.LastFourNumbers = lastFourNumbers;
                     creditCardService.Update(creditCard);
@@ -199,7 +199,7 @@ namespace MoneyAdministrator.Presenters
                 {
                     CommonMessageBox.errorMessageShow(ex.Message, MessageBoxButtons.OK);
                 }
-                CreditCardBankRefreshData();
+                CreditCardEntityRefreshData();
                 GrdRefreshData();
             }
         }
@@ -227,7 +227,7 @@ namespace MoneyAdministrator.Presenters
                 {
                     CommonMessageBox.errorMessageShow(ex.Message, MessageBoxButtons.OK);
                 }
-                CreditCardBankRefreshData();
+                CreditCardEntityRefreshData();
                 GrdRefreshData();
             }
         }

@@ -29,5 +29,7 @@ namespace MoneyAdministrator.Models
 
         //foreign keys all constraints
         public virtual ICollection<TransactionDetail> TransactionDetails { get; set; }
+
+        public virtual ICollection<CCSummary> CCSummaries { get; set; }
     }
 }

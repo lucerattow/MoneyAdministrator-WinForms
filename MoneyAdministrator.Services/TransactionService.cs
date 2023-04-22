@@ -19,6 +19,11 @@ namespace MoneyAdministrator.Services
             _unitOfWork = new UnitOfWork(databasePath);
         }
 
+        public TransactionService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
         public List<Transaction> GetAll()
         {
             return _unitOfWork.TransactionRepository.GetAll().ToList();
@@ -69,6 +74,27 @@ namespace MoneyAdministrator.Services
             {
                 _unitOfWork.TransactionRepository.Delete(item);
                 _unitOfWork.Save();
+                UpdateCreditCardSummary();
+            }
+        }
+
+        private void UpdateCreditCardSummary()
+        {
+            //Inicializo los servicios
+            var ccSummaryService = new CCSummaryService(_unitOfWork);
+
+            var summaries = ccSummaryService.GetAll();
+            if (summaries.Count == 0)
+                return;
+
+            foreach (var summary in summaries)
+            {
+                var transactions = GetAll().Where(x => x.Id == summary.TransactionPayId).FirstOrDefault();
+                if (transactions is null)
+                {
+                    summary.TransactionPayId = 0;
+                    ccSummaryService.Update(summary);
+                }
             }
         }
     }

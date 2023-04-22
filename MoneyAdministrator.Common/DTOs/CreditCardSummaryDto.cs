@@ -11,12 +11,13 @@ namespace MoneyAdministrator.Common.DTOs
         public int Id { get; set; }
         public DateTime Period { get; set; }
         public DateTime Date { get; set; }
-        public DateTime Expiration { get; set; }
-        public DateTime NextDate { get; set; }
-        public DateTime NextExpiration { get; set; }
+        public DateTime DateExpiration { get; set; }
+        public DateTime DateNext { get; set; }
+        public DateTime DateNextExpiration { get; set; }
         public decimal TotalArs { get; set; }
         public decimal TotalUsd { get; set; }
         public decimal MinimumPayment { get; set; }
+        public decimal OutstandingArs { get; set; }
         public List<CreditCardSummaryDetailDto> CreditCardSummaryDetails { get; set; }
 
         public void AddDetailDto(List<CreditCardSummaryDetailDto> creditCardSummaryDetailDto)

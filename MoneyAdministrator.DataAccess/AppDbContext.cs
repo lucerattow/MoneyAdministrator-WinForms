@@ -10,7 +10,6 @@ namespace MoneyAdministrator.DataAccess
 
         public DbSet<CCSummaryDetail> CCSummaryDetails { get; set; }
         public DbSet<CCSummary> CCSummaries { get; set; }
-        public DbSet<CreditCardBank> CreditCardBanks { get; set; }
         public DbSet<CreditCardBrand> CreditCardBrands { get; set; }
         public DbSet<CreditCard> CreditCards { get; set; }
         public DbSet<Currency> Currencies { get; set; }
@@ -42,11 +41,8 @@ namespace MoneyAdministrator.DataAccess
                 new Currency { Id = 2, Name = "USD" }
             );
             modelBuilder.Entity<EntityType>().HasData(
-                new EntityType { Id = 1, Name = "General" }
-            );
-            modelBuilder.Entity<CreditCardBank>().HasData(
-                new CreditCardBank { Id = 1, ImportSupport = true, Name = "HSBC" },
-                new CreditCardBank { Id = 2, ImportSupport = true, Name = "Supervielle" }
+                new EntityType { Id = 1, Name = "General" },
+                new EntityType { Id = 2, Name = "Banco" }
             );
             modelBuilder.Entity<CreditCardBrand>().HasData(
                 new CreditCardBrand { Id = 1, Name = "Visa" },

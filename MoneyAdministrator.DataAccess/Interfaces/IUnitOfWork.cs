@@ -12,7 +12,6 @@ namespace MoneyAdministrator.DataAccess.Interfaces
         IRepository<CCSummary> CCResumeRepository { get; }
         IRepository<CCSummaryDetail> CCResumeDetailRepository { get; }
         IRepository<CreditCard> CreditCardRepository { get; }
-        IRepository<CreditCardBank> CreditCardBankRepository { get; }
         IRepository<CreditCardBrand> CreditCardTypeRepository { get; }
         IRepository<Currency> CurrencyRepository { get; }
         IRepository<CurrencyValue> CurrencyValueRepository { get; }

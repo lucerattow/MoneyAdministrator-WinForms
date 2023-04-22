@@ -42,6 +42,7 @@ namespace MoneyAdministrator.Presenters
         {
             _view.GrdDoubleClick += GrdDoubleClick;
             _view.ButtonInsertClick += ButtonInsertClick;
+            _view.ButtonNewPayClick += ButtonNewPayClick;
             _view.ButtonUpdateClick += ButtonUpdateClick;
             _view.ButtonDeleteClick += ButtonDeleteClick;
             _view.ButtonExitClick += ButtonExitClick;
@@ -96,19 +97,26 @@ namespace MoneyAdministrator.Presenters
         {
             using (new CursorWait())
             {
-                var entity = new TransactionDetailService(_databasePath).Get(_view.SelectedId);
+                //Inicializo los servicios
+                var transactionDetailService = new TransactionDetailService(_databasePath);
+                var ccSummaryService = new CCSummaryService(_databasePath);
 
-                _view.EntityName = entity.Transaction.Entity.Name;
-                _view.Date = entity.Date;
-                _view.Description = entity.Transaction.Description;
-                _view.Amount = entity.Amount;
-                _view.Currency = entity.Transaction.Currency;
-                _view.InstallmentCurrent = entity.Installment;
-                _view.InstallmentMax = entity.Transaction.TransactionDetails.Max(t => t.Installment);
-                _view.IsService = entity.Frequency > 0;
-                _view.Frequency = entity.Frequency;
+                var transactionDetail = transactionDetailService.Get(_view.SelectedId);
+
+                _view.EntityName = transactionDetail.Transaction.Entity.Name;
+                _view.Date = transactionDetail.Date;
+                _view.Description = transactionDetail.Transaction.Description;
+                _view.Amount = transactionDetail.Amount;
+                _view.Currency = transactionDetail.Transaction.Currency;
+                _view.InstallmentCurrent = transactionDetail.Installment;
+                _view.InstallmentMax = transactionDetail.Transaction.TransactionDetails.Max(t => t.Installment);
+                _view.IsService = transactionDetail.Frequency > 0;
+                _view.Frequency = transactionDetail.Frequency;
 
                 _view.Editing = true;
+
+                var ccSummary = ccSummaryService.GetAll().Where(x => x.TransactionId == transactionDetail.Transaction.Id).FirstOrDefault();
+                _view.IsCreditCardSummaryOutstanding = ccSummary != null;
             }
         }
 
@@ -192,6 +200,26 @@ namespace MoneyAdministrator.Presenters
                 }
                 GrdRefreshData();
             }
+        }
+
+        private void ButtonNewPayClick(object? sender, EventArgs e)
+        {
+            //Inicializo los servicios
+            var transactionDetailService = new TransactionDetailService(_databasePath);
+            var ccSummaryService = new CCSummaryService(_databasePath);
+
+            //Busco el resumen asociado a la transaccion
+            var transactionDetail = transactionDetailService.Get(_view.SelectedId);
+            if (transactionDetail is null)
+                return;
+
+            var summary = ccSummaryService.GetAll().Where(x => x.TransactionId == transactionDetail.TransactionId).FirstOrDefault();
+            if (summary is null) 
+                return;
+
+            var creditCardPayPresenter = new CreditCardPayPresenter(_databasePath, summary.Id);
+            creditCardPayPresenter.Show();
+            GrdRefreshData();
         }
 
         private void ButtonUpdateClick(object? sender, EventArgs e)
@@ -299,6 +327,7 @@ namespace MoneyAdministrator.Presenters
                     //Inicializo los servicios
                     var transactionService = new TransactionService(_databasePath);
                     var transactionDetailService = new TransactionDetailService(_databasePath);
+                    var creditCardSummaryService = new CCSummaryService(_databasePath);
 
                     //Compruebo que el transactionDetail existe
                     var transactionDetail = transactionDetailService.Get(_view.SelectedId);
@@ -311,13 +340,8 @@ namespace MoneyAdministrator.Presenters
                     var transaction = transactionDetail.Transaction;
                     var transactionDetails = transactionDetail.Transaction.TransactionDetails;
 
-                    //Elimino transaccion unica
-                    if (transactionDetails.Count == 1)
-                    {
-                        transactionDetailService.Delete(transactionDetails.First());
-                    }
                     //Elimino una transaccion en cuotas
-                    else if (transactionDetails.Max(x => x.Installment) > 1)
+                    if (transactionDetails.Max(x => x.Installment) > 1)
                     {
                         string message = "Al eliminar esta cuota, también se eliminarán todas las cuotas relacionadas. ¿Desea continuar con la eliminación?";
                         string title = "Confirmar eliminación de cuotas";
@@ -337,10 +361,26 @@ namespace MoneyAdministrator.Presenters
                         {
                             foreach (var td in transactionDetails.Where(x => x.Id >= transactionDetail.Id).ToList())
                                 transactionDetailService.Delete(td);
-
-                            if (transactionDetails.Where(x => x.Id < transactionDetail.Id).ToList().Count == 0)
-                                transactionService.Delete(transaction);
                         }
+                    }
+                    //Elimino transaccion unica
+                    else
+                    {
+                        //Compruebo si la transaccion esta asociada a una tarjeta de credito
+                        var ccSummary = creditCardSummaryService.GetAll().Where(x => x.TransactionId == transaction.Id).FirstOrDefault();
+                        if (ccSummary != null)
+                        {
+                            string descripcion = $"{ccSummary.CreditCard.CreditCardBrand.Name} : ●●●● ●●●● ●●●● {ccSummary.CreditCard.LastFourNumbers}";
+                            string message = $"Al eliminar este servicio, también se eliminará el resumen de tarjeta de crédito relacionado " +
+                                $"({descripcion} : {transactionDetails.First().Date.ToString("yyyy-MM")}). ¿Desea continuar con la eliminación?";
+                            string title = "Confirmar eliminación de cuotas";
+
+                            if (CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNo, title) == DialogResult.No)
+                                return;
+                        }
+
+                        //Elimino el detalle
+                        transactionDetailService.Delete(transactionDetail);
                     }
                 }
                 catch (Exception ex)

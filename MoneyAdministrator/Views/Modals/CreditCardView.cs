@@ -23,16 +23,17 @@ namespace MoneyAdministrator.Views.Modals
             get => _selectedId;
             set => _selectedId = value;
         }
-        public CreditCardBank CreditCardBank
+        public Entity Entity
         {
             get
             {
-                var bank = (CreditCardBank)_cbBank.SelectedItem;
+                var bank = (Entity)_cbBank.SelectedItem;
                 if (bank == null)
                 {
-                    bank = new CreditCardBank
+                    bank = new Entity
                     {
                         Name = _cbBank.Text,
+                        EntityTypeId = 2, //Tipo Banco
                     };
                 }
                 return bank;
@@ -86,20 +87,20 @@ namespace MoneyAdministrator.Views.Modals
                 _grd.Rows.Clear();
 
                 int row = 0;
-                foreach (var dto in dataSource.OrderBy(x => x.BankEntityName).ThenBy(x => x.CreditCardTypeName).ThenBy(x => x.LastFourNumbers))
+                foreach (var dto in dataSource.OrderBy(x => x.BankEntityName).ThenBy(x => x.CreditCardBrandName).ThenBy(x => x.LastFourNumbers))
                 {
                     row = _grd.Rows.Add(new object[]
                     {
                         dto.Id,
                         dto.BankEntityName,
-                        dto.CreditCardTypeName,
+                        dto.CreditCardBrandName,
                         dto.LastFourNumbers,
                     });
                 }
             }
         }
 
-        public void CreditCardBankRefreshData(List<CreditCardBank> datasource)
+        public void CreditCardEntityRefreshData(List<Entity> datasource)
         {
             _cbBank.DataSource = datasource.OrderBy(x => x.Name).ToList();
             _cbBank.DisplayMember = "Name";

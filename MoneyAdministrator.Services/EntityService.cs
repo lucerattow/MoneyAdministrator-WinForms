@@ -92,9 +92,16 @@ namespace MoneyAdministrator.Services
 
         public void Delete(Entity model)
         {
+            var creditCardService = new CreditCardService(_unitOfWork);
+
             var item = _unitOfWork.EntityRepository.GetById(model.Id);
             if (item != null )
             {
+                var creditCard = creditCardService.GetAll().Where(x => x.EntityId == item.Id).FirstOrDefault();
+
+                if (creditCard != null)
+                    throw new Exception("No es posible eliminar esta entidad, ya que hay cargada una tarjeta de crédito con esta entidad");
+
                 item.Deleted = true;
                 _unitOfWork.EntityRepository.Update(item);
                 _unitOfWork.Save();

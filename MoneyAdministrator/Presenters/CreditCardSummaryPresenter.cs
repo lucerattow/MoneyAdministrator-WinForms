@@ -41,6 +41,7 @@ namespace MoneyAdministrator.Presenters
         private void AssosiateEvents()
         {
             _view.ButtonImportClick += ButtonImportClick;
+            _view.ButtonNewPayClick += ButtonNewPayClick;
             _view.ButtonInsertClick += ButtonInsertClick;
             _view.ButtonDeleteClick += ButtonDeleteClick;
             _view.ButtonExitClick += ButtonExitClick;
@@ -77,13 +78,14 @@ namespace MoneyAdministrator.Presenters
             {
                 _view.Period = dto.Period;
                 _view.Date = dto.Date;
-                _view.Expiration = dto.Expiration;
-                _view.NextDate = dto.NextDate;
-                _view.NextExpiration = dto.NextExpiration;
+                _view.Expiration = dto.DateExpiration;
+                _view.NextDate = dto.DateNext;
+                _view.NextExpiration = dto.DateNextExpiration;
 
                 _view.TotalArs = dto.TotalArs;
                 _view.TotalUsd = dto.TotalUsd;
                 _view.minimumPayment = dto.MinimumPayment;
+                _view.OutstandingArs = dto.OutstandingArs;
 
                 _view.CCSummaryDetailDtos = dto.CreditCardSummaryDetails;
             }
@@ -105,12 +107,12 @@ namespace MoneyAdministrator.Presenters
                     try
                     {
                         string filePath = openFileDialog.FileName;
-                        string bankName = _view.CreditCard.CreditCardBank.Name;
+                        string bankName = _view.CreditCard.Entity.Name;
                         string brandName = _view.CreditCard.CreditCardBrand.Name;
                         var importer = new Import.Summary.Execute(bankName, brandName);
                         var summaryDto = importer.ExtractDataFromPDF(filePath);
                         OpenCreditCardSummary(summaryDto);
-                        _view.ImportedSummary = true;
+                        _view.SummaryImported = true;
                     }
                     catch (Exception ex)
                     {
@@ -121,35 +123,76 @@ namespace MoneyAdministrator.Presenters
             }
         }
 
+        private void ButtonNewPayClick(object sender, EventArgs e)
+        {
+            var creditCardPayPresenter = new CreditCardPayPresenter(_databasePath, _view.CCSummaryId);
+            creditCardPayPresenter.Show();
+        }
+
         private void ButtonInsertClick(object sender, EventArgs e)
         {
             //Inicializo los servicios
+            var transactionService = new TransactionService(_databasePath);
+            var transactionDetailService = new TransactionDetailService(_databasePath);
             var ccSummaryService = new CCSummaryService(_databasePath);
             var ccSummaryDetailService = new CCSummaryDetailService(_databasePath);
 
             //Consulto si el resumen ya existe para este periodo y tarjeta
             var ccSummary = ccSummaryService.GetAll()
                 .Where(x => x.CreditCardId == _view.CreditCard.Id && x.Period == _view.Period).FirstOrDefault();
+
             if (ccSummary != null)
             {
+                //Si ya existe el resumen
                 string message = "Ya existe un resumen cargado para este periodo, deseas reemplazarlo?";
                 string title = "Confirmar reemplazo de resumen";
 
                 if (CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNo, title) != DialogResult.Yes)
                     return;
 
-                //Los detalles se eliminan en cascada
-                ccSummaryService.Delete(ccSummary);
+                //Elimino la transaccion asociada
+                var transaction = transactionService.Get(ccSummary.TransactionId);
+                if (transaction != null)
+                    //Al eliminar la transaccion, se elimina el resumen en cascada
+                    transactionService.Delete(transaction);
+                else
+                    ccSummaryService.Delete(ccSummary);
             }
 
+            //Creo la transaccion
+            var descripcion = $"Saldo pendiente {_view.CreditCard.CreditCardBrand.Name} -" +
+                $" ●●●● ●●●● ●●●● {_view.CreditCard.LastFourNumbers} - Vencimiento: {_view.Expiration:yyyy-MM-dd}";
+            var newTransaction = new Transaction
+            { 
+                EntityId = _view.CreditCard.EntityId,
+                CurrencyId = 1, //ARS
+                Description = descripcion,
+            };
+            transactionService.Insert(newTransaction);
+
+            //Creo el detalle de la transaccion
+            var transactionDetail = new TransactionDetail
+            {
+                TransactionId = newTransaction.Id,
+                Date = _view.Period,
+                Amount = _view.TotalArs,
+                Installment = 0,
+                Frequency = 1,
+            };
+            transactionDetailService.Insert(transactionDetail);
+
+            //Creo el resumen de la tarjeta
             ccSummary = new CCSummary
             {
                 CreditCardId = _view.CreditCard.Id,
+                TransactionId = newTransaction.Id,
                 Period = _view.Period,
                 Date = _view.Date,
-                Expiration = _view.Expiration,
-                NextDate = _view.NextDate,
-                NextExpiration = _view.NextExpiration,
+                DateExpiration = _view.Expiration,
+                DateNext = _view.NextDate,
+                DateNextExpiration = _view.NextExpiration,
+                TotalArs = _view.TotalArs,
+                TotalUsd = _view.TotalUsd,
                 MinimumPayment = _view.minimumPayment,
             };
             ccSummaryService.Insert(ccSummary);
@@ -177,6 +220,7 @@ namespace MoneyAdministrator.Presenters
         {
             //Inicializo los servicios
             var ccSummaryService = new CCSummaryService(_databasePath);
+            var transactionService = new TransactionService(_databasePath);
 
             //Consulto si el resumen ya existe para este periodo y tarjeta
             var ccSummary = ccSummaryService.GetAll()
@@ -189,8 +233,13 @@ namespace MoneyAdministrator.Presenters
                 if (CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNo, title) != DialogResult.Yes)
                     return;
 
-                //Los detalles se eliminan en cascada
-                ccSummaryService.Delete(ccSummary);
+                //Elimino la transaccion asociada
+                var transaction = transactionService.Get(ccSummary.TransactionId);
+                if (transaction != null)
+                    //Al eliminar la transaccion, se elimina el resumen en cascada
+                    transactionService.Delete(transaction);
+                else
+                    ccSummaryService.Delete(ccSummary);
             }
 
             TvRefreshData(_view.CreditCard);
@@ -198,7 +247,7 @@ namespace MoneyAdministrator.Presenters
 
         private void ButtonExitClick(object sender, EventArgs e)
         {
-            if (_view.ImportedSummary == true)
+            if (_view.SummaryImported == true)
             {
                 string message = "Esta seguro que desea salir sin guardar el resumen importado?";
                 string title = "Confirmar descartar importacion";
@@ -223,13 +272,13 @@ namespace MoneyAdministrator.Presenters
 
         private void SummaryListNodeClick(object sender, EventArgs e)
         {
-            _view.ImportedSummary = false;
+            _view.SummaryImported = false;
 
             //Inicializo los servicios
             var ccSummaryService = new CCSummaryService(_databasePath);
             var ccSummaryDetailsService = new CCSummaryDetailService(_databasePath);
 
-            var ccSummary = ccSummaryService.Get(_view.SelectedSummaryId);
+            var ccSummary = ccSummaryService.Get(_view.CCSummaryId);
             if (ccSummary != null)
             {
                 var ccSummaryDto = new CreditCardSummaryDto
@@ -237,10 +286,13 @@ namespace MoneyAdministrator.Presenters
                     Id = ccSummary.Id,
                     Period = ccSummary.Period,
                     Date = ccSummary.Date,
-                    Expiration = ccSummary.Expiration,
-                    NextDate = ccSummary.NextDate,
-                    NextExpiration = ccSummary.NextExpiration,
+                    DateExpiration = ccSummary.DateExpiration,
+                    DateNext = ccSummary.DateNext,
+                    DateNextExpiration = ccSummary.DateNextExpiration,
+                    TotalArs = ccSummary.TotalArs,
+                    TotalUsd = ccSummary.TotalUsd,
                     MinimumPayment = ccSummary.MinimumPayment,
+                    OutstandingArs = ccSummary.Transaction.TransactionDetails.FirstOrDefault().Amount,
                 };
 
                 ccSummaryDto.CreditCardSummaryDetails = new List<CreditCardSummaryDetailDto>();

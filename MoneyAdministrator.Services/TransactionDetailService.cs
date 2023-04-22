@@ -40,20 +40,12 @@ namespace MoneyAdministrator.Services
                 throw new Exception("There is no transaction with that id");
 
             //Compruebo si el objeto ya existe
-            var item = _unitOfWork.TransactionDetailRepository.GetAll()
-                .Where(x => x.TransactionId == model.TransactionId && x.Date == model.Date).FirstOrDefault();
+            //var item = _unitOfWork.TransactionDetailRepository.GetAll()
+            //    .Where(x => x.TransactionId == model.TransactionId ).FirstOrDefault();
 
-            if (item != null)
-            {
-                //Si el objeto ya existe, añado el id en el modelo
-                model.Id = item.Id;
-            }
-            else
-            {
-                //Agrego el modelo a la base de datos
-                _unitOfWork.TransactionDetailRepository.Insert(model);
-                _unitOfWork.Save();
-            }
+            _unitOfWork.TransactionDetailRepository.Insert(model);
+            _unitOfWork.Save();
+            UpdateSummaryOutstanding(model.TransactionId);
         }
 
         public void Update(TransactionDetail model)
@@ -66,23 +58,27 @@ namespace MoneyAdministrator.Services
             {
                 _unitOfWork.TransactionDetailRepository.Update(model);
                 _unitOfWork.Save();
+                UpdateSummaryOutstanding(item.TransactionId);
             }
         }
 
         public void Delete(TransactionDetail model)
         {
             var item = _unitOfWork.TransactionDetailRepository.GetById(model.Id);
+
             if (item != null)
             {
                 _unitOfWork.TransactionDetailRepository.Delete(item);
                 _unitOfWork.Save();
+                UpdateSummaryOutstanding(item.TransactionId);
+                DeleteTransactionIfNotHaveDetails();
             }
         }
 
         /// <summary>
         /// Crea una lista con los detalles de la transaccion, la cual luego podra ser usada para añadirse a la base de datos
         /// </summary>
-        /// <param name="transaction">Transaccion a la cual se le asociaran los TransactionDetails</param>
+        /// <param name="transactionId">Transaccion a la cual se le asociaran los TransactionDetails</param>
         /// <param name="date">Fecha inicial de los TransactionDetails</param>
         /// <param name="amount">Monto de cada TransactionDetails</param>
         /// <param name="totalMonths">Limite de meses para ingresar TransactionDetails</param>
@@ -108,6 +104,39 @@ namespace MoneyAdministrator.Services
             }
 
             return result;
+        }
+
+        /// <summary>Analizo los resumenes de tarjeta de credito, para saber si hay que actualizar su transaccion de saldo pendiente.</summary>
+        private void UpdateSummaryOutstanding(int transactionId)
+        {
+            //Inicializo los servicios
+            var ccSummaryService = new CCSummaryService(_unitOfWork);
+
+            var summary = ccSummaryService.GetAll().Where(x => x.TransactionPayId == transactionId).FirstOrDefault();
+            if (summary is null || summary.TransactionPayId == 0)
+                return;
+
+            var transactionOutstanding = this.GetAll().Where(x => x.TransactionId == summary.TransactionId).FirstOrDefault();
+            var transactionPayments = this.GetAll().Where(x => x.TransactionId == summary.TransactionPayId).ToList();
+
+            var payedAmount = transactionPayments.Sum(x => x.Amount);
+
+            if (transactionOutstanding != null)
+            {
+                var newValue = summary.TotalArs + payedAmount;
+                transactionOutstanding.Amount = newValue > 0 ? 0 : newValue;
+                this.Update(transactionOutstanding);
+            }
+        }
+
+        private void DeleteTransactionIfNotHaveDetails()
+        {
+            //Inicializo los servicios
+            var transactionService = new TransactionService(_unitOfWork);
+            var transactions = transactionService.GetAll().Where(x => x.TransactionDetails.Count == 0);
+
+            foreach (var transaction in transactions)
+                transactionService.Delete(transaction);
         }
     }
 }

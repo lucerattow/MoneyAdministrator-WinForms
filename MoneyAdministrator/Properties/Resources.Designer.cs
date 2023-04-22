@@ -303,6 +303,16 @@ namespace MoneyAdministrator.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap money_envelope_add_shadow {
+            get {
+                object obj = ResourceManager.GetObject("money_envelope_add_shadow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap save_as_shadow {
             get {
                 object obj = ResourceManager.GetObject("save_as_shadow", resourceCulture);

@@ -13,7 +13,7 @@ namespace MoneyAdministrator.Interfaces
         //properties
         CreditCard CreditCard { get; set; }
         List<CreditCardSummaryDetailDto> CCSummaryDetailDtos { get; set; }
-        int SelectedSummaryId { get; set; }
+        int CCSummaryId { get; set; }
 
         DateTime Period { get; set; }
         DateTime Date { get; set; }
@@ -23,14 +23,16 @@ namespace MoneyAdministrator.Interfaces
         decimal TotalArs { get; set; }
         decimal TotalUsd { get; set; }
         decimal minimumPayment { get; set; }
+        decimal OutstandingArs { get; set; }
 
-        bool ImportedSummary { get; set; }
+        bool SummaryImported { get; set; }
 
         //methods
         void TvRefreshData(List<TreeViewSummaryListDto> datasource);
 
         //events
         event EventHandler ButtonImportClick;
+        event EventHandler ButtonNewPayClick;
         event EventHandler ButtonInsertClick;
         event EventHandler ButtonDeleteClick;
         event EventHandler ButtonExitClick;

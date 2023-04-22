@@ -34,6 +34,7 @@ namespace MoneyAdministrator.CustomControls
         public MoneyTextBox()
         {
             this.Text = "0.00 $";
+            this.TextAlign = HorizontalAlignment.Right;
             _operatorSymbol = "-";
             this.Click += this_Click;
             this.Enter += this_Enter;

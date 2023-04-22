@@ -13,6 +13,8 @@ namespace MoneyAdministrator.Views
     {
         //fields
         private int _selectedId = 0;
+        private bool _isCreditCardSummaryOutstanding = false;
+
         private List<string> _frequencies = new List<string>()
         {
             "1 Mes",
@@ -35,15 +37,15 @@ namespace MoneyAdministrator.Views
             get => _selectedId;
             set => _selectedId = value;
         }
-        public string EntityName 
-        { 
-            get => _txtEntityName.Text; 
-            set => _txtEntityName.Text = value; 
+        public string EntityName
+        {
+            get => _txtEntityName.Text;
+            set => _txtEntityName.Text = value;
         }
-        public DateTime Date 
-        { 
-            get => _dtpDate.Value; 
-            set => _dtpDate.Value = value; 
+        public DateTime Date
+        {
+            get => _dtpDate.Value;
+            set => _dtpDate.Value = value;
         }
         public string Description
         {
@@ -117,7 +119,7 @@ namespace MoneyAdministrator.Views
         }
         public int Frequency
         {
-            get 
+            get
             {
                 var frequency = string.Concat(_cbFrequency.SelectedItem.ToString().Where(char.IsDigit));
 
@@ -149,6 +151,15 @@ namespace MoneyAdministrator.Views
                     _dtpDate.CustomFormat = "'Dia:' dd";
                 else
                     _dtpDate.CustomFormat = ConfigurationManager.AppSettings["DateFormat"];
+            }
+        }
+        public bool IsCreditCardSummaryOutstanding
+        {
+            get => _isCreditCardSummaryOutstanding;
+            set
+            {
+                _isCreditCardSummaryOutstanding = value;
+                ButtonsLogic();
             }
         }
 
@@ -195,7 +206,7 @@ namespace MoneyAdministrator.Views
                 for (var i = 12; i >= 1; i--)
                 {
                     List<TransactionDto> monthTransactions = datasource
-                        .Where(x => x.Date.Month == i).OrderByDescending(x => x.Date.Day).ToList();
+                        .Where(x => x.Date.Month == i).OrderByDescending(x => x.Date.Day).ThenBy(x => x.Description).ToList();
 
                     if (monthTransactions.Count != 0)
                     {
@@ -242,8 +253,9 @@ namespace MoneyAdministrator.Views
         public void ButtonsLogic()
         {
             _tsbInsert.Enabled = _selectedId == 0;
-            _tsbUpdate.Enabled = _selectedId != 0;
+            _tsbUpdate.Enabled = _selectedId != 0 && !_isCreditCardSummaryOutstanding;
             _tsbDelete.Enabled = _selectedId != 0;
+            _tsbNewPay.Enabled = _selectedId != 0 && _isCreditCardSummaryOutstanding;
         }
 
         private void ClearInputs()
@@ -260,6 +272,7 @@ namespace MoneyAdministrator.Views
             _cbFrequency.SelectedIndex = _cbFrequency.FindString("1");
 
             Editing = false;
+            _isCreditCardSummaryOutstanding = false;
             ButtonsLogic();
         }
 
@@ -356,6 +369,12 @@ namespace MoneyAdministrator.Views
             ClearInputs();
         }
 
+        private void _tsbNewPay_Click(object sender, EventArgs e)
+        {
+            ButtonNewPayClick.Invoke(sender, e);
+            ButtonsLogic();
+        }
+
         private void _tsbUpdate_Click(object sender, EventArgs e)
         {
             ButtonUpdateClick?.Invoke(sender, e);
@@ -399,8 +418,15 @@ namespace MoneyAdministrator.Views
             _grd.Columns["description"].Width = _grd.Width - _colWidthTotal - 19;
         }
 
+        private void _txtInstallments_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!(char.IsDigit(e.KeyChar) || char.IsControl(e.KeyChar)))
+                e.Handled = true;
+        }
+
         public event EventHandler GrdDoubleClick;
         public event EventHandler ButtonInsertClick;
+        public event EventHandler ButtonNewPayClick;
         public event EventHandler ButtonUpdateClick;
         public event EventHandler ButtonDeleteClick;
         public event EventHandler ButtonExitClick;
