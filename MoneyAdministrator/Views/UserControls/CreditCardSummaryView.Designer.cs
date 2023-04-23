@@ -42,6 +42,9 @@ namespace MoneyAdministrator.Views
             _pnlContent = new Panel();
             panel3 = new Panel();
             _grd = new DataGridView();
+            panel4 = new Panel();
+            label9 = new Label();
+            _grd_payments = new DataGridView();
             panel2 = new Panel();
             _txtDateNextExpiration = new TextBox();
             _txtDateExpiration = new TextBox();
@@ -72,6 +75,8 @@ namespace MoneyAdministrator.Views
             _pnlContent.SuspendLayout();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)_grd).BeginInit();
+            panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)_grd_payments).BeginInit();
             panel2.SuspendLayout();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -149,11 +154,12 @@ namespace MoneyAdministrator.Views
             // _pnlContent
             // 
             _pnlContent.Controls.Add(panel3);
+            _pnlContent.Controls.Add(panel4);
             _pnlContent.Controls.Add(panel2);
             _pnlContent.Dock = DockStyle.Fill;
             _pnlContent.Location = new Point(284, 27);
             _pnlContent.Name = "_pnlContent";
-            _pnlContent.Size = new Size(716, 273);
+            _pnlContent.Size = new Size(716, 432);
             _pnlContent.TabIndex = 27;
             // 
             // panel3
@@ -162,7 +168,7 @@ namespace MoneyAdministrator.Views
             panel3.Dock = DockStyle.Fill;
             panel3.Location = new Point(0, 122);
             panel3.Name = "panel3";
-            panel3.Size = new Size(716, 151);
+            panel3.Size = new Size(716, 160);
             panel3.TabIndex = 14;
             // 
             // _grd
@@ -172,8 +178,39 @@ namespace MoneyAdministrator.Views
             _grd.Location = new Point(5, 5);
             _grd.Margin = new Padding(4);
             _grd.Name = "_grd";
-            _grd.Size = new Size(707, 141);
+            _grd.Size = new Size(707, 150);
             _grd.TabIndex = 12;
+            // 
+            // panel4
+            // 
+            panel4.BackColor = SystemColors.ButtonFace;
+            panel4.Controls.Add(label9);
+            panel4.Controls.Add(_grd_payments);
+            panel4.Dock = DockStyle.Bottom;
+            panel4.Location = new Point(0, 282);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(716, 150);
+            panel4.TabIndex = 15;
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Location = new Point(2, 3);
+            label9.Margin = new Padding(4, 0, 4, 0);
+            label9.Name = "label9";
+            label9.Size = new Size(120, 20);
+            label9.TabIndex = 17;
+            label9.Text = "Pagos realizados";
+            // 
+            // _grd_payments
+            // 
+            _grd_payments.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            _grd_payments.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            _grd_payments.Location = new Point(5, 25);
+            _grd_payments.Margin = new Padding(4);
+            _grd_payments.Name = "_grd_payments";
+            _grd_payments.Size = new Size(706, 120);
+            _grd_payments.TabIndex = 13;
             // 
             // panel2
             // 
@@ -242,6 +279,7 @@ namespace MoneyAdministrator.Views
             _txtOutstandingArs.Location = new Point(425, 83);
             _txtOutstandingArs.Name = "_txtOutstandingArs";
             _txtOutstandingArs.OperatorSymbol = "-";
+            _txtOutstandingArs.OperatorSymbolIsConstant = false;
             _txtOutstandingArs.Size = new Size(140, 27);
             _txtOutstandingArs.TabIndex = 38;
             _txtOutstandingArs.Tag = "";
@@ -268,6 +306,7 @@ namespace MoneyAdministrator.Views
             _txtMinimumPayment.Location = new Point(571, 83);
             _txtMinimumPayment.Name = "_txtMinimumPayment";
             _txtMinimumPayment.OperatorSymbol = "-";
+            _txtMinimumPayment.OperatorSymbolIsConstant = false;
             _txtMinimumPayment.Size = new Size(140, 27);
             _txtMinimumPayment.TabIndex = 36;
             _txtMinimumPayment.Tag = "";
@@ -294,6 +333,7 @@ namespace MoneyAdministrator.Views
             _txtTotalArs.Location = new Point(425, 29);
             _txtTotalArs.Name = "_txtTotalArs";
             _txtTotalArs.OperatorSymbol = "-";
+            _txtTotalArs.OperatorSymbolIsConstant = false;
             _txtTotalArs.Size = new Size(140, 27);
             _txtTotalArs.TabIndex = 34;
             _txtTotalArs.Tag = "";
@@ -320,6 +360,7 @@ namespace MoneyAdministrator.Views
             _txtTotalUsd.Location = new Point(571, 29);
             _txtTotalUsd.Name = "_txtTotalUsd";
             _txtTotalUsd.OperatorSymbol = "-";
+            _txtTotalUsd.OperatorSymbolIsConstant = false;
             _txtTotalUsd.Size = new Size(140, 27);
             _txtTotalUsd.TabIndex = 32;
             _txtTotalUsd.Tag = "";
@@ -430,7 +471,7 @@ namespace MoneyAdministrator.Views
             // 
             // panel1
             // 
-            panel1.BackColor = SystemColors.ButtonFace;
+            panel1.BackColor = SystemColors.ControlLight;
             panel1.Controls.Add(label1);
             panel1.Controls.Add(_lblCreditCardName);
             panel1.Controls.Add(_tvSummaryList);
@@ -439,7 +480,7 @@ namespace MoneyAdministrator.Views
             panel1.Dock = DockStyle.Left;
             panel1.Location = new Point(0, 27);
             panel1.Name = "panel1";
-            panel1.Size = new Size(284, 273);
+            panel1.Size = new Size(284, 432);
             panel1.TabIndex = 13;
             // 
             // label1
@@ -457,7 +498,7 @@ namespace MoneyAdministrator.Views
             _tvSummaryList.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             _tvSummaryList.Location = new Point(5, 83);
             _tvSummaryList.Name = "_tvSummaryList";
-            _tvSummaryList.Size = new Size(274, 185);
+            _tvSummaryList.Size = new Size(274, 344);
             _tvSummaryList.TabIndex = 0;
             _tvSummaryList.NodeMouseClick += _tvSummaryList_NodeMouseClick;
             // 
@@ -480,13 +521,16 @@ namespace MoneyAdministrator.Views
             Margin = new Padding(4, 6, 4, 6);
             MinimumSize = new Size(1000, 300);
             Name = "CreditCardResumesView";
-            Size = new Size(1000, 300);
+            Size = new Size(1000, 459);
             Resize += CreditCardResumesView_Resize;
             _toolStripButton.ResumeLayout(false);
             _toolStripButton.PerformLayout();
             _pnlContent.ResumeLayout(false);
             panel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)_grd).EndInit();
+            panel4.ResumeLayout(false);
+            panel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)_grd_payments).EndInit();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             panel1.ResumeLayout(false);
@@ -533,5 +577,8 @@ namespace MoneyAdministrator.Views
         private TextBox _txtDateExpiration;
         private TextBox _txtDateNext;
         private TextBox _txtDate;
+        private Panel panel4;
+        private DataGridView _grd_payments;
+        private Label label9;
     }
 }

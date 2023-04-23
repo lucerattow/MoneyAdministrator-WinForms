@@ -29,6 +29,7 @@ namespace MoneyAdministrator.Interfaces
 
         //methods
         void TvRefreshData(List<TreeViewSummaryListDto> datasource);
+        void GrdPaymentsRefreshData(List<CreditCardPayDto> datasource);
 
         //events
         event EventHandler ButtonImportClick;

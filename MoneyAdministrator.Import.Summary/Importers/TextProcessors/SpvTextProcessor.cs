@@ -98,7 +98,7 @@ namespace MoneyAdministrator.Import.Summary.Importers.TextProcessors
                         AmountUsdList = SpvTextFilter.FilterText(table.AmountUsd, line);
                         continue;
                     case "::TAXES::":
-                        detailType = CreditCardSummaryDetailType.TaxesAndMaintenance;
+                        detailType = CreditCardSummaryDetailType.Taxes;
 
                         DateList = SpvTextFilter.FilterText(table.Date, line);
                         AmountArsList = SpvTextFilter.FilterText(table.AmountArs, line);
@@ -117,7 +117,7 @@ namespace MoneyAdministrator.Import.Summary.Importers.TextProcessors
                     continue;
 
                 //Compruebo si el ultimo valor corresponde al total en ars y usd
-                if (detailType == CreditCardSummaryDetailType.TaxesAndMaintenance)
+                if (detailType == CreditCardSummaryDetailType.Taxes)
                 {
                     if (line.StartsWith(AmountArsList.Last()))
                         continue;

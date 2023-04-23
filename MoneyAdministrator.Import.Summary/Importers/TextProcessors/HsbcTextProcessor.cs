@@ -90,7 +90,7 @@ namespace MoneyAdministrator.Import.Summary.Importers.TextProcessors
                         process = true;
                         continue;
                     case "::TAXES::":
-                        detailType = CreditCardSummaryDetailType.TaxesAndMaintenance;
+                        detailType = CreditCardSummaryDetailType.Taxes;
                         continue;
                     case "::DETAILS::":
                         detailType = CreditCardSummaryDetailType.Details;

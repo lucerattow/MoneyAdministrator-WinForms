@@ -12,6 +12,6 @@ namespace MoneyAdministrator.DTOs.Enums
         AutomaticDebits = 1,
         Installments = 2,
         Details = 3,
-        TaxesAndMaintenance = 4,
+        Taxes = 4,
     }
 }

@@ -3,6 +3,7 @@ using MoneyAdministrator.Common.Utilities.TypeTools;
 using MoneyAdministrator.DTOs.Enums;
 using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Models;
+using MoneyAdministrator.Services;
 using MoneyAdministrator.Utilities;
 using MoneyAdministrator.Utilities.Disposable;
 using System.Configuration;
@@ -20,6 +21,12 @@ namespace MoneyAdministrator.Views
         private const int _colWidthAmountArs = 120;
         private const int _colWidthAmountUsd = 120;
         private const int _colWidthTotal = _colWidthDate + _colWidthInstall + _colWidthAmountArs + _colWidthAmountUsd;
+
+        //grd_payments columns width
+        private const int _colPaymentsWidthDate = 90;
+        private const int _colPaymentsWidthEntity = 210;
+        private const int _colPaymentsWidthAmount = 120;
+        private const int _colPaymentsWidthTotal = _colPaymentsWidthDate + _colPaymentsWidthEntity + _colPaymentsWidthAmount;
 
         //fields
         private CreditCard _creditCard;
@@ -236,6 +243,40 @@ namespace MoneyAdministrator.Views
             yearNode.Expand();
         }
 
+        public void GrdPaymentsRefreshData(List<CreditCardPayDto> datasource)
+        {
+            using (new CursorWait())
+            using (new DataGridViewHide(_grd_payments))
+            {
+                //Limpio la grilla y el yearPicker
+                _grd_payments.Rows.Clear();
+
+                if (datasource.Count <= 0)
+                    return;
+
+                var row = 0;
+                var transactions = datasource.OrderByDescending(x => x.Date.Day).ToList();
+
+                if (transactions.Count != 0)
+                {
+                    foreach (var transaction in transactions)
+                    {
+                        row = _grd_payments.Rows.Add(new object[]
+                        {
+                        transaction.Id,
+                        transaction.Date.ToString("yyyy-MM-dd"),
+                        transaction.EntityName,
+                        transaction.Description,
+                        transaction.AmountArs.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
+                        });
+
+                        //Pinto el monto segun corresponda
+                        PaintDgvCells.PaintDecimal(_grd_payments, row, "amount");
+                    }
+                }
+            }
+        }
+
         private void GrdRefreshData()
         {
             var datasource = _CCSummaryDetailDtos;
@@ -253,7 +294,7 @@ namespace MoneyAdministrator.Views
                 GrdRefreshDataDetailed(datasource, CreditCardSummaryDetailType.Details);
                 GrdRefreshDataDetailed(datasource, CreditCardSummaryDetailType.Installments);
                 GrdRefreshDataDetailed(datasource, CreditCardSummaryDetailType.AutomaticDebits);
-                GrdRefreshDataDetailed(datasource, CreditCardSummaryDetailType.TaxesAndMaintenance);
+                GrdRefreshDataDetailed(datasource, CreditCardSummaryDetailType.Taxes);
             }
         }
 
@@ -284,7 +325,7 @@ namespace MoneyAdministrator.Views
                 case CreditCardSummaryDetailType.AutomaticDebits:
                     separatorText = "Debitos Automaticos";
                     break;
-                case CreditCardSummaryDetailType.TaxesAndMaintenance:
+                case CreditCardSummaryDetailType.Taxes:
                     separatorText = "Mantenimiento e Impuestos";
                     break;
             }
@@ -378,6 +419,7 @@ namespace MoneyAdministrator.Views
             _tvSummaryList.ImageList = imagesTreeView;
 
             GrdSetup();
+            GrdPaymentsSetup();
             ButtonsLogic();
         }
 
@@ -423,6 +465,50 @@ namespace MoneyAdministrator.Views
                 HeaderText = "USD",
                 CellTemplate = new DataGridViewTextBoxCell(),
                 Width = _colWidthAmountUsd,
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
+            });
+        }
+
+        private void GrdPaymentsSetup()
+        {
+            ControlConfig.DataGridViewSetup(_grd_payments);
+
+            //Configuracion de columnas
+            _grd_payments.Columns.Add(new DataGridViewColumn() //0 id
+            {
+                Name = "id",
+                HeaderText = "Id",
+                CellTemplate = new DataGridViewTextBoxCell(),
+                Visible = false,
+            });
+            _grd_payments.Columns.Add(new DataGridViewColumn() //1 Fecha
+            {
+                Name = "date",
+                HeaderText = "Fecha",
+                CellTemplate = new DataGridViewTextBoxCell(),
+                Width = _colPaymentsWidthDate,
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
+            });
+            _grd_payments.Columns.Add(new DataGridViewColumn() //2 entity
+            {
+                Name = "entity",
+                HeaderText = "Entidad",
+                Width = _colPaymentsWidthEntity,
+                CellTemplate = new DataGridViewTextBoxCell(),
+            });
+            _grd_payments.Columns.Add(new DataGridViewColumn() //3 description
+            {
+                Name = "description",
+                HeaderText = "Descripcion",
+                Width = _grd_payments.Width - _colPaymentsWidthTotal - 19,
+                CellTemplate = new DataGridViewTextBoxCell(),
+            });
+            _grd_payments.Columns.Add(new DataGridViewColumn() //4 amount
+            {
+                Name = "amount",
+                HeaderText = "Monto",
+                CellTemplate = new DataGridViewTextBoxCell(),
+                Width = _colPaymentsWidthAmount,
                 DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
             });
         }
@@ -483,6 +569,7 @@ namespace MoneyAdministrator.Views
         private void CreditCardResumesView_Resize(object sender, EventArgs e)
         {
             _grd.Columns["description"].Width = _grd.Width - _colWidthTotal - 19;
+            _grd_payments.Columns["description"].Width = _grd_payments.Width - _colPaymentsWidthTotal - 19;
         }
 
         private void _txt_KeyPress(object sender, KeyPressEventArgs e)

@@ -110,22 +110,6 @@ namespace MoneyAdministrator.Views.Modals
 
                 if (transactions.Count != 0)
                 {
-                    //Añado un separador
-                    row = _grd.Rows.Add(new object[]
-                    {
-                    -1,
-                    period.ToString("yyyy"),
-                    period.ToString("(MM) MMM"),
-                    "",
-                    "",
-                    });
-
-                    //Pinto el separador
-                    Color separatorBackColor = Color.FromArgb(75, 135, 230);
-                    Color separatorForeColor = Color.White;
-                    PaintDgvCells.PaintSeparator(_grd, row, separatorBackColor, separatorForeColor);
-
-                    //Caso contrario añado los registros a la tabla
                     foreach (var transaction in transactions)
                     {
                         row = _grd.Rows.Add(new object[]

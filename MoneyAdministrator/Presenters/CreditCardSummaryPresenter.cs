@@ -1,4 +1,5 @@
 ﻿using MoneyAdministrator.Common.DTOs;
+using MoneyAdministrator.DTOs.Enums;
 using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Models;
 using MoneyAdministrator.Services;
@@ -8,6 +9,7 @@ using MoneyAdministrator.Views;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -91,6 +93,29 @@ namespace MoneyAdministrator.Presenters
             }
         }
 
+        private void GrdPaymentsRefreshData(int TransactionPayId)
+        {
+            var transactionService = new TransactionService(_databasePath);
+            var transaction = transactionService.Get(TransactionPayId);
+
+            if (transaction == null && transaction.TransactionDetails.Count == 0)
+                return;
+
+            List<CreditCardPayDto> dtos = new List<CreditCardPayDto>();
+            foreach (var detail in transaction.TransactionDetails.OrderByDescending(x => x.Date.Day).ThenBy(x => x.Transaction.Description))
+            {
+                dtos.Add(new CreditCardPayDto
+                {
+                    Id = detail.Id,
+                    Date = detail.Date,
+                    EntityName = detail.Transaction.Entity.Name,
+                    Description = detail.Transaction.Description,
+                    AmountArs = detail.Amount,
+                });
+            }
+            this._view.GrdPaymentsRefreshData(dtos);
+        }
+
         //events
         private void ButtonImportClick(object sender, EventArgs e)
         {
@@ -127,6 +152,10 @@ namespace MoneyAdministrator.Presenters
         {
             var creditCardPayPresenter = new CreditCardPayPresenter(_databasePath, _view.CCSummaryId);
             creditCardPayPresenter.Show();
+
+            var ccSummaryService = new CCSummaryService(_databasePath).Get(_view.CCSummaryId);
+            if (ccSummaryService != null)
+                GrdPaymentsRefreshData(ccSummaryService.TransactionPayId);
         }
 
         private void ButtonInsertClick(object sender, EventArgs e)
@@ -311,6 +340,7 @@ namespace MoneyAdministrator.Presenters
                 }
 
                 OpenCreditCardSummary(ccSummaryDto);
+                GrdPaymentsRefreshData(ccSummary.TransactionPayId);
             }
         }
     }
