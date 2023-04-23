@@ -154,10 +154,13 @@
             _txtAmountPay.Margin = new Padding(3, 4, 3, 4);
             _txtAmountPay.Name = "_txtAmountPay";
             _txtAmountPay.OperatorSymbol = "-";
+            _txtAmountPay.OperatorSymbolIsConstant = true;
             _txtAmountPay.Size = new Size(140, 27);
             _txtAmountPay.TabIndex = 24;
             _txtAmountPay.Text = "-0,00 $";
             _txtAmountPay.TextAlign = HorizontalAlignment.Right;
+            _txtAmountPay.KeyDown += _txtAmountPay_KeyDown;
+            _txtAmountPay.KeyPress += _txtAmountPay_KeyPress;
             // 
             // _lblEntityName
             // 

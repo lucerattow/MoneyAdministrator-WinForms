@@ -123,7 +123,7 @@ namespace MoneyAdministrator.Services
 
             if (transactionOutstanding != null)
             {
-                var newValue = summary.TotalArs + payedAmount;
+                var newValue = summary.TotalArs + Math.Abs(payedAmount);
                 transactionOutstanding.Amount = newValue > 0 ? 0 : newValue;
                 this.Update(transactionOutstanding);
             }

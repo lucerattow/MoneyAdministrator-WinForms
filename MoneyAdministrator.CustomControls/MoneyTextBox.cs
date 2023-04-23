@@ -10,6 +10,7 @@ namespace MoneyAdministrator.CustomControls
     public class MoneyTextBox : TextBox
     {
         private string _operatorSymbol;
+        private bool _operatorSymbolIsConstant;
         private bool _colored;
 
         public string OperatorSymbol 
@@ -25,6 +26,12 @@ namespace MoneyAdministrator.CustomControls
             } 
         }
 
+        public bool OperatorSymbolIsConstant
+        {
+            get => _operatorSymbolIsConstant;
+            set => _operatorSymbolIsConstant = value;
+        }
+
         public bool Colored
         {
             get => _colored;
@@ -36,6 +43,7 @@ namespace MoneyAdministrator.CustomControls
             this.Text = "0.00 $";
             this.TextAlign = HorizontalAlignment.Right;
             _operatorSymbol = "-";
+            _operatorSymbolIsConstant = false;
             this.Click += this_Click;
             this.Enter += this_Enter;
             this.KeyDown += this_KeyDown;
@@ -72,10 +80,11 @@ namespace MoneyAdministrator.CustomControls
             // Hacer handle de los caracteres "-" y "+"
             if (e.KeyCode == Keys.OemMinus || e.KeyCode == Keys.Subtract || e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.Add)
             {
-                if (e.KeyCode == Keys.OemMinus || e.KeyCode == Keys.Subtract)
-                    _operatorSymbol = "-";
-                else
-                    _operatorSymbol = "+";
+                if (!_operatorSymbolIsConstant)
+                    if (e.KeyCode == Keys.OemMinus || e.KeyCode == Keys.Subtract)
+                        _operatorSymbol = "-";
+                    else
+                        _operatorSymbol = "+";
 
                 this_TextChanged(sender, EventArgs.Empty);
                 e.Handled = true; // Indica que ya se ha manejado el evento

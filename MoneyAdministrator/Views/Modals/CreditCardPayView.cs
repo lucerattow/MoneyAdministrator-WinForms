@@ -255,6 +255,21 @@ namespace MoneyAdministrator.Views.Modals
             ButtonsLogic();
         }
 
+        private void _txtAmountPay_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            ((TextBox)sender).Text += "+";
+        }
+
+        private void _txtAmountPay_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Hacer handle de los caracteres "+"
+            if (e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.Add)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
+        }
+
         public event EventHandler GrdDoubleClick;
         public event EventHandler ButtonInsertClick;
         public event EventHandler ButtonUpdateClick;
