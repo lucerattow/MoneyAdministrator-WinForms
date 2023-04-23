@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MoneyAdministrator.Import.Summary.Utilities.TypeTools
+namespace MoneyAdministrator.Utilities.TypeTools
 {
     internal class StringTools
     {

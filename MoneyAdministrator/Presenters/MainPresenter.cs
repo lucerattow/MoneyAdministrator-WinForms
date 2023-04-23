@@ -40,6 +40,7 @@ namespace MoneyAdministrator.Presenters
         //events
         private void ShowDashboard(object? sender, EventArgs e)
         {
+            this._view.CloseChildrens();
             var presenter = new DashboardPresenter(_databasePath, _view.CloseChildrens);
             this._view.OpenChildren((UserControl)presenter.View);
         }

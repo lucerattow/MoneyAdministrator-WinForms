@@ -63,7 +63,7 @@ namespace MoneyAdministrator.Services
             {
                 //Revierto la eliminacion
                 item.Deleted = false;
-                _unitOfWork.EntityTypeRepository.Update(item);
+                this.Update(item);
 
                 //Si el objeto ya existe, añado el id en el modelo
                 model.Id = item.Id;

@@ -193,8 +193,8 @@ namespace MoneyAdministrator.Views
             using (new DataGridViewHide(_grd))
             {
                 //Limpio la grilla y el yearPicker
-                _grd.Rows.Clear();
                 _ypYearPage.AvailableYears = datasource.Select(x => x.Date.Year).Distinct().ToList();
+                _grd.Rows.Clear();
 
                 //Filtro las transacciones por el año seleccionado
                 datasource = datasource.Where(x => x.Date.Year == _ypYearPage.Value).ToList();

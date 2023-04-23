@@ -64,8 +64,7 @@ namespace MoneyAdministrator.Presenters
         {
             using (new CursorWait())
             {
-                var transactionDetailService = new TransactionDetailService(_databasePath);
-                var transactionDetails = transactionDetailService.GetAll();
+                var transactionDetails = new TransactionDetailService(_databasePath).GetAll();
 
                 List<TransactionDto> dtos = new List<TransactionDto>();
                 foreach (var transactionDetail in transactionDetails)

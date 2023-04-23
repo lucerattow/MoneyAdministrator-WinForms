@@ -229,6 +229,8 @@ namespace MoneyAdministrator.Views
                     yearNode = new TreeNode
                     {
                         Text = $"{date.Year}",
+                        ImageIndex = 0,
+                        SelectedImageIndex = 0,
                     };
                     _tvSummaryList.Nodes.Add(yearNode);
                 }
@@ -236,6 +238,8 @@ namespace MoneyAdministrator.Views
                 var node = new TreeNode();
                 node.Text = $"Periodo: {datasource[i].Period.ToString("yyyy-MM")}";
                 node.Tag = datasource[i].Id;
+                node.ImageIndex = datasource[i].Imported ? 1 : 2;
+                node.SelectedImageIndex = datasource[i].Imported ? 1 : 2;
                 yearNode.Nodes.Add(node);
             }
 
@@ -381,12 +385,13 @@ namespace MoneyAdministrator.Views
             CreditCard = null;
             _tvSummaryList.Nodes.Clear();
 
-
             ButtonsLogic();
         }
 
         private void ClearSummaryInputs()
         {
+            ClearGrdPayments();
+
             _grd.Rows.Clear();
             _dtpDatePeriod.Value = DateTime.Now;
             _txtDate.Text = "";
@@ -402,6 +407,11 @@ namespace MoneyAdministrator.Views
             _summaryImported = false;
 
             ButtonsLogic();
+        }
+
+        private void ClearGrdPayments()
+        {
+            _grd_payments.Rows.Clear();
         }
 
         private void AssosiateEvents()
@@ -530,6 +540,7 @@ namespace MoneyAdministrator.Views
             ButtonInsertClick.Invoke(sender, e);
             SummaryImported = false;
             ButtonsLogic();
+            ClearGrdPayments();
         }
 
         private void _tsbDelete_Click(object sender, EventArgs e)
@@ -552,7 +563,8 @@ namespace MoneyAdministrator.Views
 
         private void _tvSummaryList_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            if (e.Node.Tag == null)
+            //Si hago click en una carpeta
+            if (e.Node.Tag is null)
                 return;
 
             _selectedSummaryId = (int)e.Node.Tag;

@@ -1,6 +1,7 @@
 ﻿using MoneyAdministrator.Common.DTOs;
 using MoneyAdministrator.Import.Summary.DTOs;
 using MoneyAdministrator.Import.Summary.Utilities.TypeTools;
+using Org.BouncyCastle.Bcpg;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,19 +35,43 @@ namespace MoneyAdministrator.Import.Summary.Utilities
             //Creo el dto y asigno los valores
             result.Type = dto.Type;
 
-            result.Description = dto.Description;
-            result.Installments = dto.Installments;
-
+            //Obtengo la fecha
             if (date != null)
                 result.Date = (DateTime)date;
 
+            //Obtengo el monto en ars
             if (amountArs != null)
                 result.AmountArs = (decimal)amountArs;
 
+            //Obtengo el monto en usd
             if (amountUsd != null)
                 result.AmountUsd = (decimal)amountUsd;
 
+            //Obtengo las cuotas
+            result.Installments = ParseInstallments(dto.Installments);
+
+            //Obtengo la descripcion
+            result.Description = dto.Description;
+
             return result;
+        }
+
+        private static string ParseInstallments(string installments)
+        {
+            if (string.IsNullOrEmpty(installments))
+                return "";
+
+            installments = installments.Replace('-', '/').Trim();
+
+            if (!installments.Contains("/"))
+                return "";
+
+            var parts = installments.Split('/');
+
+            var current = IntTools.Convert(parts[0]);
+            var total = IntTools.Convert(parts[1]);
+
+            return $"{current} / {total}";
         }
 
         public static CreditCardSummaryDto GetCreditCardSummaryDto(SummaryVariablesDto dto)
@@ -82,15 +107,15 @@ namespace MoneyAdministrator.Import.Summary.Utilities
                 period = new DateTime(year, month, 1);
             }
 
-            //Parseo la fecha de cierre
+            //Parseo la fecha de expiracion
             if (DateTimeTools.TestDate(dto.DateExpiration, dto.DateFormat))
                 dateExpiration = DateTimeTools.Convert(dto.DateExpiration, dto.DateFormat);
 
-            //Parseo la fecha de cierre
+            //Parseo la fecha de proximo cierre
             if (DateTimeTools.TestDate(dto.DateNext, dto.DateFormat))
                 dateNext = DateTimeTools.Convert(dto.DateNext, dto.DateFormat);
 
-            //Parseo la fecha de cierre
+            //Parseo la fecha de proxima expiracion
             if (DateTimeTools.TestDate(dto.DateNextExpiration, dto.DateFormat))
                 dateNextExpiration = DateTimeTools.Convert(dto.DateNextExpiration, dto.DateFormat);
 
@@ -104,7 +129,7 @@ namespace MoneyAdministrator.Import.Summary.Utilities
             
             //Parseo el pago minimo
             if (!string.IsNullOrEmpty(dto.MinimumPayment))
-                totalUsd = DecimalTools.Convert(dto.MinimumPayment) * -1;
+                minimumPayment = DecimalTools.Convert(dto.MinimumPayment) * -1;
 
             //Genero el objeto final
             var result = new CreditCardSummaryDto();
@@ -135,7 +160,6 @@ namespace MoneyAdministrator.Import.Summary.Utilities
 
             if (minimumPayment != null)
                 result.MinimumPayment = (decimal)minimumPayment;
-
 
             return result;
         }

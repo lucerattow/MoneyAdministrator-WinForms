@@ -64,7 +64,7 @@ namespace MoneyAdministrator.Services
                 //Revierto el estado Deleted o Actualizo el tipo de entidad
                 item.EntityTypeId = model.EntityTypeId;
                 item.Deleted = false;
-                _unitOfWork.EntityRepository.Update(item);
+                this.Update(item);
 
                 //Si el objeto ya existe, añado el id en el modelo
                 model.Id = item.Id;

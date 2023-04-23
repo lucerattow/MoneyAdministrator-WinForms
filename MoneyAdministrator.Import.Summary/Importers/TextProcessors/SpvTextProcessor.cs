@@ -75,7 +75,6 @@ namespace MoneyAdministrator.Import.Summary.Importers.TextProcessors
 
             //Variables necesarias para procesar el texto
             Regex dateRegex = new Regex(@"^(\d{4}-\d{2}-\d{2})?");
-            Regex installmentRegex = new Regex(@"^\d{2}/\d{2}$");
             var detailType = CreditCardSummaryDetailType.Summary;
 
             var DateList = table.Date;
@@ -166,11 +165,24 @@ namespace MoneyAdministrator.Import.Summary.Importers.TextProcessors
                 }
 
                 //Obtengo: Cuotas
-                Match installMatch = installmentRegex.Match(restOfText.Split(" ").Last());
-                if (installMatch.Success && detailType == CreditCardSummaryDetailType.Details)
+                Regex installRegex1 = new Regex(@" \d{2}/\d{2} ");
+                Regex installRegex2 = new Regex(@"C\.\d{2}/\d{2} ");
+                Regex installRegex3 = new Regex(@" \d{1,2}-\d{2} ");
+
+                Match installMatch1 = installRegex1.Match($" {restOfText} ");
+                Match installMatch2 = installRegex2.Match($" {restOfText} ");
+                Match installMatch3 = installRegex3.Match($" {restOfText} ");
+
+                if (detailType == CreditCardSummaryDetailType.Details)
                 {
-                    installments = installMatch.Value;
-                    restOfText = restOfText.Replace(installments, "");
+                    if (installMatch1.Success)
+                        installments = installMatch1.Value;
+
+                    else if (installMatch2.Success)
+                        installments = installMatch2.Value;
+
+                    else if (installMatch3.Success)
+                        installments = installMatch3.Value;
                 }
 
                 //Obtengo: Descripcion

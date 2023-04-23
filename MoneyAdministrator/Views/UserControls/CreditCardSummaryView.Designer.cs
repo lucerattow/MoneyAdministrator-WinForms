@@ -507,7 +507,9 @@ namespace MoneyAdministrator.Views
             imagesTreeView.ColorDepth = ColorDepth.Depth8Bit;
             imagesTreeView.ImageStream = (ImageListStreamer)resources.GetObject("imagesTreeView.ImageStream");
             imagesTreeView.TransparentColor = Color.Transparent;
-            imagesTreeView.Images.SetKeyName(0, "document_attachment_shadow.png");
+            imagesTreeView.Images.SetKeyName(0, "folder_shadow.png");
+            imagesTreeView.Images.SetKeyName(1, "document_attachment_shadow.png");
+            imagesTreeView.Images.SetKeyName(2, "document_shadow.png");
             // 
             // CreditCardResumesView
             // 

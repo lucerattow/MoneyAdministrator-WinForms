@@ -8,20 +8,15 @@ using System.Threading.Tasks;
 
 namespace MoneyAdministrator.Import.Summary.Utilities.TypeTools
 {
-    internal class DecimalTools
+    internal class IntTools
     {
-        public static decimal Convert(string input)
+        public static int Convert(string input)
         {
             input = input.Trim();
-            input = StringTools.GetDecimalFromString(input);
+            input = StringTools.GetNumbersFromString(input);
 
             if (string.IsNullOrEmpty(input))
                 return 0;
-
-            string decimalSeparator = input.Substring(input.Length - 3, 1);
-            string thousandSeparator = decimalSeparator == "." ? "," : ".";
-
-            input = input.Replace(thousandSeparator, string.Empty);
 
             // Verificar si el símbolo negativo está presente y eliminar los posibles símbolos negativos adicionales
             bool isNegative = input.StartsWith("-");
@@ -32,7 +27,7 @@ namespace MoneyAdministrator.Import.Summary.Utilities.TypeTools
                 input = "-" + input;
             }
 
-            if (decimal.TryParse(input, NumberStyles.Float, new CultureInfo("en-US") { NumberFormat = { NumberDecimalSeparator = decimalSeparator } }, out decimal result))
+            if (int.TryParse(input, out int result))
             {
                 return result;
             }

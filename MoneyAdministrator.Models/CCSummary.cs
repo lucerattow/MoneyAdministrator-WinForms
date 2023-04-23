@@ -45,6 +45,9 @@ namespace MoneyAdministrator.Models
         [Required(ErrorMessage = "Falta ingresar el pago mínimo")]
         public decimal MinimumPayment { get; set; }
 
+        [DefaultValue(false)]
+        public bool Imported { get; set; }
+
         //foreign keys
         public virtual Transaction Transaction { get; set; }
 

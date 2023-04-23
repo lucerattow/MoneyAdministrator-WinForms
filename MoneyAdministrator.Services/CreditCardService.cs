@@ -59,7 +59,7 @@ namespace MoneyAdministrator.Services
                 //Revierto el estado Deleted o Actualizo el tipo de entidad
                 item.LastFourNumbers = model.LastFourNumbers;
                 item.Deleted = false;
-                _unitOfWork.CreditCardRepository.Update(item);
+                this.Update(item);
 
                 //Si el objeto ya existe, añado el id en el modelo
                 model.Id = item.Id;

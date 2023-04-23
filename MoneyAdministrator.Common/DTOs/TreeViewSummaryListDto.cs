@@ -10,5 +10,6 @@ namespace MoneyAdministrator.Common.DTOs
     {
         public int Id { get; set; }
         public DateTime Period { get; set; }
+        public bool Imported { get; set; }
     }
 }

@@ -137,8 +137,11 @@ namespace MoneyAdministrator.Presenters
                         entity.Id = searchEntity.Id;
 
                         //Actualizo la entidad para convertirla en un banco
-                        searchEntity.EntityTypeId = 2;
-                        entityService.Update(searchEntity);
+                        if (searchEntity.EntityTypeId != 2)
+                        {
+                            searchEntity.EntityTypeId = 2;
+                            entityService.Update(searchEntity);
+                        }
                     }
 
                     //Inserto la tarjeta de credito

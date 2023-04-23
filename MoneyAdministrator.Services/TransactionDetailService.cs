@@ -39,10 +39,6 @@ namespace MoneyAdministrator.Services
             if (transaction == null)
                 throw new Exception("There is no transaction with that id");
 
-            //Compruebo si el objeto ya existe
-            //var item = _unitOfWork.TransactionDetailRepository.GetAll()
-            //    .Where(x => x.TransactionId == model.TransactionId ).FirstOrDefault();
-
             _unitOfWork.TransactionDetailRepository.Insert(model);
             _unitOfWork.Save();
             UpdateSummaryOutstanding(model.TransactionId);

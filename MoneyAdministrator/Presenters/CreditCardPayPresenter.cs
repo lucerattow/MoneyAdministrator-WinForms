@@ -127,7 +127,6 @@ namespace MoneyAdministrator.Presenters
             {
                 //Inicializo los servicios
                 var transactionService = new TransactionService(_databasePath);
-                var transactionDetailService = new TransactionDetailService(_databasePath);
                 var ccSummaryService = new CCSummaryService(_databasePath);
 
                 //Obtengo el resumen
@@ -139,12 +138,12 @@ namespace MoneyAdministrator.Presenters
 
                 if (ccSummary.TransactionPayId == 0)
                 {
+                    var descripcion = $"{ccSummary.CreditCard.CreditCardBrand.Name} - *{ccSummary.CreditCard.LastFourNumbers} :: Pago realizado";
                     var transaction = new Transaction
                     {
                         EntityId = transactionOutstanding.EntityId,
                         CurrencyId = transactionOutstanding.CurrencyId,
-                        Description = $"Pago realizado: {ccSummary.CreditCard.Entity.Name} {ccSummary.CreditCard.CreditCardBrand.Name} :" +
-                            $" ●●●● ●●●● ●●●● {ccSummary.CreditCard.LastFourNumbers}",
+                        Description = descripcion,
                     };
                     transactionService.Insert(transaction);
 
@@ -161,7 +160,7 @@ namespace MoneyAdministrator.Presenters
                     Installment = 0,
                     Frequency = 0,
                 };
-                transactionDetailService.Insert(transactionDetail);
+                new TransactionDetailService(_databasePath).Insert(transactionDetail);
 
                 GrdRefreshData();
             }

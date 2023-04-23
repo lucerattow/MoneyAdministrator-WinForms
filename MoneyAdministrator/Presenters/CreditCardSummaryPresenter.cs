@@ -5,6 +5,7 @@ using MoneyAdministrator.Models;
 using MoneyAdministrator.Services;
 using MoneyAdministrator.Utilities;
 using MoneyAdministrator.Utilities.Disposable;
+using MoneyAdministrator.Utilities.TypeTools;
 using MoneyAdministrator.Views;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace MoneyAdministrator.Presenters
 {
@@ -66,6 +68,7 @@ namespace MoneyAdministrator.Presenters
                     {
                         Id = x.Id,
                         Period = x.Period,
+                        Imported = x.Imported,
                     };
                     CCSumaries.Add(summaryDto);
                 });
@@ -98,7 +101,7 @@ namespace MoneyAdministrator.Presenters
             var transactionService = new TransactionService(_databasePath);
             var transaction = transactionService.Get(TransactionPayId);
 
-            if (transaction == null && transaction.TransactionDetails.Count == 0)
+            if (transaction == null || transaction.TransactionDetails.Count == 0)
                 return;
 
             List<CreditCardPayDto> dtos = new List<CreditCardPayDto>();
@@ -114,6 +117,130 @@ namespace MoneyAdministrator.Presenters
                 });
             }
             this._view.GrdPaymentsRefreshData(dtos);
+        }
+
+        private void GenerateInstallmentOnlySummaries()
+        {
+            var creditCard = new CreditCardService(_databasePath).Get(_view.CreditCard.Id);
+            if (creditCard is null || creditCard.CCSumaries.Count() == 0)
+                return;
+
+            //Recorro todos los resumenes desde el mas antiguo hasta el mas actual
+            var summaries = creditCard.CCSumaries.Where(x => x.Imported = true).OrderBy(x => x.Period).ToList();
+            foreach (var summary in summaries)
+            {
+                var installments = summary.CCSummaryDetails.Where(x => x.Type == CreditCardSummaryDetailType.Installments).ToList();
+                if (installments.Count == 0)
+                    continue;
+
+                //Obtengo el perido actual y el siguiente
+                var period = summary.Period;
+                var nextPeriod = period.AddMonths(1);
+
+                //Compruebo en ciclo si el siguiente periodo fue importado
+                var nextSummary = summaries.Where(x => x.Period == nextPeriod).FirstOrDefault();
+                while ((nextSummary is null || nextSummary.Imported == false) && installments.Count > 0)
+                {
+                    //Si el resumen no fue importado (osea, generado mediante este metodo) lo elimino para renovarlo
+                    if (nextSummary != null && nextSummary.Imported == false)
+                        new CCSummaryService(_databasePath).Delete(nextSummary);
+
+                    //Añado los detalles del resumen
+                    List<CCSummaryDetail> details = new List<CCSummaryDetail>();
+                    foreach (var detail in installments)
+                    {
+                        //Calculo las cuotas
+                        var install = detail.Installments.Replace(" ", "");
+                        var parts = install.Split('/');
+                        var current = IntTools.Convert(parts[0]);
+                        var total = IntTools.Convert(parts[1]);
+
+                        //Si es la ultima cuota
+                        if (current == total)
+                            continue;
+
+                        details.Add(new CCSummaryDetail
+                        {
+                            CCSummaryId = summary.Id,
+                            Type = detail.Type,
+                            Date = detail.Date,
+                            Description = detail.Description,
+                            Installments = $"{current + 1} / {total}",
+                            AmountArs = detail.AmountArs,
+                            AmountUsd = detail.AmountUsd,
+                        });
+                    }
+                    installments = details;
+
+                    //Creo el resumen de la tarjeta
+                    var newSummary = new CCSummary
+                    {
+                        CreditCardId = creditCard.Id,
+                        Period = nextPeriod,
+                        Date = new DateTime(1, 1, 1),
+                        DateExpiration = new DateTime(1, 1, 1),
+                        DateNext = new DateTime(1, 1, 1),
+                        DateNextExpiration = new DateTime(1, 1, 1),
+                        TotalArs = installments.Sum(x => x.AmountArs),
+                        TotalUsd = installments.Sum(x => x.AmountUsd),
+                        MinimumPayment = 0,
+                        Imported = false,
+                    };
+
+                    //Inserto el resumen y sus detalles
+                    if (details.Count > 0)
+                        InsertNewSummary(newSummary, details);
+
+                    //Añado 1 mes al proximo periodo y vuelvo a consultar si ya existe un resumen para ese periodo
+                    nextPeriod = nextPeriod.AddMonths(1);
+                    nextSummary = summaries.Where(x => x.Period == nextPeriod).FirstOrDefault();
+                    //Si nextSummary sigue siendo null, se seguira ejecutando el ciclo
+                }
+            }
+        }
+
+        private void InsertNewSummary(CCSummary summary, List<CCSummaryDetail> details)
+        {
+            //Creo la transaccion
+            var descripcion = $"{_view.CreditCard.CreditCardBrand.Name} - *{_view.CreditCard.LastFourNumbers} :: Saldo pendiente";
+            var transaction = new Transaction
+            {
+                EntityId = _view.CreditCard.EntityId,
+                CurrencyId = 1, //ARS
+                Description = descripcion,
+            };
+            new TransactionService(_databasePath).Insert(transaction);
+
+            //Creo el detalle de la transaccion
+            var transactionDetail = new TransactionDetail
+            {
+                TransactionId = transaction.Id,
+                Date = summary.Period,
+                Amount = summary.TotalArs,
+                Installment = 0,
+                Frequency = 0,
+            };
+            new TransactionDetailService(_databasePath).Insert(transactionDetail);
+
+            //Inserto el resumen padre
+            summary.TransactionId = transaction.Id;
+            new CCSummaryService(_databasePath).Insert(summary);
+
+            //Inserto los detalles del resumen
+            foreach (var detail in details)
+            {
+                var ccDetail = new CCSummaryDetail
+                {
+                    CCSummaryId = summary.Id,
+                    Type = detail.Type,
+                    Date = detail.Date,
+                    Description = detail.Description,
+                    Installments = detail.Installments,
+                    AmountArs = detail.AmountArs,
+                    AmountUsd = detail.AmountUsd,
+                };
+                new CCSummaryDetailService(_databasePath).Insert(ccDetail);
+            }
         }
 
         //events
@@ -167,10 +294,10 @@ namespace MoneyAdministrator.Presenters
             var ccSummaryDetailService = new CCSummaryDetailService(_databasePath);
 
             //Consulto si el resumen ya existe para este periodo y tarjeta
-            var ccSummary = ccSummaryService.GetAll()
+            var summary = ccSummaryService.GetAll()
                 .Where(x => x.CreditCardId == _view.CreditCard.Id && x.Period == _view.Period).FirstOrDefault();
 
-            if (ccSummary != null)
+            if (summary != null)
             {
                 //Si ya existe el resumen
                 string message = "Ya existe un resumen cargado para este periodo, deseas reemplazarlo?";
@@ -180,41 +307,18 @@ namespace MoneyAdministrator.Presenters
                     return;
 
                 //Elimino la transaccion asociada
-                var transaction = transactionService.Get(ccSummary.TransactionId);
+                var transaction = transactionService.Get(summary.TransactionId);
                 if (transaction != null)
                     //Al eliminar la transaccion, se elimina el resumen en cascada
                     transactionService.Delete(transaction);
                 else
-                    ccSummaryService.Delete(ccSummary);
+                    ccSummaryService.Delete(summary);
             }
 
-            //Creo la transaccion
-            var descripcion = $"Saldo pendiente {_view.CreditCard.CreditCardBrand.Name} -" +
-                $" ●●●● ●●●● ●●●● {_view.CreditCard.LastFourNumbers} - Vencimiento: {_view.Expiration:yyyy-MM-dd}";
-            var newTransaction = new Transaction
-            { 
-                EntityId = _view.CreditCard.EntityId,
-                CurrencyId = 1, //ARS
-                Description = descripcion,
-            };
-            transactionService.Insert(newTransaction);
-
-            //Creo el detalle de la transaccion
-            var transactionDetail = new TransactionDetail
-            {
-                TransactionId = newTransaction.Id,
-                Date = _view.Period,
-                Amount = _view.TotalArs,
-                Installment = 0,
-                Frequency = 1,
-            };
-            transactionDetailService.Insert(transactionDetail);
-
             //Creo el resumen de la tarjeta
-            ccSummary = new CCSummary
+            summary = new CCSummary
             {
                 CreditCardId = _view.CreditCard.Id,
-                TransactionId = newTransaction.Id,
                 Period = _view.Period,
                 Date = _view.Date,
                 DateExpiration = _view.Expiration,
@@ -223,24 +327,30 @@ namespace MoneyAdministrator.Presenters
                 TotalArs = _view.TotalArs,
                 TotalUsd = _view.TotalUsd,
                 MinimumPayment = _view.minimumPayment,
+                Imported = true,
             };
-            ccSummaryService.Insert(ccSummary);
 
             //Añado los detalles del resumen
-            foreach (var CCSummaryDetailDto in _view.CCSummaryDetailDtos)
+            List<CCSummaryDetail> details = new List<CCSummaryDetail>();
+            foreach (var dto in _view.CCSummaryDetailDtos)
             {
-                var ccSummaryDetail = new CCSummaryDetail
+                details.Add(new CCSummaryDetail
                 {
-                    CCSummaryId = ccSummary.Id,
-                    Type = CCSummaryDetailDto.Type,
-                    Date = CCSummaryDetailDto.Date,
-                    Description = CCSummaryDetailDto.Description,
-                    Installments = CCSummaryDetailDto.Installments,
-                    AmountArs = CCSummaryDetailDto.AmountArs,
-                    AmountUsd = CCSummaryDetailDto.AmountUsd,
-                };
-                ccSummaryDetailService.Insert(ccSummaryDetail);
+                    CCSummaryId = summary.Id,
+                    Type = dto.Type,
+                    Date = dto.Date,
+                    Description = dto.Description,
+                    Installments = dto.Installments,
+                    AmountArs = dto.AmountArs,
+                    AmountUsd = dto.AmountUsd,
+                });
             }
+
+            //Inserto el resumen y sus detalles
+            InsertNewSummary(summary, details);
+
+            if (details.Where(x => x.Type == CreditCardSummaryDetailType.Installments).ToList().Count > 0)
+                GenerateInstallmentOnlySummaries();
 
             TvRefreshData(_view.CreditCard);
         }
