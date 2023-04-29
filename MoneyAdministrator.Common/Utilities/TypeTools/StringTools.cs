@@ -6,11 +6,16 @@ using System.Threading.Tasks;
 
 namespace MoneyAdministrator.Common.Utilities.TypeTools
 {
-    internal class StringTools
+    public class StringTools
     {
-        public static string GetNumbersFromString(string input)
+        public static string GetDecimalFromString(string input)
         {
             return new string(input.Where(c => char.IsDigit(c) || c == '-' || c == '.' || c == ',').ToArray());
+        }
+
+        public static string GetNumbersFromString(string input)
+        {
+            return new string(input.Where(c => char.IsDigit(c) || c == '-').ToArray());
         }
     }
 }

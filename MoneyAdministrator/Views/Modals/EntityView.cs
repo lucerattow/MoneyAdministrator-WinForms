@@ -120,30 +120,33 @@ namespace MoneyAdministrator.Views.Modals
             ControlConfig.DataGridViewSetup(_grd);
 
             //Configuracion de columnas
-            _grd.Columns.Add(new DataGridViewColumn() //0 Id
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
                 Name = "id",
                 HeaderText = "Id",
+                ReadOnly = true,
+                Visible = false,
+            }); //0 id
+            _grd.Columns.Add(new DataGridViewColumn()
+            {
                 CellTemplate = new DataGridViewTextBoxCell(),
                 DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
-                Visible = false,
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //1 Nombre
-            {
                 Name = "entityName",
                 HeaderText = "Nombre",
-                CellTemplate = new DataGridViewTextBoxCell(),
                 Width = 200,
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //2 Tipo de entidad
+                ReadOnly = true,
+            }); //1 entityName
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
                 Name = "type",
                 HeaderText = "Tipo de entidad",
-                CellTemplate = new DataGridViewTextBoxCell(),
                 Width = 150,
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
-            });
+                ReadOnly = true,
+            }); //2 type
         }
 
         private void AssosiateEvents()

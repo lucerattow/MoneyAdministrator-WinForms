@@ -9,6 +9,38 @@ namespace MoneyAdministrator.Common.Utilities.TypeTools
 {
     public class DateTimeTools
     {
+        public static DateTime Convert(string date, string format)
+        {
+            if (format == "dd-MMM-yy")
+            {
+                date = ConvertDateFormat(date);
+                format = "dd-MM-yy";
+            }
+            return DateTime.ParseExact(date, format, CultureInfo.GetCultureInfo("es-ES"));
+        }
+
+        public static bool TestDate(string date, string format)
+        {
+            try
+            {
+                var _ = Convert(date, format);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static int GetMonthDifference(DateTime date1, DateTime date2)
+        {
+            int yearsDifference = date2.Year - date1.Year;
+            int monthsDifference = date2.Month - date1.Month;
+            int totalMonthsDifference = (yearsDifference * 12) + monthsDifference;
+
+            return totalMonthsDifference;
+        }
+
         /// <summary>Recibe una fecha con formato "dd-MMM-yy" y la convierte a "dd-MM-yy",
         /// Ejemplo: input: "28-Ene-22" output: "28-01-22"</summary>
         public static string ConvertDateFormat(string date)
@@ -58,29 +90,6 @@ namespace MoneyAdministrator.Common.Utilities.TypeTools
             }
 
             return string.Join("-", dateParts);
-        }
-
-        public static DateTime Convert(string date, string format)
-        {
-            if (format == "dd-MMM-yy")
-            {
-                date = ConvertDateFormat(date);
-                format = "dd-MM-yy";
-            }
-            return DateTime.ParseExact(date, format, CultureInfo.GetCultureInfo("es-ES"));
-        }
-
-        public static bool TestDate(string date, string format)
-        {
-            try
-            {
-                var _ = Convert(date, format);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
         }
     }
 }

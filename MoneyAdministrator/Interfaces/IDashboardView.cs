@@ -11,7 +11,9 @@ namespace MoneyAdministrator.Interfaces
     {
         //properties
         /// <summary>Obtengo el periodo seleccionado</summary>
-        DateTime? SelectedPeriod { get; set; }
+        DateTime? SelectedRecordPeriod { get; set; }
+        /// <summary>Obtengo el periodo</summary>
+        DateTime Period { get; }
         /// <summary>Obtengo el valor del usd en este periodo</summary>
         decimal UsdValue { get; set; }
         /// <summary>Obtengo el sueldo en ARS en este periodo</summary>
@@ -29,7 +31,9 @@ namespace MoneyAdministrator.Interfaces
         void ButtonsLogic();
 
         //events
+        event EventHandler ButtonInsertClick;
         event EventHandler ButtonUpdateClick;
+        event EventHandler ButtonDeleteClick;
         event EventHandler ButtonExitClick;
         event EventHandler GrdDoubleClick;
     }

@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MoneyAdministrator.Common.DTOs;
+using MoneyAdministrator.Common.Enums;
+using MoneyAdministrator.Common.Utilities.TypeTools;
 
 namespace MoneyAdministrator.Services
 {
@@ -19,6 +22,11 @@ namespace MoneyAdministrator.Services
             _unitOfWork = new UnitOfWork(databasePath);
         }
 
+        public TransactionDetailService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
         public List<TransactionDetail> GetAll()
         {
             return _unitOfWork.TransactionDetailRepository.GetAll().ToList();
@@ -27,6 +35,81 @@ namespace MoneyAdministrator.Services
         public TransactionDetail Get(int id)
         {
             return _unitOfWork.TransactionDetailRepository.GetById(id);
+        }
+
+        public List<TransactionViewDto> GetIntermediateDetailDtos()
+        {
+            var result = new List<TransactionViewDto>();
+
+            var details = GetAll();
+
+            if (details.Count == 0)
+                return result;
+
+            //Obtengo los valores del dashboard para generar los servicios correctamente
+            var usdList = new CurrencyValueService(_unitOfWork).GetAll().OrderByDescending(x => x.Date);
+            var salaryList = new SalaryService(_unitOfWork).GetAll().OrderByDescending(x => x.Date);
+
+            //Obtengo la lista de años
+            var yearsTransactions = details.Select(x => x.Date.Year).Distinct().ToList();
+            var yearsUsd = usdList.Select(x => x.Date.Year).Distinct().ToList();
+            var yearssalary = salaryList.Select(x => x.Date.Year).Distinct().ToList();
+
+            //Unifico la lista de años
+            var allYears = new List<int>();
+            allYears.AddRange(yearsTransactions);
+            allYears.AddRange(yearsUsd);
+            allYears.AddRange(yearssalary);
+
+            //Genero los años intermedios si es que faltan
+            var initYear = allYears.Min();
+            var endYear = allYears.Max();
+
+            allYears.Clear();
+            allYears.AddRange(IntTools.GetIntermediateNumbers(initYear, endYear));
+
+            //Genero la fecha maxima de servicios
+            var maxDate = new DateTime(allYears.Max() + 1, 1, 1);
+            maxDate = maxDate.AddDays(-1);
+
+            foreach (var detail in details)
+            {
+                //Si el detalle es un servicio, limito la fecha donde finaliza
+                var endDate = detail.EndDate;
+                if (detail.Transaction.TransactionType == TransactionType.Service && detail.EndDate > maxDate)
+                    endDate = maxDate;
+
+                //Obtengo la diferencia de meses
+                int months = DateTimeTools.GetMonthDifference(detail.Date, endDate);
+
+                //Genero una transaccion por cada mes
+                for (int i = 0; i <= months; i += detail.Frequency)
+                {
+                    //Si es una transaccion de cuotas, genero el string con formato "1 / 3"
+                    string installments = "";
+                    if (detail.Transaction.TransactionType == TransactionType.Installments)
+                        //Se suma 1 ya que en todos los casos la cuota 1 es la 0 realmente
+                        installments = months > 1 ? $"{i + 1} / {months + 1}" : "";
+
+                    //Genero el detalle
+                    result.Add(new TransactionViewDto()
+                    {
+                        Id = detail.Id,
+                        TransactionType = detail.Transaction.TransactionType,
+                        Frequency = detail.Frequency,
+                        Date = detail.Date.AddMonths(i),
+                        EntityName = detail.Transaction.Entity.Name,
+                        Description = detail.Transaction.Description,
+                        Installment = installments,
+                        CurrencyName = detail.Transaction.Currency.Name,
+                        Amount = detail.Amount,
+                        Concider = detail.Concider,
+                        Paid = detail.Paid,
+                    });
+                }
+            }
+
+            return result;
         }
 
         public void Insert(TransactionDetail model)
@@ -58,6 +141,192 @@ namespace MoneyAdministrator.Services
             }
         }
 
+        public void UpdateServiceTransaction(TransactionDetail detail, DateTime date, decimal amount, bool overrideNext)
+        {
+            var details = detail.Transaction.TransactionDetails.OrderByDescending(x => x.Date).ToList();
+
+            var current = details
+                .Where(x => x.Date.Date <= date.Date)
+                .FirstOrDefault();
+
+            if (current.Date.Date == date.Date)
+            {
+                var endDate = DateTime.MaxValue;
+                var futureDetails = details
+                    .Where(x => x.Date.Date > date.Date)
+                    .ToList();
+
+                if (futureDetails.Count > 0)
+                    if (overrideNext)
+                    {
+                        //Elimino los detalles futuros
+                        foreach (var futureDetail in futureDetails)
+                        {
+                            Delete(futureDetail);
+                        }
+                    }
+                    else
+                    {
+                        var futureDetail = futureDetails.LastOrDefault();
+                        endDate = futureDetail.Date.AddMonths(-current.Frequency);
+                    }
+
+                detail.Date = date;
+                detail.EndDate = endDate;
+                detail.Amount = amount;
+
+                Update(current);
+            }
+            else
+            {
+                var endDate = DateTime.MaxValue;
+                var futureDetails = details
+                    .Where(x => x.Date.Date > date.Date)
+                    .ToList();
+
+                if (futureDetails.Count > 0)
+                    if (overrideNext)
+                    {
+                        //Elimino los detalles futuros
+                        foreach (var futureDetail in futureDetails)
+                        {
+                            Delete(futureDetail);
+                        }
+                    }
+                    else
+                    {
+                        var futureDetail = futureDetails.LastOrDefault();
+                        endDate = futureDetail.Date.AddMonths(-current.Frequency);
+                    }
+
+                //Actualizo la transaccion que se volveria el ultimo antes de actualizar
+                current.EndDate = date.AddMonths(-current.Frequency);
+                Update(current);
+
+                //Creo la transaccion nueva
+                Insert(new TransactionDetail
+                {
+                    TransactionId = current.TransactionId,
+                    Date = date,
+                    EndDate = endDate,
+                    Amount = amount,
+                    Frequency = current.Frequency,
+                    Concider = true,
+                    Paid = false,
+                });
+            }
+        }
+
+        public void UpdateCheckBox(TransactionDetail detail, DateTime date, bool concider, bool paid)
+        {
+            var details = detail.Transaction.TransactionDetails.OrderByDescending(x => x.Date).ToList();
+
+            var current = details
+                .Where(x => x.Date.Date <= date.Date)
+                .FirstOrDefault();
+
+            if (current.Date.Date == date.Date)
+            {
+                //Si el detalle del siguiente mes no existe, lo creo
+                var endDate = details.Select(x => x.EndDate).Max();
+
+                //Si ya existen detalles futuros, obtengo la fecha del siguiente
+                var futureDetails = details
+                    .Where(x => x.Date.Date >= date.Date.AddMonths(detail.Frequency))
+                    .ToList();
+                if (futureDetails.Count > 0)
+                {
+                    var futureDetail = futureDetails.LastOrDefault();
+                    endDate = futureDetail.Date.AddMonths(-current.Frequency);
+                }
+
+                //Si la fecha final no es la actual, creo un nuevo detalle
+                if (endDate.Date != date.Date)
+                {
+                    //Creo el proximo detalle
+                    var newFutureDetail = new TransactionDetail
+                    {
+                        TransactionId = current.TransactionId,
+                        Date = date.AddMonths(current.Frequency),
+                        EndDate = endDate,
+                        Amount = current.Amount,
+                        Frequency = current.Frequency,
+                        Concider = true,
+                        Paid = false,
+                    };
+                    Insert(newFutureDetail);
+                }
+
+                //Modifico el detalle actual
+                current.Concider = concider;
+                current.Paid = paid;
+                current.EndDate = date;
+                Update(current);
+            }
+            else
+            {
+                //Si el detalle del siguiente mes no existe, lo creo
+                var endDate = details.Select(x => x.EndDate).Max();
+
+                //Si ya existen detalles futuros, obtengo la fecha del siguiente
+                var futureDetails = details
+                    .Where(x => x.Date.Date >= date.Date.AddMonths(detail.Frequency))
+                    .ToList();
+                if (futureDetails.Count > 0)
+                {
+                    var futureDetail = futureDetails.LastOrDefault();
+                    endDate = futureDetail.Date.AddMonths(-current.Frequency);
+                }
+
+                //Si la fecha final no es la actual, creo un nuevo detalle
+                if (endDate.Date != date.Date)
+                {
+                    //Creo el proximo detalle
+                    var newFutureDetail = new TransactionDetail
+                    {
+                        TransactionId = current.TransactionId,
+                        Date = date.AddMonths(current.Frequency),
+                        EndDate = endDate,
+                        Amount = current.Amount,
+                        Frequency = current.Frequency,
+                        Concider = true,
+                        Paid = false,
+                    };
+                    Insert(newFutureDetail);
+                }
+
+                //Si ya existen detalles pasados
+                var pastDetails = details
+                    .Where(x => x.Date.Date <= date.Date.AddMonths(-current.Frequency))
+                    .ToList();
+                if (pastDetails.Count > 0)
+                {
+                    //Si existen detalles pasados, tomo el ultimo y lo actualizo
+                    var pastDetail = pastDetails.FirstOrDefault();
+
+                    //Si la fecha final es distinta a la que deberia, lo actualizo
+                    if (pastDetail.EndDate != date.AddMonths(-current.Frequency))
+                    {
+                        pastDetail.EndDate = date.AddMonths(-current.Frequency);
+                        Update(pastDetail);
+                    }
+                }
+
+                //Creo la nueva transaccion actual
+                var newCurrent = new TransactionDetail
+                {
+                    TransactionId = current.TransactionId,
+                    Date = date,
+                    EndDate = date,
+                    Amount = current.Amount,
+                    Frequency = current.Frequency,
+                    Concider = concider,
+                    Paid = paid,
+                };
+                Insert(newCurrent);
+            }
+        }
+
         public void Delete(TransactionDetail model)
         {
             var item = _unitOfWork.TransactionDetailRepository.GetById(model.Id);
@@ -69,37 +338,6 @@ namespace MoneyAdministrator.Services
                 UpdateSummaryOutstanding(item.TransactionId);
                 DeleteTransactionIfNotHaveDetails();
             }
-        }
-
-        /// <summary>
-        /// Crea una lista con los detalles de la transaccion, la cual luego podra ser usada para añadirse a la base de datos
-        /// </summary>
-        /// <param name="transactionId">Transaccion a la cual se le asociaran los TransactionDetails</param>
-        /// <param name="date">Fecha inicial de los TransactionDetails</param>
-        /// <param name="amount">Monto de cada TransactionDetails</param>
-        /// <param name="totalMonths">Limite de meses para ingresar TransactionDetails</param>
-        /// <param name="frequencyMonths">Valor que se utiliza para saltear meses, ejemplo 3, hara que se ingrese 1 TransactionDetails cada 3 meses</param>
-        /// <param name="isService">Indica si la transaccion es un servicio</param>
-        /// <returns></returns>
-        public List<TransactionDetail> GenerateTransactionDetails(int transactionId, DateTime date, decimal amount, int totalMonths, int frequencyMonths, bool isService)
-        {
-            List<TransactionDetail> result = new List<TransactionDetail>();
-
-            for (int i = 1; i <= totalMonths; i += frequencyMonths)
-            {
-                var transactionDetail = new TransactionDetail()
-                {
-                    TransactionId = transactionId,
-                    Date = date,
-                    Amount = amount,
-                    Installment = isService ? 0 : i,
-                    Frequency = isService ? frequencyMonths : 0,
-                };
-                date = date.AddMonths(frequencyMonths);
-                result.Add(transactionDetail);
-            }
-
-            return result;
         }
 
         /// <summary>Analizo los resumenes de tarjeta de credito, para saber si hay que actualizar su transaccion de saldo pendiente.</summary>

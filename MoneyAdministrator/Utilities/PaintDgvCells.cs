@@ -21,6 +21,9 @@ namespace MoneyAdministrator.Utilities
 
         public static void PaintDecimal(DataGridView grd, int row, int col, bool inverted = false)
         {
+            if (grd.Rows[row].Cells[col].Value == null)
+                return;
+
             var strValue = string.Concat(grd.Rows[row].Cells[col].Value.ToString()
                 .Where(x => char.IsDigit(x) || x == ',' || x == '-'));
 

@@ -1,42 +1,53 @@
 ﻿using MoneyAdministrator.Common.DTOs;
 using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Models;
-using MoneyAdministrator.Utilities;
 using MoneyAdministrator.Utilities.Disposable;
-using System.Configuration;
+using MoneyAdministrator.Utilities;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
 using System.Globalization;
-using System.Text.RegularExpressions;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using MoneyAdministrator.Common.Utilities.TypeTools;
+using MoneyAdministrator.Utilities.ControlTools;
+using System.Configuration;
+using System.Reflection.Metadata.Ecma335;
+using MoneyAdministrator.Common.Enums;
 
-namespace MoneyAdministrator.Views
+namespace MoneyAdministrator.Views.UserControls
 {
     public partial class TransactionHistoryView : UserControl, ITransactionHistoryView
     {
-        //fields
-        private int _selectedId = 0;
-        private bool _isCreditCardSummaryOutstanding = false;
-
-        private List<string> _frequencies = new List<string>()
-        {
-            "1 Mes",
-            "3 Meses",
-            "6 Meses",
-            "12 Meses"
-        };
-
         //grd columns width
         private const int _colWidthDate = 90;
         private const int _colWidthEntity = 210;
         private const int _colWidthInstall = 60;
         private const int _colWidthCurrency = 70;
         private const int _colWidthAmount = 120;
-        private const int _colWidthTotal = _colWidthDate + _colWidthEntity + _colWidthInstall + _colWidthCurrency + _colWidthAmount;
+        private const int _colCheckBox = 70;
+        private const int _colWidthTotal = _colWidthDate + _colWidthEntity + _colWidthInstall + _colWidthCurrency + _colWidthAmount + (_colCheckBox * 2);
+
+        //fields
+        private TransactionViewDto? _selectedDto;
+        private TransactionViewDto? _checkBoxChangeDto;
 
         //properties
-        public int SelectedId
+        public TransactionViewDto? SelectedDto
         {
-            get => _selectedId;
-            set => _selectedId = value;
+            get => _selectedDto;
+            set => _selectedDto = value;
         }
+        public TransactionViewDto? CheckBoxChangeDto
+        {
+            get => _checkBoxChangeDto;
+        }
+
+        //properties fields
         public string EntityName
         {
             get => _txtEntityName.Text;
@@ -51,11 +62,6 @@ namespace MoneyAdministrator.Views
         {
             get => _txtDescription.Text;
             set => _txtDescription.Text = value;
-        }
-        public Currency Currency
-        {
-            get => (Currency)_cbCurrency.SelectedItem;
-            set => _cbCurrency.SelectedIndex = _cbCurrency.FindStringExact(value.Name);
         }
         public decimal Amount
         {
@@ -80,104 +86,58 @@ namespace MoneyAdministrator.Views
                 _txtAmount.Text = value.ToString("N2");
             }
         }
+        public Currency Currency
+        {
+            get => (Currency)_cbCurrency.SelectedItem;
+            set => _cbCurrency.SelectedIndex = _cbCurrency.FindStringExact(value.Name);
+        }
 
+        //properties installments
+        public bool IsInstallment
+        {
+            get => _ckbInstallments.Checked;
+            set => _ckbInstallments.Checked = value;
+        }
         public int InstallmentCurrent
         {
-            get
-            {
-                var installments = string.Concat(_txtInstallmentCurrent.Text.Where(char.IsDigit));
-                if (!string.IsNullOrEmpty(installments) && int.TryParse(installments, out int value))
-                    return value;
-                else
-                    return 0;
-            }
-            set
-            {
-                if (value > 0)
-                    _txtInstallmentCurrent.Text = value.ToString();
-                else
-                    _txtInstallmentCurrent.Text = "";
-            }
+            get => IntTools.Convert(_txtInstallmentCurrent.Text);
+            set => _txtInstallmentCurrent.Text = value > 0 ? value.ToString() : "";
         }
         public int InstallmentMax
         {
-            get
-            {
-                var installments = _txtInstallments.Text;
-                if (string.IsNullOrEmpty(installments) || installments == "0")
-                    installments = "1";
-
-                return int.Parse(installments);
-            }
-            set
-            {
-                if (value > 0)
-                    _txtInstallments.Text = value.ToString();
-                else
-                    _txtInstallments.Text = "";
-            }
-        }
-        public int Frequency
-        {
-            get
-            {
-                var frequency = string.Concat(_cbFrequency.SelectedItem.ToString().Where(char.IsDigit));
-
-                if (!string.IsNullOrEmpty(frequency) && int.TryParse(frequency, out int value))
-                    return value;
-                else
-                    return 0;
-            }
-            set
-            {
-                if (value < 1)
-                    value = 1;
-                _cbFrequency.SelectedIndex = _cbFrequency.FindString(value.ToString());
-            }
+            get => IntTools.Convert(string.IsNullOrEmpty(_txtInstallments.Text) ? "1" : _txtInstallments.Text);
+            set => _txtInstallments.Text = value > 0 ? value.ToString() : "";
         }
 
+        //properties service
         public bool IsService
         {
             get => _ckbService.Checked;
             set => _ckbService.Checked = value;
         }
-        public bool Editing
+        public int Frequency
         {
-            get => SelectedId > 0;
-            set
+            get
             {
-                _ckbService.Enabled = !value;
-                if (InstallmentMax > 1)
-                    _dtpDate.CustomFormat = "'Dia:' dd";
-                else
-                    _dtpDate.CustomFormat = ConfigurationManager.AppSettings["DateFormat"];
+                var fre = IntTools.Convert(_cbFrequency.SelectedItem is null ? "" : _cbFrequency.SelectedItem.ToString());
+                return fre > 0 ? fre : 1;
             }
-        }
-        public bool IsCreditCardSummaryOutstanding
-        {
-            get => _isCreditCardSummaryOutstanding;
             set
             {
-                _isCreditCardSummaryOutstanding = value;
-                ButtonsLogic();
+                if (value < 1) value = 1;
+                _cbFrequency.SelectedIndex = _cbFrequency.FindString(value.ToString());
             }
         }
 
         public TransactionHistoryView()
         {
-            this.Visible = false;
-
             using (new CursorWait())
             {
                 Dock = DockStyle.Fill;
                 InitializeComponent();
-                AssosiateEvents();
                 ControlsSetup();
                 ButtonsLogic();
             }
-
-            //Muestro la ventana ya cargada
-            this.Visible = true;
         }
 
         //methods
@@ -187,102 +147,217 @@ namespace MoneyAdministrator.Views
             _cbCurrency.DisplayMember = "Name";
         }
 
-        public void GrdRefreshData(List<TransactionDto> datasource)
+        public void GrdRefreshData(List<TransactionViewDto> datasource)
         {
             using (new CursorWait())
             using (new DataGridViewHide(_grd))
             {
-                //Limpio la grilla y el yearPicker
-                _ypYearPage.AvailableYears = datasource.Select(x => x.Date.Year).Distinct().ToList();
+                //Limpio la grilla
                 _grd.Rows.Clear();
-
-                //Filtro las transacciones por el año seleccionado
-                datasource = datasource.Where(x => x.Date.Year == _ypYearPage.Value).ToList();
 
                 if (datasource.Count <= 0)
                     return;
 
-                var row = 0;
-                for (var i = 12; i >= 1; i--)
-                {
-                    List<TransactionDto> monthTransactions = datasource
-                        .Where(x => x.Date.Month == i).OrderByDescending(x => x.Date.Day).ThenBy(x => x.Description).ToList();
+                //Separador futuro
+                Color sepFutureBackColor = Color.FromArgb(170, 200, 255);
+                Color sepFutureForeColor = Color.Black;
 
-                    if (monthTransactions.Count != 0)
+                //Separador año actual
+                Color sepCurrentBackColor = Color.FromArgb(75, 135, 230);
+                Color sepCurrentForeColor = Color.White;
+
+                //Separador mes actual
+                Color sepCurrentMonthBackColor = Color.FromArgb(40, 70, 200);
+
+                //Separador antiguo
+                Color sepOldestBackColor = Color.FromArgb(200, 200, 200);
+                Color sepOldestForeColor = Color.Black;
+
+                var row = 0;
+                foreach (var year in datasource.OrderByDescending(x => x.Date).Select(x => x.Date.Year).Distinct())
+                    for (var month = 12; month >= 1; month--)
                     {
-                        DateTime separatorDate = new DateTime(_ypYearPage.Value, i, 1);
+                        List<TransactionViewDto> monthTransactions = datasource
+                            .Where(x => x.Date.Year == year && x.Date.Month == month).OrderByDescending(x => x.Date.Day).ThenBy(x => x.Description).ToList();
+
+                        if (monthTransactions.Count == 0)
+                            continue;
+
+                        DateTime separatorDate = new DateTime(year, month, 1);
                         //Añado un separador
                         row = _grd.Rows.Add(new object[]
                         {
-                        -1,
-                        separatorDate.ToString("yyyy"),
-                        separatorDate.ToString("(MM) MMM"),
-                        "",
-                        "",
-                        "",
-                        "",
+                            -1,
+                            0,
+                            0,
+                            separatorDate.ToString("yyyy"),
+                            separatorDate.ToString("(MM) MMM"),
+                            "",
+                            "",
+                            "",
+                            "",
+                            false,
+                            false,
                         });
 
                         //Pinto el separador
-                        Color separatorBackColor = Color.FromArgb(75, 135, 230);
-                        Color separatorForeColor = Color.White;
-                        PaintDgvCells.PaintSeparator(_grd, row, separatorBackColor, separatorForeColor);
+                        if (year > DateTime.Now.Year)
+                            PaintDgvCells.PaintSeparator(_grd, row, sepFutureBackColor, sepFutureForeColor);
+
+                        else if (year == DateTime.Now.Year && month == DateTime.Now.Month)
+                            PaintDgvCells.PaintSeparator(_grd, row, sepCurrentMonthBackColor, sepCurrentForeColor);
+
+                        else if (year == DateTime.Now.Year)
+                            PaintDgvCells.PaintSeparator(_grd, row, sepCurrentBackColor, sepCurrentForeColor);
+
+                        else if (year < DateTime.Now.Year)
+                            PaintDgvCells.PaintSeparator(_grd, row, sepOldestBackColor, sepOldestForeColor);
 
                         //Caso contrario añado los registros a la tabla
                         foreach (var transaction in monthTransactions)
                         {
                             row = _grd.Rows.Add(new object[]
                             {
-                            transaction.Id,
-                            transaction.Date.ToString("yyyy-MM-dd"),
-                            transaction.EntityName,
-                            transaction.Description,
-                            transaction.Installment,
-                            transaction.CurrencyName,
-                            transaction.Amount.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
+                                transaction.Id,
+                                transaction.TransactionType,
+                                transaction.Frequency,
+                                transaction.Date.ToString("yyyy-MM-dd"),
+                                transaction.EntityName,
+                                transaction.Description,
+                                transaction.Installment,
+                                transaction.CurrencyName,
+                                transaction.Amount.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
+                                transaction.Concider,
+                                transaction.Paid,
                             });
 
                             //Pinto el monto segun corresponda
                             PaintDgvCells.PaintDecimal(_grd, row, "amount");
                         }
                     }
+            }
+
+            GrdStartingScroll();
+        }
+
+        private void GrdSetup()
+        {
+            ControlConfig.DataGridViewSetup(_grd);
+
+            //Configuracion de columnas
+            _grd.Columns.Add(new DataGridViewColumn()
+            {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                Name = "id",
+                HeaderText = "Id",
+                ReadOnly = true,
+                Visible = false,
+            }); //0 id
+            _grd.Columns.Add(new DataGridViewColumn()
+            {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                Name = "type",
+                HeaderText = "Tipo",
+                ReadOnly = true,
+                Visible = false,
+            }); //1 type
+            _grd.Columns.Add(new DataGridViewColumn()
+            {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                Name = "frequency",
+                HeaderText = "Frecuencia",
+                ReadOnly = true,
+                Visible = false,
+            }); //2 frequency
+            _grd.Columns.Add(new DataGridViewColumn()
+            {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
+                Name = "date",
+                HeaderText = "Fecha",
+                Width = _colWidthDate,
+                ReadOnly = true,
+            }); //3 date
+            _grd.Columns.Add(new DataGridViewColumn()
+            {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                Name = "entity",
+                HeaderText = "Entidad",
+                Width = _colWidthEntity,
+                ReadOnly = true,
+            }); //4 entity
+            _grd.Columns.Add(new DataGridViewColumn()
+            {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                Name = "description",
+                HeaderText = "Descripcion",
+                ReadOnly = true,
+            }); //5 description
+            _grd.Columns.Add(new DataGridViewColumn()
+            {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleCenter },
+                Name = "installments",
+                HeaderText = "Cuotas",
+                Width = _colWidthInstall,
+                ReadOnly = true,
+            }); //6 installments
+            _grd.Columns.Add(new DataGridViewColumn()
+            {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleCenter },
+                Name = "currency",
+                HeaderText = "Moneda",
+                Width = _colWidthCurrency,
+                ReadOnly = true,
+            }); //7 currency
+            _grd.Columns.Add(new DataGridViewColumn()
+            {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
+                Name = "amount",
+                HeaderText = "Monto",
+                Width = _colWidthAmount,
+                ReadOnly = true,
+            }); //8 amount
+            _grd.Columns.Add(new DataGridViewCheckBoxColumn()
+            {
+                CellTemplate = new DataGridViewCheckBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleCenter },
+                Name = "concider",
+                HeaderText = "Sumar",
+                Width = _colCheckBox,
+            }); //9 concider
+            _grd.Columns.Add(new DataGridViewCheckBoxColumn()
+            {
+                CellTemplate = new DataGridViewCheckBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleCenter },
+                Name = "paid",
+                HeaderText = "Pagado",
+                Width = _colCheckBox,
+            }); //10 paid
+        }
+
+        private void GrdStartingScroll()
+        {
+            int rowIndex = -1;
+
+            for (int i = 0; i < _grd.Rows.Count; i++)
+            {
+                //Compruebo que no sea un separador
+                if ((int)_grd.Rows[i].Cells["id"].Value == -1)
+                    continue;
+
+                DateTime rowDate = DateTimeTools.Convert(_grd.Rows[i].Cells["date"].Value.ToString(), "yyyy-MM-dd");
+
+                if (rowDate.Year == DateTime.Now.Year && rowDate.Month == DateTime.Now.Month)
+                {
+                    rowIndex = i;
+                    break;
                 }
             }
-        }
 
-        public void ButtonsLogic()
-        {
-            _tsbInsert.Enabled = _selectedId == 0;
-            _tsbUpdate.Enabled = _selectedId != 0 && !_isCreditCardSummaryOutstanding;
-            _tsbDelete.Enabled = _selectedId != 0;
-            _tsbNewPay.Enabled = _selectedId != 0 && _isCreditCardSummaryOutstanding;
-        }
-
-        private void ClearInputs()
-        {
-            _selectedId = 0;
-            _txtEntityName.Text = "";
-            _txtDescription.Text = "";
-            _dtpDate.Value = DateTime.Now;
-            _txtAmount.Text = "0";
-            _cbCurrency.SelectedIndex = _cbCurrency.FindStringExact("ARS");
-            _txtInstallmentCurrent.Text = "";
-            _txtInstallments.Text = "";
-            _ckbService.Checked = false;
-            _cbFrequency.SelectedIndex = _cbFrequency.FindString("1");
-
-            Editing = false;
-            _isCreditCardSummaryOutstanding = false;
-            ButtonsLogic();
-        }
-
-        private void AssosiateEvents()
-        {
-            _btnEntitySearch.Click += (sender, e) => ButtonEntitySearchClick?.Invoke(sender, e);
-            _tsbExit.Click += (sender, e) => ButtonExitClick?.Invoke(sender, e);
-            _ypYearPage.ButtonNextClick += (sender, e) => SelectedYearChange?.Invoke(sender, e);
-            _ypYearPage.ButtonPreviousClick += (sender, e) => SelectedYearChange?.Invoke(sender, e);
-            _ypYearPage.ValueChange += (sender, e) => SelectedYearChange?.Invoke(sender, e);
+            DataGridViewTools.ScrollToRow(_grd, rowIndex, -3);
         }
 
         private void ControlsSetup()
@@ -292,145 +367,234 @@ namespace MoneyAdministrator.Views
             _txtDescription.MaxLength = 150;
             _txtAmount.TextAlign = HorizontalAlignment.Right;
             _txtAmount.Text = "0";
+
+            _ckbInstallments.Checked = false;
+            _txtInstallmentCurrent.Enabled = false;
             _txtInstallmentCurrent.MaxLength = 2;
             _txtInstallmentCurrent.TextAlign = HorizontalAlignment.Center;
+            _txtInstallments.Enabled = false;
             _txtInstallments.MaxLength = 2;
             _txtInstallments.TextAlign = HorizontalAlignment.Center;
 
+            _ckbService.Checked = false;
             _cbFrequency.Enabled = false;
-            _cbFrequency.DataSource = _frequencies;
+            _cbFrequency.Items.Clear();
+            _cbFrequency.Items.Add("1 Mes");
+            _cbFrequency.Items.Add("3 Meses");
+            _cbFrequency.Items.Add("6 Meses");
+            _cbFrequency.Items.Add("12 Meses");
+            _cbFrequency.SelectedIndex = _cbFrequency.FindString("1");
 
             GrdSetup();
         }
 
-        private void GrdSetup()
+        private void ButtonsLogic()
         {
-            ControlConfig.DataGridViewSetup(_grd);
+            var isCreditCardRest = _selectedDto?.TransactionType == TransactionType.CreditCardOutstanding;
 
-            //Configuracion de columnas
-            _grd.Columns.Add(new DataGridViewColumn() //0 id
-            {
-                Name = "id",
-                HeaderText = "Id",
-                CellTemplate = new DataGridViewTextBoxCell(),
-                Visible = false,
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //1 Fecha
-            {
-                Name = "date",
-                HeaderText = "Fecha",
-                CellTemplate = new DataGridViewTextBoxCell(),
-                Width = _colWidthDate,
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //2 entity
-            {
-                Name = "entity",
-                HeaderText = "Entidad",
-                CellTemplate = new DataGridViewTextBoxCell(),
-                Width = _colWidthEntity,
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //3 description
-            {
-                Name = "description",
-                HeaderText = "Descripcion",
-                CellTemplate = new DataGridViewTextBoxCell(),
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //4 installments
-            {
-                Name = "installments",
-                HeaderText = "Cuotas",
-                CellTemplate = new DataGridViewTextBoxCell(),
-                Width = _colWidthInstall,
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleCenter },
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //5 currency
-            {
-                Name = "currency",
-                HeaderText = "Moneda",
-                CellTemplate = new DataGridViewTextBoxCell(),
-                Width = _colWidthCurrency,
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleCenter },
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //6 amount
-            {
-                Name = "amount",
-                HeaderText = "Monto",
-                CellTemplate = new DataGridViewTextBoxCell(),
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
-                Width = _colWidthAmount
-            });
+            _tsbInsert.Enabled = _selectedDto == null;
+            _tsbUpdate.Enabled = _selectedDto != null && !isCreditCardRest;
+            _tsbDelete.Enabled = _selectedDto != null;
+            _tsbNewPay.Enabled = _selectedDto != null && isCreditCardRest;
         }
 
-        //events
-        private void _tsbInsert_Click(object sender, EventArgs e)
+        private void Clear()
         {
-            ButtonInsertClick?.Invoke(sender, e);
+            _selectedDto = null;
+            _checkBoxChangeDto = null;
+
             ClearInputs();
         }
 
+        private void ClearInputs()
+        {
+            _txtEntityName.Text = "";
+            _txtDescription.Text = "";
+            _dtpDate.Value = DateTime.Now;
+            _txtAmount.Text = "0";
+            _cbCurrency.SelectedIndex = _cbCurrency.FindStringExact("ARS");
+
+            _ckbService.Checked = false;
+            _txtInstallmentCurrent.Text = "";
+            _txtInstallments.Text = "";
+
+            _ckbService.Checked = false;
+            _cbFrequency.SelectedIndex = _cbFrequency.FindString("1");
+
+            ButtonsLogic();
+        }
+
+        //events
         private void _tsbNewPay_Click(object sender, EventArgs e)
         {
             ButtonNewPayClick.Invoke(sender, e);
+        }
+
+        private void _tsbInsert_Click(object sender, EventArgs e)
+        {
+            ButtonInsertClick.Invoke(sender, e);
+            Clear();
             ButtonsLogic();
         }
 
         private void _tsbUpdate_Click(object sender, EventArgs e)
         {
-            ButtonUpdateClick?.Invoke(sender, e);
-            ClearInputs();
+            ButtonUpdateClick.Invoke(sender, e);
+            Clear();
+            ButtonsLogic();
         }
 
         private void _tsbDelete_Click(object sender, EventArgs e)
         {
-            ButtonDeleteClick?.Invoke(sender, e);
-            ClearInputs();
+            ButtonDeleteClick.Invoke(sender, e);
+            Clear();
+            ButtonsLogic();
         }
 
         private void _tsbClear_Click(object sender, EventArgs e)
         {
-            ClearInputs();
+            Clear();
         }
 
-        private void _txtInstallmentCurrent_KeyDown(object sender, KeyEventArgs e)
+        private void _tsbExit_Click(object sender, EventArgs e)
         {
-            e.Handled = true;
-            e.SuppressKeyPress = true;
+            ButtonExitClick.Invoke(sender, e);
+        }
+
+        private void _btnEntitySearch_Click(object sender, EventArgs e)
+        {
+            ButtonEntitySearchClick.Invoke(sender, e);
+        }
+
+        private void _ckbInstallments_CheckedChanged(object sender, EventArgs e)
+        {
+            _txtInstallments.Enabled = _ckbInstallments.Checked;
+
+            if (_ckbInstallments.Checked)
+                _ckbService.Checked = false;
         }
 
         private void _ckbService_CheckedChanged(object sender, EventArgs e)
         {
             _cbFrequency.Enabled = _ckbService.Checked;
 
-            _txtInstallmentCurrent.Enabled = !_ckbService.Checked;
-            _txtInstallments.Enabled = !_ckbService.Checked;
+            if (_ckbService.Checked)
+                _ckbInstallments.Checked = false;
         }
 
         private void _grd_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            _selectedId = (int)(sender as DataGridView).Rows[e.RowIndex].Cells[0].Value;
-            GrdDoubleClick?.Invoke(sender, e);
+            var grd = sender as DataGridView;
+
+            //Si es un separador
+            if ((int)grd.Rows[e.RowIndex].Cells["id"].Value == -1)
+                return;
+
+            //Si el doble click es en los checkbox
+            if (e.ColumnIndex == 9 || e.ColumnIndex == 10)
+                return;
+
+            _selectedDto = new TransactionViewDto
+            {
+                Id = (int)grd.Rows[e.RowIndex].Cells["id"].Value,
+                TransactionType = (TransactionType)grd.Rows[e.RowIndex].Cells["type"].Value,
+                Frequency = (int)grd.Rows[e.RowIndex].Cells["frequency"].Value,
+                Date = DateTimeTools.Convert((string)grd.Rows[e.RowIndex].Cells["date"].Value, "yyyy-MM-dd"),
+                EntityName = (string)grd.Rows[e.RowIndex].Cells["entity"].Value,
+                Description = (string)grd.Rows[e.RowIndex].Cells["description"].Value,
+                Installment = (string)grd.Rows[e.RowIndex].Cells["installments"].Value,
+                CurrencyName = (string)grd.Rows[e.RowIndex].Cells["currency"].Value,
+                Amount = DecimalTools.Convert((string)grd.Rows[e.RowIndex].Cells["amount"].Value),
+                Concider = (bool)grd.Rows[e.RowIndex].Cells["concider"].Value,
+                Paid = (bool)grd.Rows[e.RowIndex].Cells["paid"].Value,
+            };
+
+            ClearInputs();
+            GrdDoubleClick.Invoke(sender, e);
             ButtonsLogic();
         }
 
-        private void TransactionHistoryView_Resize(object sender, EventArgs e)
+        private void _grd_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            //Si la fila es la de los headers
+            if (e.RowIndex < 0)
+                return;
+
+            Color cellBorder = Color.FromArgb(50, 50, 50);
+
+            //Consulto si la fila es un separador
+            var isSeparator = (int)_grd.Rows[e.RowIndex].Cells["id"].Value == -1;
+
+            //Evito que se muestren checkboxes en los separadores
+            if (isSeparator && (e.ColumnIndex == 9 || e.ColumnIndex == 10))
+            {
+                // Establece el estilo de fondo de la celda igual al estilo de fondo del DataGridView
+                e.CellStyle.BackColor = _grd.Rows[e.RowIndex].Cells["id"].Style.BackColor;
+                e.CellStyle.SelectionBackColor = _grd.Rows[e.RowIndex].Cells["id"].Style.SelectionBackColor;
+
+                // Dibuja la celda con el estilo personalizado
+                e.PaintBackground(e.CellBounds, true);
+                e.Handled = true;
+            }
+            else
+            {
+                // Dibuja el contenido predeterminado de la celda
+                e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.Border);
+
+                // Pinto el borde superior de la fecha
+                if (e.RowIndex != 0 && (int)_grd.Rows[e.RowIndex - 1].Cells["id"].Value == -1)
+                    DataGridViewTools.PaintCellBorder(e, cellBorder, DataGridViewBorder.TopBorder);
+
+                // Pinto el borde derecho de la fecha
+                if (e.ColumnIndex == 3)
+                    DataGridViewTools.PaintCellBorder(e, cellBorder, DataGridViewBorder.RightBorder);
+
+                // Indica que hemos manejado el evento y no se requiere el dibujo predeterminado
+                e.Handled = true;
+            }
+        }
+
+        private void _grd_Resize(object sender, EventArgs e)
         {
             _grd.Columns["description"].Width = _grd.Width - _colWidthTotal - 19;
         }
 
-        private void _txtInstallments_KeyPress(object sender, KeyPressEventArgs e)
+        private void _grd_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (!(char.IsDigit(e.KeyChar) || char.IsControl(e.KeyChar)))
-                e.Handled = true;
+            var grd = sender as DataGridView;
+
+            //Si es un separador
+            if ((int)grd.Rows[e.RowIndex].Cells["id"].Value == -1)
+                return;
+
+            //si el click NO es en los checkbox
+            if (e.ColumnIndex != 9 && e.ColumnIndex != 10)
+                return;
+
+            _checkBoxChangeDto = new TransactionViewDto
+            {
+                Id = (int)grd.Rows[e.RowIndex].Cells["id"].Value,
+                TransactionType = (TransactionType)grd.Rows[e.RowIndex].Cells["type"].Value,
+                Frequency = (int)grd.Rows[e.RowIndex].Cells["frequency"].Value,
+                Date = DateTimeTools.Convert((string)grd.Rows[e.RowIndex].Cells["date"].Value, "yyyy-MM-dd"),
+                EntityName = (string)grd.Rows[e.RowIndex].Cells["entity"].Value,
+                Description = (string)grd.Rows[e.RowIndex].Cells["description"].Value,
+                Installment = (string)grd.Rows[e.RowIndex].Cells["installments"].Value,
+                CurrencyName = (string)grd.Rows[e.RowIndex].Cells["currency"].Value,
+                Amount = DecimalTools.Convert((string)grd.Rows[e.RowIndex].Cells["amount"].Value),
+                Concider = (bool)grd.Rows[e.RowIndex].Cells["concider"].Value,
+                Paid = (bool)grd.Rows[e.RowIndex].Cells["paid"].Value,
+            };
+            GrdValueChange.Invoke(sender, e);
         }
 
-        public event EventHandler GrdDoubleClick;
         public event EventHandler ButtonInsertClick;
         public event EventHandler ButtonNewPayClick;
         public event EventHandler ButtonUpdateClick;
         public event EventHandler ButtonDeleteClick;
         public event EventHandler ButtonExitClick;
-        public event EventHandler SelectedYearChange;
         public event EventHandler ButtonEntitySearchClick;
+        public event EventHandler GrdDoubleClick;
+        public event EventHandler GrdValueChange;
     }
 }

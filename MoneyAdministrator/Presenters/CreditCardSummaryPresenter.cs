@@ -1,21 +1,16 @@
 ﻿using MoneyAdministrator.Common.DTOs;
+using MoneyAdministrator.Common.Enums;
+using MoneyAdministrator.Common.Utilities.TypeTools;
 using MoneyAdministrator.DTOs.Enums;
 using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Models;
 using MoneyAdministrator.Services;
 using MoneyAdministrator.Utilities;
 using MoneyAdministrator.Utilities.Disposable;
-using MoneyAdministrator.Utilities.TypeTools;
 using MoneyAdministrator.Views;
-using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace MoneyAdministrator.Presenters
 {
@@ -203,8 +198,12 @@ namespace MoneyAdministrator.Presenters
         {
             //Creo la transaccion
             var descripcion = $"{_view.CreditCard.CreditCardBrand.Name} - *{_view.CreditCard.LastFourNumbers} :: Saldo pendiente";
+            descripcion += summary.Imported ? 
+                $" (pago minimo: {summary.MinimumPayment.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES"))})" : " (resumen incompleto)";
+
             var transaction = new Transaction
             {
+                TransactionType = TransactionType.CreditCardOutstanding,
                 EntityId = _view.CreditCard.EntityId,
                 CurrencyId = 1, //ARS
                 Description = descripcion,
@@ -216,9 +215,11 @@ namespace MoneyAdministrator.Presenters
             {
                 TransactionId = transaction.Id,
                 Date = summary.Period,
+                EndDate = summary.Period,
                 Amount = summary.TotalArs,
-                Installment = 0,
-                Frequency = 0,
+                Frequency = 1,
+                Concider = true,
+                Paid = false,
             };
             new TransactionDetailService(_databasePath).Insert(transactionDetail);
 

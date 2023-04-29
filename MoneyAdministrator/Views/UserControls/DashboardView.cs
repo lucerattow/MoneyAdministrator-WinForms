@@ -14,24 +14,31 @@ using System.Windows.Forms;
 using System.Globalization;
 using MoneyAdministrator.Utilities.Disposable;
 using MoneyAdministrator.Common.DTOs;
+using MoneyAdministrator.Services;
+using MoneyAdministrator.Utilities.ControlTools;
+using MoneyAdministrator.Common.Utilities.TypeTools;
 
 namespace MoneyAdministrator.Views.UserControls
 {
     public partial class DashboardView : UserControl, IDashboardView
     {
-        private DateTime? _selectedPeriod;
+        private DateTime? _selectedRecordPeriod;
 
-        public DateTime? SelectedPeriod
-        { 
-            get => _selectedPeriod;
+        public DateTime? SelectedRecordPeriod
+        {
+            get => _selectedRecordPeriod;
             set
             {
-                _selectedPeriod = value;
+                _selectedRecordPeriod = value;
                 if (value != null)
                     _dtpDate.Value = (DateTime)value;
                 else
                     _dtpDate.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            } 
+            }
+        }
+        public DateTime Period
+        {
+            get => _dtpDate.Value;
         }
         public decimal UsdValue
         {
@@ -139,8 +146,19 @@ namespace MoneyAdministrator.Views.UserControls
                 var years = dashboardDtos.Select(x => x.Period.Year).Distinct().ToList();
 
                 var row = 0;
-                Color separatorBackColor = Color.FromArgb(153, 0, 255);
-                Color separatorForeColor = Color.White;
+
+                //Separador futuro
+                Color sepFutureBackColor = Color.FromArgb(220, 190, 255);
+                Color sepFutureForeColor = Color.Black;
+
+                //Separador actual
+                Color sepCurrentBackColor = Color.FromArgb(153, 0, 255);
+                Color sepCurrentForeColor = Color.White;
+
+                //Separador antiguo
+                Color sepOldestBackColor = Color.FromArgb(200, 200, 200);
+                Color sepOldestForeColor = Color.Black;
+
                 foreach (var year in years)
                 {
                     var yearDashboarDtos = dashboardDtos.Where(x => x.Period.Year == year).ToList();
@@ -163,8 +181,12 @@ namespace MoneyAdministrator.Views.UserControls
                     });
 
                     //Pinto el separador
-                    PaintDgvCells.PaintSeparator(_grd, row, separatorBackColor, separatorForeColor);
-                    separatorBackColor = Color.FromArgb(100, 100, 100);
+                    if (year > DateTime.Now.Year)
+                        PaintDgvCells.PaintSeparator(_grd, row, sepFutureBackColor, sepFutureForeColor);
+                    else if (year == DateTime.Now.Year)
+                        PaintDgvCells.PaintSeparator(_grd, row, sepCurrentBackColor, sepCurrentForeColor);
+                    else if (year < DateTime.Now.Year)
+                        PaintDgvCells.PaintSeparator(_grd, row, sepOldestBackColor, sepOldestForeColor);
 
                     //Añado los registros a la tabla
                     foreach (var dashboardDto in yearDashboarDtos)
@@ -172,9 +194,9 @@ namespace MoneyAdministrator.Views.UserControls
                         row = _grd.Rows.Add(new object[]
                         {
                             dashboardDto.Period.ToString("yyyy-MM"),
-                            dashboardDto.UsdValue.ToString("#,##0.00 U$D", CultureInfo.GetCultureInfo("es-ES")),
-                            dashboardDto.UsdSalary.ToString("#,##0.00 AR$", CultureInfo.GetCultureInfo("es-ES")),
-                            dashboardDto.SalaryArs.ToString("#,##0.00 AR$", CultureInfo.GetCultureInfo("es-ES")),
+                            dashboardDto.UsdValue.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
+                            dashboardDto.UsdSalary.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
+                            dashboardDto.SalaryArs.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
                             dashboardDto.SalaryUsd.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
                             dashboardDto.Assets.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
                             dashboardDto.Passives.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
@@ -195,23 +217,29 @@ namespace MoneyAdministrator.Views.UserControls
                     }
                 }
             }
+
+            GrdStartingScroll();
         }
 
         public void ClearInputs()
         {
-            _selectedPeriod = null;
+            _selectedRecordPeriod = null;
             _dtpDate.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             _txtUsdValue.Text = "";
             _txtUsdValue.OperatorSymbol = "+";
             _txtSalaryArs.Text = "";
             _txtSalaryArs.OperatorSymbol = "+";
+            _txtSalaryUsd.Text = "";
+            _txtSalaryUsd.OperatorSymbol = "+";
 
             ButtonsLogic();
         }
 
         public void ButtonsLogic()
         {
-            _tsbUpdate.Enabled = SelectedPeriod != null;
+            _tsbInsert.Enabled = SelectedRecordPeriod == null;
+            _tsbUpdate.Enabled = SelectedRecordPeriod != null;
+            _tsbDelete.Enabled = SelectedRecordPeriod != null;
         }
 
         private void ControlsSetup()
@@ -244,12 +272,14 @@ namespace MoneyAdministrator.Views.UserControls
             });
             _grdHeader.Columns.Add(new DataGridViewColumn() //2 Billetera
             {
-                Name = "wallet",
-                HeaderText = "Billetera",
+                Name = "transactions",
+                HeaderText = "Transacciones",
                 CellTemplate = new DataGridViewTextBoxCell(),
                 Width = _colWalletWidth,
                 DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
             });
+
+
         }
 
         private void GrdSetup()
@@ -260,83 +290,133 @@ namespace MoneyAdministrator.Views.UserControls
             ControlConfig.DataGridViewSetup(_grd);
 
             //Configuracion de columnas
-            _grd.Columns.Add(new DataGridViewColumn() //0 Periodo
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
                 Name = "date",
                 HeaderText = "Periodo",
-                CellTemplate = new DataGridViewTextBoxCell(),
                 Width = _colPeriodWidth,
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //1 Coparar usd - USD
+                ReadOnly = true,
+            }); //0 date
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
                 Name = "usdCompareReference",
                 HeaderText = "USD",
-                CellTemplate = new DataGridViewTextBoxCell(),
                 Width = _colUsdCompareWidth / groupUsdCompare,
-
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //2 Coparar usd - Sueldo
+                ReadOnly = true,
+            }); //1 usdCompareReference
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
                 Name = "usdCompareValue",
                 HeaderText = "Sueldo",
-                CellTemplate = new DataGridViewTextBoxCell(),
                 Width = _colUsdCompareWidth / groupUsdCompare,
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //3 Billetera - Sueldo
+                ReadOnly = true,
+            }); //2 usdCompareValue
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
                 Name = "walletSalaryArsWidth",
                 HeaderText = "Sueldo ARS",
-                CellTemplate = new DataGridViewTextBoxCell(),
                 Width = _colWalletWidth / groupWallet,
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //3 Billetera - Sueldo
+                ReadOnly = true,
+            }); //3 walletSalaryArsWidth
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
                 Name = "walletSalaryUsdWidth",
                 HeaderText = "Sueldo USD",
-                CellTemplate = new DataGridViewTextBoxCell(),
                 Width = _colWalletWidth / groupWallet,
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //4 Billetera - Activos
+                ReadOnly = true,
+            }); //3 walletSalaryUsdWidth
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
                 Name = "walletAssetsWidth",
                 HeaderText = "Activos",
-                CellTemplate = new DataGridViewTextBoxCell(),
                 Width = _colWalletWidth / groupWallet,
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //5 Billetera - Pasivos
+                ReadOnly = true,
+            }); //4 walletAssetsWidth
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
                 Name = "walletPassives",
                 HeaderText = "Pasivos",
-                CellTemplate = new DataGridViewTextBoxCell(),
                 Width = _colWalletWidth / groupWallet,
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //6 Billetera - Balance
+                ReadOnly = true,
+            }); //5 walletPassives
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
                 Name = "walletBalance",
                 HeaderText = "Balance",
-                CellTemplate = new DataGridViewTextBoxCell(),
                 Width = _colWalletWidth / groupWallet,
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
-            });
+                ReadOnly = true,
+            }); //6 walletBalance
+        }
+
+        private void GrdStartingScroll()
+        {
+            int rowIndex = -1;
+
+            for (int i = 0; i < _grd.Rows.Count; i++)
+            {
+                //Compruebo que no sea un separador
+                if (!DateTimeTools.TestDate(_grd.Rows[i].Cells["date"].Value.ToString(), "yyyy-MM"))
+                    continue;
+
+                DateTime rowDate = DateTimeTools.Convert(_grd.Rows[i].Cells["date"].Value.ToString(), "yyyy-MM");
+
+                if (rowDate.Year == DateTime.Now.Year && rowDate.Month == 12)
+                {
+                    rowIndex = i;
+                    break;
+                }
+            }
+
+            DataGridViewTools.ScrollToRow(_grd, rowIndex, -3);
         }
 
         private void AssosiateEvents()
         {
-            _tsbUpdate.Click += (sender, e) => ButtonUpdateClick?.Invoke(sender, e);
             _tsbExit.Click += (sender, e) => ButtonExitClick?.Invoke(sender, e);
         }
 
         //events
+        private void _tsbInsert_Click(object sender, EventArgs e)
+        {
+            ButtonInsertClick.Invoke(sender, e);
+            ClearInputs();
+            ButtonsLogic();
+        }
+
+        private void _tsbUpdate_Click(object sender, EventArgs e)
+        {
+            ButtonUpdateClick.Invoke(sender, e);
+            ClearInputs();
+            ButtonsLogic();
+        }
+
+        private void _tsbDelete_Click(object sender, EventArgs e)
+        {
+            ButtonDeleteClick.Invoke(sender, e);
+            ClearInputs();
+            ButtonsLogic();
+        }
+
         private void _tsbClear_Click(object sender, EventArgs e)
         {
             ClearInputs();
+            ButtonsLogic();
         }
 
         private void _grd_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -353,14 +433,47 @@ namespace MoneyAdministrator.Views.UserControls
                 int year = int.Parse(values[0]);
                 int month = int.Parse(values[1]);
 
-                SelectedPeriod = new DateTime(year, month, 1);
+                SelectedRecordPeriod = new DateTime(year, month, 1);
 
                 GrdDoubleClick?.Invoke(sender, e);
                 ButtonsLogic();
             }
         }
 
+        private void _grd_Scroll(object sender, ScrollEventArgs e)
+        {
+            if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll)
+            {
+                _grdHeader.HorizontalScrollingOffset = e.NewValue;
+            }
+        }
+
+        private void _grd_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            //Si la fila es la de los headers
+            if (e.RowIndex < 0)
+                return;
+
+            Color cellBorder = Color.FromArgb(50, 50, 50);
+
+            // Dibuja el contenido predeterminado de la celda
+            e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.Border);
+
+            // Pinto el borde superior de la fecha
+            if (e.RowIndex != 0 && _grd.Rows[e.RowIndex - 1].Cells["date"].Value.ToString().Contains("Año:"))
+                DataGridViewTools.PaintCellBorder(e, cellBorder, DataGridViewBorder.TopBorder);
+
+            // Pinto el borde derecho de la fecha
+            if (e.ColumnIndex == 0 || e.ColumnIndex == 2 || e.ColumnIndex == 4)
+                DataGridViewTools.PaintCellBorder(e, cellBorder, DataGridViewBorder.RightBorder);
+
+            // Indica que hemos manejado el evento y no se requiere el dibujo predeterminado
+            e.Handled = true;
+        }
+
+        public event EventHandler ButtonInsertClick;
         public event EventHandler ButtonUpdateClick;
+        public event EventHandler ButtonDeleteClick;
         public event EventHandler ButtonExitClick;
         public event EventHandler GrdDoubleClick;
     }

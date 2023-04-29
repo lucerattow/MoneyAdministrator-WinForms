@@ -1,4 +1,5 @@
 ﻿using MoneyAdministrator.Common.DTOs;
+using MoneyAdministrator.Common.Enums;
 using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Models;
 using MoneyAdministrator.Services;
@@ -127,20 +128,21 @@ namespace MoneyAdministrator.Presenters
             {
                 //Inicializo los servicios
                 var transactionService = new TransactionService(_databasePath);
-                var ccSummaryService = new CCSummaryService(_databasePath);
+                var summaryService = new CCSummaryService(_databasePath);
 
                 //Obtengo el resumen
-                var ccSummary = ccSummaryService.Get(_summaryId);
-                if (ccSummary == null)
+                var summary = summaryService.Get(_summaryId);
+                if (summary == null)
                     return;
 
                 var transactionOutstanding = transactionService.Get(_view.TransactionOutstandingId);
 
-                if (ccSummary.TransactionPayId == 0)
+                if (summary.TransactionPayId == 0)
                 {
-                    var descripcion = $"{ccSummary.CreditCard.CreditCardBrand.Name} - *{ccSummary.CreditCard.LastFourNumbers} :: Pago realizado";
+                    var descripcion = $"{summary.CreditCard.CreditCardBrand.Name} - *{summary.CreditCard.LastFourNumbers} :: Pago realizado";
                     var transaction = new Transaction
                     {
+                        TransactionType = TransactionType.CreditCardOutstanding,
                         EntityId = transactionOutstanding.EntityId,
                         CurrencyId = transactionOutstanding.CurrencyId,
                         Description = descripcion,
@@ -148,17 +150,19 @@ namespace MoneyAdministrator.Presenters
                     transactionService.Insert(transaction);
 
                     //Asigno la transaccion de pago al resumen
-                    ccSummary.TransactionPayId = transaction.Id;
-                    ccSummaryService.Update(ccSummary);
+                    summary.TransactionPayId = transaction.Id;
+                    summaryService.Update(summary);
                 }
 
                 var transactionDetail = new TransactionDetail
                 {
-                    TransactionId = (int)ccSummary.TransactionPayId,
+                    TransactionId = (int)summary.TransactionPayId,
                     Date = _view.PayDay,
+                    EndDate = _view.PayDay,
                     Amount = _view.AmountPay,
-                    Installment = 0,
-                    Frequency = 0,
+                    Frequency = 1,
+                    Concider = true,
+                    Paid = false,
                 };
                 new TransactionDetailService(_databasePath).Insert(transactionDetail);
 

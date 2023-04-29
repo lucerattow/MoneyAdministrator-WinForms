@@ -19,6 +19,11 @@ namespace MoneyAdministrator.Services
             _unitOfWork = new UnitOfWork(databasePath);
         }
 
+        public CurrencyValueService(IUnitOfWork UnitOfWork)
+        {
+            _unitOfWork = UnitOfWork;
+        }
+
         public List<CurrencyValue> GetAll()
         {
             return _unitOfWork.CurrencyValueRepository.GetAll().OrderByDescending(x => x.Date).ToList();

@@ -62,22 +62,46 @@ namespace MoneyAdministrator.Views
         public DateTime Date
         {
             get => DateTimeTools.Convert(_txtDate.Text, ConfigurationManager.AppSettings["DateFormat"]);
-            set => _txtDate.Text = value.ToString(ConfigurationManager.AppSettings["DateFormat"]);
+            set
+            {
+                if (value == new DateTime(1, 1, 1))
+                    _txtDate.Text = "";
+                else
+                    _txtDate.Text = value.ToString(ConfigurationManager.AppSettings["DateFormat"]);
+            }
         }
         public DateTime Expiration
         {
             get => DateTimeTools.Convert(_txtDateExpiration.Text, ConfigurationManager.AppSettings["DateFormat"]);
-            set => _txtDateExpiration.Text = value.ToString(ConfigurationManager.AppSettings["DateFormat"]);
+            set
+            {
+                if (value == new DateTime(1, 1, 1))
+                    _txtDateExpiration.Text = "";
+                else
+                    _txtDateExpiration.Text = value.ToString(ConfigurationManager.AppSettings["DateFormat"]);
+            }
         }
         public DateTime NextDate
         {
             get => DateTimeTools.Convert(_txtDateNext.Text, ConfigurationManager.AppSettings["DateFormat"]);
-            set => _txtDateNext.Text = value.ToString(ConfigurationManager.AppSettings["DateFormat"]);
+            set
+            {
+                if (value == new DateTime(1, 1, 1))
+                    _txtDateNext.Text = "";
+                else
+                    _txtDateNext.Text = value.ToString(ConfigurationManager.AppSettings["DateFormat"]);
+            }
         }
         public DateTime NextExpiration
         {
             get => DateTimeTools.Convert(_txtDateNextExpiration.Text, ConfigurationManager.AppSettings["DateFormat"]);
-            set => _txtDateNextExpiration.Text = value.ToString(ConfigurationManager.AppSettings["DateFormat"]);
+            set
+            {
+                if (value == new DateTime(1, 1, 1))
+                    _txtDateNextExpiration.Text = "";
+                else
+                    _txtDateNextExpiration.Text = value.ToString(ConfigurationManager.AppSettings["DateFormat"]);
+            }
         }
         public decimal TotalArs
         {
@@ -236,7 +260,7 @@ namespace MoneyAdministrator.Views
                 }
 
                 var node = new TreeNode();
-                node.Text = $"Periodo: {datasource[i].Period.ToString("yyyy-MM")}";
+                node.Text = $"Periodo: {datasource[i].Period.ToString("yyyy-MM")}" + (datasource[i].Imported ? "" : " (Incompleto)");
                 node.Tag = datasource[i].Id;
                 node.ImageIndex = datasource[i].Imported ? 1 : 2;
                 node.SelectedImageIndex = datasource[i].Imported ? 1 : 2;
@@ -438,45 +462,50 @@ namespace MoneyAdministrator.Views
             ControlConfig.DataGridViewSetup(_grd);
 
             //Configuracion de columnas
-            _grd.Columns.Add(new DataGridViewColumn() //0 date
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
                 Name = "date",
                 HeaderText = "Fecha",
-                CellTemplate = new DataGridViewTextBoxCell(),
                 Width = _colWidthDate,
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //1 date
+                ReadOnly = true,
+            }); //0 date
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
                 Name = "description",
                 HeaderText = "Descripcion",
-                CellTemplate = new DataGridViewTextBoxCell(),
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //2 date
+                ReadOnly = true,
+            }); //1 description
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleCenter },
                 Name = "installments",
                 HeaderText = "Cuotas",
-                CellTemplate = new DataGridViewTextBoxCell(),
                 Width = _colWidthInstall,
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleCenter },
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //3 date
+                ReadOnly = true,
+            }); //2 installments
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
                 Name = "amountArs",
                 HeaderText = "ARS",
-                CellTemplate = new DataGridViewTextBoxCell(),
                 Width = _colWidthAmountArs,
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //4 date
+                ReadOnly = true,
+            }); //3 amountArs
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
                 Name = "amountUsd",
                 HeaderText = "USD",
-                CellTemplate = new DataGridViewTextBoxCell(),
                 Width = _colWidthAmountUsd,
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
-            });
+                ReadOnly = true,
+            }); //4 amountUsd
         }
 
         private void GrdPaymentsSetup()

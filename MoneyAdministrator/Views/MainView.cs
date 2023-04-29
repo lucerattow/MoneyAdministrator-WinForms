@@ -15,7 +15,7 @@ namespace MyMoneyAdmin
         {
             get => _isFileOpened;
             set
-            { 
+            {
                 _isFileOpened = value;
                 ButtonsLogic();
             }
@@ -48,14 +48,17 @@ namespace MyMoneyAdmin
         public void CloseChildrens()
         {
             _pnlContainer.Controls.Clear();
+            SetSelectedButton();
+        }
+
+        public void SelectDashboardButton()
+        {
+            SetSelectedButton();
+            _btnDashboard.BackColor = Color.Gainsboro;
         }
 
         private void AssociateEvents()
         {
-            _btnDashboard.Click += (sender, e) => ShowDashboard?.Invoke(sender, e);
-            _btnTransactions.Click += (sender, e) => ShowTransactionHistory?.Invoke(sender, e);
-            _btnCreditCards.Click += (sender, e) => ShowCreditCardSummary?.Invoke(sender, e);
-
             _tsbFileNew.Click += (sender, e) => FileNew?.Invoke(sender, e);
             _tsbFileOpen.Click += (sender, e) => FileOpen?.Invoke(sender, e);
             _tsbFileClose.Click += (sender, e) => FileClose?.Invoke(sender, e);
@@ -69,7 +72,36 @@ namespace MyMoneyAdmin
             _btnCreditCards.Enabled = _isFileOpened;
         }
 
+        private void SetSelectedButton(Button button = null)
+        {
+            //backcolor
+            _btnDashboard.BackColor = Color.White;
+            _btnTransactions.BackColor = Color.White;
+            _btnCreditCards.BackColor = Color.White;
+
+            if (button != null)
+                button.BackColor = Color.Gainsboro;
+        }
+
         //Events
+        private void _btnDashboard_Click(object sender, EventArgs e)
+        {
+            ShowDashboard?.Invoke(sender, e);
+            SetSelectedButton((Button)sender);
+        }
+
+        private void _btnTransactions_Click(object sender, EventArgs e)
+        {
+            ShowTransactionHistory?.Invoke(sender, e);
+            SetSelectedButton((Button)sender);
+        }
+
+        private void _btnCreditCards_Click(object sender, EventArgs e)
+        {
+            ShowCreditCardSummary?.Invoke(sender, e);
+            SetSelectedButton((Button)sender);
+        }
+
         public event EventHandler ShowDashboard;
         public event EventHandler ShowTransactionHistory;
         public event EventHandler ShowCreditCardSummary;

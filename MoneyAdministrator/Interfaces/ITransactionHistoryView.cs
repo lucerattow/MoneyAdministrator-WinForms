@@ -1,4 +1,5 @@
 ﻿using MoneyAdministrator.Common.DTOs;
+using MoneyAdministrator.Common.Utilities.TypeTools;
 using MoneyAdministrator.Models;
 using System;
 using System.Collections.Generic;
@@ -10,33 +11,25 @@ namespace MoneyAdministrator.Interfaces
 {
     public interface ITransactionHistoryView
     {
-        //properties
-        /// <summary>Obtengo el ID seleccionado</summary>
-        int SelectedId { get; set; }
-        /// <summary>Obtengo la fecha</summary>
-        DateTime Date { get; set; }
-        /// <summary>Obtengo el nombre de la entidad</summary>
+        //properties//properties
+        TransactionViewDto? SelectedDto { get; set; }
+        TransactionViewDto? CheckBoxChangeDto { get; }
+
+        //properties fields
         string EntityName { get; set; }
-        /// <summary>Obtengo la descripcion</summary>
+        DateTime Date { get; set; }
         string Description { get; set; }
-        /// <summary>Obtengo el monto</summary>
         decimal Amount { get; set; }
-        /// <summary>Obtengo la moneda seleccioanda</summary>
         Currency Currency { get; set; }
 
-        /// <summary>Obtengo la cuota actual del registro</summary>
+        //properties installments
+        bool IsInstallment { get; set; }
         int InstallmentCurrent { get; set; }
-        /// <summary>Obtengo la cantidad de cuotas maxima</summary>
         int InstallmentMax { get; set; }
-        /// <summary>Obtengo la frecuencia de repeticion del servicio</summary>
-        int Frequency { get; set; }
 
-        /// <summary>Indica si la transaccion es un servicio</summary>
+        //properties service
         bool IsService { get; set; }
-        /// <summary>Indica si la transaccion es nueva o si se esta editando</summary>
-        bool Editing { get; set; }
-        /// <summary>Indica si esta permitido editar la transaccion</summary>
-        bool IsCreditCardSummaryOutstanding { get; set; }
+        int Frequency { get; set; }
 
         //methods
         /// <summary>Envio los datos de las monedas al ComboBox de transaccionHistory</summary>
@@ -44,18 +37,16 @@ namespace MoneyAdministrator.Interfaces
         void SetCurrenciesList(List<Currency> datasource);
         /// <summary>Envio los datos de las transacciones al GRD de transaccionHistory</summary>
         /// <param name="datasource">DTOs para rellenar la GRD de transaccionHistory</param>
-        void GrdRefreshData(List<TransactionDto> datasource);
-        /// <summary>Ejecuto la logica de botones</summary>
-        void ButtonsLogic();
+        void GrdRefreshData(List<TransactionViewDto> datasource);
 
         //events
-        event EventHandler GrdDoubleClick;
         event EventHandler ButtonInsertClick;
         event EventHandler ButtonNewPayClick;
         event EventHandler ButtonUpdateClick;
         event EventHandler ButtonDeleteClick;
         event EventHandler ButtonExitClick;
-        event EventHandler SelectedYearChange;
         event EventHandler ButtonEntitySearchClick;
+        event EventHandler GrdDoubleClick;
+        event EventHandler GrdValueChange;
     }
 }

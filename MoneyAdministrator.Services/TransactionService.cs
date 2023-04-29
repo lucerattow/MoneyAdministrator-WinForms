@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MoneyAdministrator.Common.DTOs;
 
 namespace MoneyAdministrator.Services
 {
@@ -76,6 +77,34 @@ namespace MoneyAdministrator.Services
                 _unitOfWork.Save();
                 UpdateCreditCardSummary();
             }
+        }
+
+        //methods
+        public void CreateTransaction(TransactionDetailDto dto)
+        {
+            //Inserto la transaccion
+            var transaction = new Transaction()
+            {
+                EntityId = dto.EntityId,
+                CurrencyId = dto.CurrencyId,
+                TransactionType = dto.TransactionType,
+                Description = dto.Description,
+            };
+            Insert(transaction);
+
+            dto.TransactionId = transaction.Id;
+
+            var detail = new TransactionDetail
+            {
+                TransactionId = dto.TransactionId,
+                Date = dto.Date,
+                EndDate = dto.EndDate,
+                Amount = dto.Amount,
+                Frequency = dto.Frequency,
+                Concider = true,
+                Paid = false,
+            };
+            new TransactionDetailService(_unitOfWork).Insert(detail);
         }
 
         private void UpdateCreditCardSummary()

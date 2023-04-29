@@ -17,6 +17,8 @@ namespace MoneyAdministrator.Interfaces
         void CloseChildrens();
         /// <summary>Abro una ventana en el panel principal</summary>
         void OpenChildren(UserControl children);
+        /// <summary>Selecciono el boton Dashboard</summary>
+        void SelectDashboardButton();
 
         //events
         event EventHandler ShowDashboard;

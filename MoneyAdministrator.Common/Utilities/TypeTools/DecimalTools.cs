@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace MoneyAdministrator.Common.Utilities.TypeTools
 {
-    internal class DecimalTools
+    public class DecimalTools
     {
         public static decimal Convert(string input)
         {
             input = input.Trim();
-            input = StringTools.GetNumbersFromString(input);
+            input = StringTools.GetDecimalFromString(input);
 
             if (string.IsNullOrEmpty(input))
                 return 0;

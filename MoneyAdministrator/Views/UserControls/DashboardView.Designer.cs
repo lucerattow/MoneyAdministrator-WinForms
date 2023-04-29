@@ -28,236 +28,259 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this._grd = new System.Windows.Forms.DataGridView();
-            this._grdHeader = new System.Windows.Forms.DataGridView();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this._lblDate = new System.Windows.Forms.Label();
-            this._dtpDate = new System.Windows.Forms.DateTimePicker();
-            this._txtSalaryArs = new MoneyAdministrator.CustomControls.MoneyTextBox();
-            this._lblSalaryArs = new System.Windows.Forms.Label();
-            this._txtUsdValue = new MoneyAdministrator.CustomControls.MoneyTextBox();
-            this._lblUsdValue = new System.Windows.Forms.Label();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this._tsbUpdate = new System.Windows.Forms.ToolStripButton();
-            this._tsbClear = new System.Windows.Forms.ToolStripButton();
-            this._tsbExit = new System.Windows.Forms.ToolStripButton();
-            this._txtSalaryUsd = new MoneyAdministrator.CustomControls.MoneyTextBox();
-            this._lblSalaryUsd = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this._grd)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this._grdHeader)).BeginInit();
-            this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.toolStrip1.SuspendLayout();
-            this.SuspendLayout();
+            _grd = new DataGridView();
+            _grdHeader = new DataGridView();
+            panel1 = new Panel();
+            _txtSalaryUsd = new CustomControls.MoneyTextBox();
+            _lblSalaryUsd = new Label();
+            _lblDate = new Label();
+            _dtpDate = new DateTimePicker();
+            _txtSalaryArs = new CustomControls.MoneyTextBox();
+            _lblSalaryArs = new Label();
+            _txtUsdValue = new CustomControls.MoneyTextBox();
+            _lblUsdValue = new Label();
+            panel2 = new Panel();
+            toolStrip1 = new ToolStrip();
+            _tsbInsert = new ToolStripButton();
+            _tsbUpdate = new ToolStripButton();
+            _tsbDelete = new ToolStripButton();
+            _tsbClear = new ToolStripButton();
+            _tsbExit = new ToolStripButton();
+            ((System.ComponentModel.ISupportInitialize)_grd).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)_grdHeader).BeginInit();
+            panel1.SuspendLayout();
+            panel2.SuspendLayout();
+            toolStrip1.SuspendLayout();
+            SuspendLayout();
             // 
             // _grd
             // 
-            this._grd.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this._grd.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this._grd.Location = new System.Drawing.Point(6, 33);
-            this._grd.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this._grd.Name = "_grd";
-            this._grd.RowTemplate.Height = 25;
-            this._grd.Size = new System.Drawing.Size(910, 387);
-            this._grd.TabIndex = 0;
-            this._grd.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this._grd_CellMouseDoubleClick);
+            _grd.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            _grd.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            _grd.Location = new Point(5, 31);
+            _grd.Margin = new Padding(3, 4, 3, 4);
+            _grd.Name = "_grd";
+            _grd.RowTemplate.Height = 25;
+            _grd.Size = new Size(911, 392);
+            _grd.TabIndex = 0;
+            _grd.CellMouseDoubleClick += _grd_CellMouseDoubleClick;
+            _grd.CellPainting += _grd_CellPainting;
+            _grd.Scroll += _grd_Scroll;
             // 
             // _grdHeader
             // 
-            this._grdHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this._grdHeader.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this._grdHeader.Location = new System.Drawing.Point(6, 7);
-            this._grdHeader.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this._grdHeader.Name = "_grdHeader";
-            this._grdHeader.RowTemplate.Height = 25;
-            this._grdHeader.Size = new System.Drawing.Size(910, 29);
-            this._grdHeader.TabIndex = 1;
+            _grdHeader.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            _grdHeader.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            _grdHeader.Location = new Point(5, 5);
+            _grdHeader.Margin = new Padding(3, 4, 3, 4);
+            _grdHeader.Name = "_grdHeader";
+            _grdHeader.RowTemplate.Height = 25;
+            _grdHeader.Size = new Size(911, 29);
+            _grdHeader.TabIndex = 1;
             // 
             // panel1
             // 
-            this.panel1.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.panel1.Controls.Add(this._txtSalaryUsd);
-            this.panel1.Controls.Add(this._lblSalaryUsd);
-            this.panel1.Controls.Add(this._lblDate);
-            this.panel1.Controls.Add(this._dtpDate);
-            this.panel1.Controls.Add(this._txtSalaryArs);
-            this.panel1.Controls.Add(this._lblSalaryArs);
-            this.panel1.Controls.Add(this._txtUsdValue);
-            this.panel1.Controls.Add(this._lblUsdValue);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 27);
-            this.panel1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(921, 61);
-            this.panel1.TabIndex = 2;
-            // 
-            // _lblDate
-            // 
-            this._lblDate.AutoSize = true;
-            this._lblDate.Location = new System.Drawing.Point(3, 3);
-            this._lblDate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this._lblDate.Name = "_lblDate";
-            this._lblDate.Size = new System.Drawing.Size(60, 20);
-            this._lblDate.TabIndex = 35;
-            this._lblDate.Text = "Periodo";
-            // 
-            // _dtpDate
-            // 
-            this._dtpDate.CustomFormat = " yyyy-MM";
-            this._dtpDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this._dtpDate.Location = new System.Drawing.Point(6, 27);
-            this._dtpDate.Margin = new System.Windows.Forms.Padding(4);
-            this._dtpDate.Name = "_dtpDate";
-            this._dtpDate.Size = new System.Drawing.Size(95, 27);
-            this._dtpDate.TabIndex = 36;
-            // 
-            // _txtSalaryArs
-            // 
-            this._txtSalaryArs.Colored = true;
-            this._txtSalaryArs.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-            this._txtSalaryArs.Location = new System.Drawing.Point(272, 27);
-            this._txtSalaryArs.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this._txtSalaryArs.Name = "_txtSalaryArs";
-            this._txtSalaryArs.OperatorSymbol = "-";
-            this._txtSalaryArs.Size = new System.Drawing.Size(150, 27);
-            this._txtSalaryArs.TabIndex = 34;
-            this._txtSalaryArs.Tag = "";
-            this._txtSalaryArs.Text = "-0,00 $";
-            // 
-            // _lblSalaryArs
-            // 
-            this._lblSalaryArs.AutoSize = true;
-            this._lblSalaryArs.Location = new System.Drawing.Point(269, 3);
-            this._lblSalaryArs.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this._lblSalaryArs.Name = "_lblSalaryArs";
-            this._lblSalaryArs.Size = new System.Drawing.Size(106, 20);
-            this._lblSalaryArs.TabIndex = 33;
-            this._lblSalaryArs.Text = "Sueldo en ARS";
-            // 
-            // _txtUsdValue
-            // 
-            this._txtUsdValue.Colored = true;
-            this._txtUsdValue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-            this._txtUsdValue.Location = new System.Drawing.Point(108, 27);
-            this._txtUsdValue.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this._txtUsdValue.Name = "_txtUsdValue";
-            this._txtUsdValue.OperatorSymbol = "-";
-            this._txtUsdValue.Size = new System.Drawing.Size(150, 27);
-            this._txtUsdValue.TabIndex = 32;
-            this._txtUsdValue.Tag = "";
-            this._txtUsdValue.Text = "-0,00 $";
-            // 
-            // _lblUsdValue
-            // 
-            this._lblUsdValue.AutoSize = true;
-            this._lblUsdValue.Location = new System.Drawing.Point(106, 3);
-            this._lblUsdValue.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this._lblUsdValue.Name = "_lblUsdValue";
-            this._lblUsdValue.Size = new System.Drawing.Size(127, 20);
-            this._lblUsdValue.TabIndex = 31;
-            this._lblUsdValue.Text = "Valor USD en ARS";
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this._grdHeader);
-            this.panel2.Controls.Add(this._grd);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(0, 88);
-            this.panel2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(921, 427);
-            this.panel2.TabIndex = 3;
-            // 
-            // toolStrip1
-            // 
-            this.toolStrip1.BackColor = System.Drawing.Color.White;
-            this.toolStrip1.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this._tsbUpdate,
-            this._tsbClear,
-            this._tsbExit});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.toolStrip1.Size = new System.Drawing.Size(921, 27);
-            this.toolStrip1.TabIndex = 0;
-            this.toolStrip1.Text = "toolStrip1";
-            // 
-            // _tsbUpdate
-            // 
-            this._tsbUpdate.Image = global::MoneyAdministrator.Properties.Resources.document_edit_shadow;
-            this._tsbUpdate.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this._tsbUpdate.Name = "_tsbUpdate";
-            this._tsbUpdate.Size = new System.Drawing.Size(95, 24);
-            this._tsbUpdate.Text = "Actualizar";
-            // 
-            // _tsbClear
-            // 
-            this._tsbClear.Image = global::MoneyAdministrator.Properties.Resources.document_shadow;
-            this._tsbClear.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this._tsbClear.Name = "_tsbClear";
-            this._tsbClear.Size = new System.Drawing.Size(79, 24);
-            this._tsbClear.Text = "Limpiar";
-            this._tsbClear.Click += new System.EventHandler(this._tsbClear_Click);
-            // 
-            // _tsbExit
-            // 
-            this._tsbExit.Image = global::MoneyAdministrator.Properties.Resources.exit_shadow;
-            this._tsbExit.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this._tsbExit.Name = "_tsbExit";
-            this._tsbExit.Size = new System.Drawing.Size(58, 24);
-            this._tsbExit.Text = "Salir";
+            panel1.BackColor = SystemColors.ButtonFace;
+            panel1.Controls.Add(_txtSalaryUsd);
+            panel1.Controls.Add(_lblSalaryUsd);
+            panel1.Controls.Add(_lblDate);
+            panel1.Controls.Add(_dtpDate);
+            panel1.Controls.Add(_txtSalaryArs);
+            panel1.Controls.Add(_lblSalaryArs);
+            panel1.Controls.Add(_txtUsdValue);
+            panel1.Controls.Add(_lblUsdValue);
+            panel1.Dock = DockStyle.Top;
+            panel1.Location = new Point(0, 27);
+            panel1.Margin = new Padding(3, 4, 3, 4);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(921, 61);
+            panel1.TabIndex = 2;
             // 
             // _txtSalaryUsd
             // 
-            this._txtSalaryUsd.Colored = true;
-            this._txtSalaryUsd.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-            this._txtSalaryUsd.Location = new System.Drawing.Point(428, 26);
-            this._txtSalaryUsd.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this._txtSalaryUsd.Name = "_txtSalaryUsd";
-            this._txtSalaryUsd.OperatorSymbol = "-";
-            this._txtSalaryUsd.Size = new System.Drawing.Size(150, 27);
-            this._txtSalaryUsd.TabIndex = 38;
-            this._txtSalaryUsd.Tag = "";
-            this._txtSalaryUsd.Text = "-0,00 $";
+            _txtSalaryUsd.Colored = true;
+            _txtSalaryUsd.ForeColor = Color.FromArgb(80, 80, 80);
+            _txtSalaryUsd.Location = new Point(428, 26);
+            _txtSalaryUsd.Margin = new Padding(3, 4, 3, 4);
+            _txtSalaryUsd.Name = "_txtSalaryUsd";
+            _txtSalaryUsd.OperatorSymbol = "-";
+            _txtSalaryUsd.OperatorSymbolIsConstant = false;
+            _txtSalaryUsd.Size = new Size(150, 27);
+            _txtSalaryUsd.TabIndex = 38;
+            _txtSalaryUsd.Tag = "";
+            _txtSalaryUsd.Text = "-0,00 $";
+            _txtSalaryUsd.TextAlign = HorizontalAlignment.Right;
             // 
             // _lblSalaryUsd
             // 
-            this._lblSalaryUsd.AutoSize = true;
-            this._lblSalaryUsd.Location = new System.Drawing.Point(425, 2);
-            this._lblSalaryUsd.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this._lblSalaryUsd.Name = "_lblSalaryUsd";
-            this._lblSalaryUsd.Size = new System.Drawing.Size(108, 20);
-            this._lblSalaryUsd.TabIndex = 37;
-            this._lblSalaryUsd.Text = "Sueldo en USD";
+            _lblSalaryUsd.AutoSize = true;
+            _lblSalaryUsd.Location = new Point(425, 2);
+            _lblSalaryUsd.Margin = new Padding(5, 0, 5, 0);
+            _lblSalaryUsd.Name = "_lblSalaryUsd";
+            _lblSalaryUsd.Size = new Size(108, 20);
+            _lblSalaryUsd.TabIndex = 37;
+            _lblSalaryUsd.Text = "Sueldo en USD";
             // 
-            // Dashboard
+            // _lblDate
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
-            this.Controls.Add(this.panel2);
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.toolStrip1);
-            this.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.Name = "Dashboard";
-            this.Size = new System.Drawing.Size(921, 515);
-            ((System.ComponentModel.ISupportInitialize)(this._grd)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this._grdHeader)).EndInit();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.toolStrip1.ResumeLayout(false);
-            this.toolStrip1.PerformLayout();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            _lblDate.AutoSize = true;
+            _lblDate.Location = new Point(3, 3);
+            _lblDate.Margin = new Padding(4, 0, 4, 0);
+            _lblDate.Name = "_lblDate";
+            _lblDate.Size = new Size(60, 20);
+            _lblDate.TabIndex = 35;
+            _lblDate.Text = "Periodo";
+            // 
+            // _dtpDate
+            // 
+            _dtpDate.CustomFormat = " yyyy-MM";
+            _dtpDate.Format = DateTimePickerFormat.Custom;
+            _dtpDate.Location = new Point(6, 27);
+            _dtpDate.Margin = new Padding(4);
+            _dtpDate.Name = "_dtpDate";
+            _dtpDate.Size = new Size(95, 27);
+            _dtpDate.TabIndex = 36;
+            // 
+            // _txtSalaryArs
+            // 
+            _txtSalaryArs.Colored = true;
+            _txtSalaryArs.ForeColor = Color.FromArgb(80, 80, 80);
+            _txtSalaryArs.Location = new Point(272, 27);
+            _txtSalaryArs.Margin = new Padding(3, 4, 3, 4);
+            _txtSalaryArs.Name = "_txtSalaryArs";
+            _txtSalaryArs.OperatorSymbol = "-";
+            _txtSalaryArs.OperatorSymbolIsConstant = false;
+            _txtSalaryArs.Size = new Size(150, 27);
+            _txtSalaryArs.TabIndex = 34;
+            _txtSalaryArs.Tag = "";
+            _txtSalaryArs.Text = "-0,00 $";
+            _txtSalaryArs.TextAlign = HorizontalAlignment.Right;
+            // 
+            // _lblSalaryArs
+            // 
+            _lblSalaryArs.AutoSize = true;
+            _lblSalaryArs.Location = new Point(269, 3);
+            _lblSalaryArs.Margin = new Padding(5, 0, 5, 0);
+            _lblSalaryArs.Name = "_lblSalaryArs";
+            _lblSalaryArs.Size = new Size(106, 20);
+            _lblSalaryArs.TabIndex = 33;
+            _lblSalaryArs.Text = "Sueldo en ARS";
+            // 
+            // _txtUsdValue
+            // 
+            _txtUsdValue.Colored = true;
+            _txtUsdValue.ForeColor = Color.FromArgb(80, 80, 80);
+            _txtUsdValue.Location = new Point(108, 27);
+            _txtUsdValue.Margin = new Padding(3, 4, 3, 4);
+            _txtUsdValue.Name = "_txtUsdValue";
+            _txtUsdValue.OperatorSymbol = "-";
+            _txtUsdValue.OperatorSymbolIsConstant = false;
+            _txtUsdValue.Size = new Size(150, 27);
+            _txtUsdValue.TabIndex = 32;
+            _txtUsdValue.Tag = "";
+            _txtUsdValue.Text = "-0,00 $";
+            _txtUsdValue.TextAlign = HorizontalAlignment.Right;
+            // 
+            // _lblUsdValue
+            // 
+            _lblUsdValue.AutoSize = true;
+            _lblUsdValue.Location = new Point(106, 3);
+            _lblUsdValue.Margin = new Padding(5, 0, 5, 0);
+            _lblUsdValue.Name = "_lblUsdValue";
+            _lblUsdValue.Size = new Size(127, 20);
+            _lblUsdValue.TabIndex = 31;
+            _lblUsdValue.Text = "Valor USD en ARS";
+            // 
+            // panel2
+            // 
+            panel2.Controls.Add(_grdHeader);
+            panel2.Controls.Add(_grd);
+            panel2.Dock = DockStyle.Fill;
+            panel2.Location = new Point(0, 88);
+            panel2.Margin = new Padding(3, 4, 3, 4);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(921, 427);
+            panel2.TabIndex = 3;
+            // 
+            // toolStrip1
+            // 
+            toolStrip1.BackColor = Color.White;
+            toolStrip1.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+            toolStrip1.GripStyle = ToolStripGripStyle.Hidden;
+            toolStrip1.Items.AddRange(new ToolStripItem[] { _tsbInsert, _tsbUpdate, _tsbDelete, _tsbClear, _tsbExit });
+            toolStrip1.Location = new Point(0, 0);
+            toolStrip1.Name = "toolStrip1";
+            toolStrip1.Padding = new Padding(3, 0, 0, 0);
+            toolStrip1.Size = new Size(921, 27);
+            toolStrip1.TabIndex = 0;
+            toolStrip1.Text = "toolStrip1";
+            // 
+            // _tsbInsert
+            // 
+            _tsbInsert.Image = Properties.Resources.document_add_shadow;
+            _tsbInsert.ImageAlign = ContentAlignment.MiddleLeft;
+            _tsbInsert.ImageTransparentColor = Color.Magenta;
+            _tsbInsert.Name = "_tsbInsert";
+            _tsbInsert.Size = new Size(64, 24);
+            _tsbInsert.Text = "Crear";
+            _tsbInsert.Click += _tsbInsert_Click;
+            // 
+            // _tsbUpdate
+            // 
+            _tsbUpdate.Image = Properties.Resources.document_edit_shadow;
+            _tsbUpdate.ImageTransparentColor = Color.Magenta;
+            _tsbUpdate.Name = "_tsbUpdate";
+            _tsbUpdate.Size = new Size(93, 24);
+            _tsbUpdate.Text = "Modificar";
+            _tsbUpdate.Click += _tsbUpdate_Click;
+            // 
+            // _tsbDelete
+            // 
+            _tsbDelete.Image = Properties.Resources.document_error_shadow;
+            _tsbDelete.ImageTransparentColor = Color.Magenta;
+            _tsbDelete.Name = "_tsbDelete";
+            _tsbDelete.Size = new Size(83, 24);
+            _tsbDelete.Text = "Eliminar";
+            _tsbDelete.Click += _tsbDelete_Click;
+            // 
+            // _tsbClear
+            // 
+            _tsbClear.Image = Properties.Resources.document_shadow;
+            _tsbClear.ImageTransparentColor = Color.Magenta;
+            _tsbClear.Name = "_tsbClear";
+            _tsbClear.Size = new Size(79, 24);
+            _tsbClear.Text = "Limpiar";
+            _tsbClear.Click += _tsbClear_Click;
+            // 
+            // _tsbExit
+            // 
+            _tsbExit.Image = Properties.Resources.exit_shadow;
+            _tsbExit.ImageTransparentColor = Color.Magenta;
+            _tsbExit.Name = "_tsbExit";
+            _tsbExit.Size = new Size(58, 24);
+            _tsbExit.Text = "Salir";
+            // 
+            // DashboardView
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.White;
+            Controls.Add(panel2);
+            Controls.Add(panel1);
+            Controls.Add(toolStrip1);
+            Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point);
+            Margin = new Padding(3, 4, 3, 4);
+            Name = "DashboardView";
+            Size = new Size(921, 515);
+            ((System.ComponentModel.ISupportInitialize)_grd).EndInit();
+            ((System.ComponentModel.ISupportInitialize)_grdHeader).EndInit();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            panel2.ResumeLayout(false);
+            toolStrip1.ResumeLayout(false);
+            toolStrip1.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -278,5 +301,7 @@
         private DateTimePicker _dtpDate;
         private CustomControls.MoneyTextBox _txtSalaryUsd;
         private Label _lblSalaryUsd;
+        private ToolStripButton _tsbInsert;
+        private ToolStripButton _tsbDelete;
     }
 }

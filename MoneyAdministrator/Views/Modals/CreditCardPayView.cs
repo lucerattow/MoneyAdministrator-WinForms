@@ -50,8 +50,8 @@ namespace MoneyAdministrator.Views.Modals
             get => _dtpDate.Value;
             set
             {
-                _dtpDate.Value = value;
                 _constDatePay = value;
+                _dtpDate.Value = value;
             }
         }
         public decimal AmountPay
@@ -148,43 +148,48 @@ namespace MoneyAdministrator.Views.Modals
             ControlConfig.DataGridViewSetup(_grd);
 
             //Configuracion de columnas
-            _grd.Columns.Add(new DataGridViewColumn() //0 id
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
                 Name = "id",
                 HeaderText = "Id",
-                CellTemplate = new DataGridViewTextBoxCell(),
+                ReadOnly = true,
                 Visible = false,
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //1 Fecha
+            }); //0 id
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
                 Name = "date",
                 HeaderText = "Fecha",
-                CellTemplate = new DataGridViewTextBoxCell(),
                 Width = _colWidthDate,
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //2 entity
+                ReadOnly = true,
+            }); //1 date
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
                 Name = "entity",
                 HeaderText = "Entidad",
                 Width = _colWidthEntity,
-                CellTemplate = new DataGridViewTextBoxCell(),
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //3 description
+                ReadOnly = true,
+            }); //2 entity
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
                 Name = "description",
                 HeaderText = "Descripcion",
                 Width = _grd.Width - _colWidthTotal - 19,
-                CellTemplate = new DataGridViewTextBoxCell(),
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //4 amount
+                ReadOnly = true,
+            }); //3 description
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
                 Name = "amount",
                 HeaderText = "Monto",
-                CellTemplate = new DataGridViewTextBoxCell(),
                 Width = _colWidthAmount,
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
-            });
+                ReadOnly = true,
+            }); //4 amount
         }
 
         private void RestrictDateToDayOnly(DateTimePicker dtp)

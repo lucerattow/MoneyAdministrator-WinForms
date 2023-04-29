@@ -164,6 +164,7 @@ namespace MoneyAdministrator.Views
             // 
             // panel3
             // 
+            panel3.BackColor = SystemColors.ButtonFace;
             panel3.Controls.Add(_grd);
             panel3.Dock = DockStyle.Fill;
             panel3.Location = new Point(0, 122);

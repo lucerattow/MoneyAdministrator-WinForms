@@ -176,13 +176,20 @@ namespace MoneyAdministrator.Import.Summary.Importers.TextProcessors
                 if (detailType == CreditCardSummaryDetailType.Details)
                 {
                     if (installMatch1.Success)
+                    {
                         installments = installMatch1.Value;
-
+                        restOfText = restOfText.Replace(installments.Trim(), "");
+                    }
                     else if (installMatch2.Success)
+                    {
                         installments = installMatch2.Value;
-
+                        restOfText = restOfText.Replace(installments.Trim(), "");
+                    }
                     else if (installMatch3.Success)
+                    { 
                         installments = installMatch3.Value;
+                        restOfText = restOfText.Replace(installments.Trim(), "");
+                    }
                 }
 
                 //Obtengo: Descripcion

@@ -74,6 +74,7 @@ namespace MoneyAdministrator.Presenters
                     DbFileService.CreateDatabase(_databasePath);
                     this._view.IsFileOpened = true;
                     ShowDashboard(this, EventArgs.Empty);
+                    _view.SelectDashboardButton();
                 }
                 catch (Exception ex)
                 {
@@ -99,6 +100,7 @@ namespace MoneyAdministrator.Presenters
                     _databasePath = openFileDialog.FileName;
                     this._view.IsFileOpened = true;
                     ShowDashboard(this, EventArgs.Empty);
+                    _view.SelectDashboardButton();
                 }
                 catch (Exception ex)
                 {

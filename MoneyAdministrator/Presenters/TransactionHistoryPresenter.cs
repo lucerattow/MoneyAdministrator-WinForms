@@ -1,4 +1,6 @@
 ﻿using MoneyAdministrator.Common.DTOs;
+using MoneyAdministrator.Common.Enums;
+using MoneyAdministrator.Common.Utilities.TypeTools;
 using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Models;
 using MoneyAdministrator.Services;
@@ -6,9 +8,11 @@ using MoneyAdministrator.Services.Interfaces;
 using MoneyAdministrator.Utilities;
 using MoneyAdministrator.Utilities.Disposable;
 using MoneyAdministrator.Views;
+using MoneyAdministrator.Views.UserControls;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Windows.Forms.Design;
+using static iText.IO.Util.IntHashtable;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace MoneyAdministrator.Presenters
@@ -40,14 +44,14 @@ namespace MoneyAdministrator.Presenters
         //methods
         private void AssosiateEvents()
         {
-            _view.GrdDoubleClick += GrdDoubleClick;
             _view.ButtonInsertClick += ButtonInsertClick;
             _view.ButtonNewPayClick += ButtonNewPayClick;
             _view.ButtonUpdateClick += ButtonUpdateClick;
             _view.ButtonDeleteClick += ButtonDeleteClick;
             _view.ButtonExitClick += ButtonExitClick;
-            _view.SelectedYearChange += SelectedYearChange;
             _view.ButtonEntitySearchClick += ButtonEntitySearchClick;
+            _view.GrdDoubleClick += GrdDoubleClick;
+            _view.GrdValueChange += GrdValueChange;
         }
 
         private void SetCurrenciesList()
@@ -56,7 +60,7 @@ namespace MoneyAdministrator.Presenters
             {
                 var service = new CurrencyService(_databasePath);
                 var entities = service.GetAll();
-                this._view.SetCurrenciesList(entities);
+                _view.SetCurrenciesList(entities);
             }
         }
 
@@ -64,31 +68,8 @@ namespace MoneyAdministrator.Presenters
         {
             using (new CursorWait())
             {
-                var transactionDetails = new TransactionDetailService(_databasePath).GetAll();
-
-                List<TransactionDto> dtos = new List<TransactionDto>();
-                foreach (var transactionDetail in transactionDetails)
-                {
-                    //Obtengo el valor maximo de la propiedad installment para esta transaccion
-                    int maxInstallment = transactionDetails
-                        .Where(x => x.TransactionId == transactionDetail.TransactionId)
-                        .Max(x => x.Installment);
-
-                    //Genero el string "1 / 6" que indica el numero de cuotas
-                    string installments = maxInstallment > 1 ? $"{transactionDetail.Installment} / {maxInstallment}" : "";
-
-                    dtos.Add(new TransactionDto()
-                    {
-                        Id = transactionDetail.Id,
-                        Date = transactionDetail.Date,
-                        EntityName = transactionDetail.Transaction.Entity.Name,
-                        Description = transactionDetail.Transaction.Description,
-                        Installment = installments,
-                        CurrencyName = transactionDetail.Transaction.Currency.Name,
-                        Amount = transactionDetail.Amount
-                    });
-                }
-                this._view.GrdRefreshData(dtos);
+                var dtos = new TransactionDetailService(_databasePath).GetIntermediateDetailDtos();
+                _view.GrdRefreshData(dtos);
             }
         }
 
@@ -96,43 +77,50 @@ namespace MoneyAdministrator.Presenters
         {
             using (new CursorWait())
             {
-                //Inicializo los servicios
-                var transactionDetailService = new TransactionDetailService(_databasePath);
-                var ccSummaryService = new CCSummaryService(_databasePath);
+                if (_view.SelectedDto is null)
+                    return;
 
-                var transactionDetail = transactionDetailService.Get(_view.SelectedId);
+                //Relleno los campos
+                _view.EntityName = _view.SelectedDto.EntityName;
+                _view.Date = _view.SelectedDto.Date;
+                _view.Description = _view.SelectedDto.Description;
+                _view.Amount = _view.SelectedDto.Amount;
+                _view.Currency = new Currency { Name = _view.SelectedDto.CurrencyName };
 
-                _view.EntityName = transactionDetail.Transaction.Entity.Name;
-                _view.Date = transactionDetail.Date;
-                _view.Description = transactionDetail.Transaction.Description;
-                _view.Amount = transactionDetail.Amount;
-                _view.Currency = transactionDetail.Transaction.Currency;
-                _view.InstallmentCurrent = transactionDetail.Installment;
-                _view.InstallmentMax = transactionDetail.Transaction.TransactionDetails.Max(t => t.Installment);
-                _view.IsService = transactionDetail.Frequency > 0;
-                _view.Frequency = transactionDetail.Frequency;
+                //Guardo el tipo de transaccion
+                _view.IsInstallment = _view.SelectedDto.TransactionType == TransactionType.Installments;
+                _view.IsService = _view.SelectedDto.TransactionType == TransactionType.Service;
 
-                _view.Editing = true;
+                //Relleno si es necesario, los datos de las cuotas
+                if (_view.IsInstallment && !string.IsNullOrEmpty(_view.SelectedDto.Installment))
+                {
+                    var installments = _view.SelectedDto.Installment.Split('/');
+                    _view.InstallmentCurrent = IntTools.Convert(installments[0]);
+                    _view.InstallmentMax = IntTools.Convert(installments[1]);
+                }
 
-                var ccSummary = ccSummaryService.GetAll().Where(x => x.TransactionId == transactionDetail.Transaction.Id).FirstOrDefault();
-                _view.IsCreditCardSummaryOutstanding = ccSummary != null;
+                //Relleno si es necesario, los datos del servicio
+                if (_view.IsService)
+                    _view.Frequency = _view.SelectedDto.Frequency;
             }
         }
 
-        private bool IsService()
-        {
-            return _view.IsService;
-        }
-
-        private bool IsInstallment()
-        {
-            return _view.InstallmentMax > 1;
-        }
-
         //events
-        private void GrdDoubleClick(object? sender, EventArgs e)
+        private void ButtonNewPayClick(object? sender, EventArgs e)
         {
-            SelectTransaction();
+            var summaries = new CCSummaryService(_databasePath).GetAll();
+            var detail = new TransactionDetailService(_databasePath).Get(_view.SelectedDto.Id);
+            var summary = summaries
+                .Where(x => x.TransactionId == detail.TransactionId)
+                .FirstOrDefault();
+
+            if (summary is null)
+                return;
+
+            var creditCardPayPresenter = new CreditCardPayPresenter(_databasePath, summary.Id);
+            creditCardPayPresenter.Show();
+
+            GrdRefreshData();
         }
 
         private void ButtonInsertClick(object? sender, EventArgs e)
@@ -146,52 +134,56 @@ namespace MoneyAdministrator.Presenters
                     var transactionDetailService = new TransactionDetailService(_databasePath);
                     var entityService = new EntityService(_databasePath);
 
-                    //Obtengo los valores
-                    var entity = new Entity() { Name = _view.EntityName };
-                    var date = _view.Date;
+                    //Transaction Inputs
+                    var transactionType = TransactionType.Single;
                     var description = _view.Description;
-                    var amount = _view.Amount;
                     var currencyId = _view.Currency.Id;
+
+                    //Details Inputs
+                    var date = _view.Date;
+                    var amount = _view.Amount;
                     var installments = _view.InstallmentMax;
                     var frequency = _view.Frequency;
-                    var isService = _view.IsService;
 
-                    //Compruebo si la entidad ya existe, si no existe la inserto
-                    var searchEntity = entityService.GetByName(entity.Name);
-                    if (searchEntity == null)
+                    //Si la entidad no existe la inserto
+                    var entity = entityService.GetByName(_view.EntityName);
+                    if (entity is null)
+                    {
+                        entity = new Entity
+                        {
+                            Name = _view.EntityName,
+                            EntityTypeId = 1, //General
+                        };
                         entityService.Insert(entity);
-                    else
-                        entity.Id = searchEntity.Id;
+                    }
 
-                    //Inserto la transaccion
-                    var transaction = new Transaction()
+                    //Determino el tipo de transaccion
+                    var endDate = _view.Date;
+                    if (_view.IsInstallment)
+                    {
+                        transactionType = TransactionType.Installments;
+                        //Se resta 1 ya que la cuota 1 es el mes inicial
+                        endDate = _view.Date.AddMonths(_view.InstallmentMax - 1);
+                    }
+                    else if (_view.IsService)
+                    {
+                        transactionType = TransactionType.Service;
+                        endDate = DateTime.MaxValue;
+                    }
+
+                    var dto = new TransactionDetailDto
                     {
                         EntityId = entity.Id,
-                        CurrencyId = currencyId,
-                        Description = description,
+                        CurrencyId = _view.Currency.Id,
+                        TransactionType = transactionType,
+                        Description = _view.Description,
+                        //details
+                        Date = _view.Date,
+                        EndDate = endDate,
+                        Amount = _view.Amount,
+                        Frequency = _view.Frequency,
                     };
-                    transactionService.Insert(transaction);
-
-                    //Si es transaccion unica
-                    if (!IsService() && !IsInstallment())
-                    {
-                        //Inserto 1 transaccionDetails
-                        transactionDetailService.GenerateTransactionDetails(transaction.Id, date, amount, 1, frequency, isService)
-                            .ForEach(x => transactionDetailService.Insert(x));
-                    }
-                    //Si es transaccion en cuotas
-                    else if (IsInstallment())
-                    {
-                        transactionDetailService.GenerateTransactionDetails(transaction.Id, date, amount, installments, frequency, isService)
-                            .ForEach(x => transactionDetailService.Insert(x));
-                    }
-                    //Si es transaccion de servicio
-                    else if (IsService())
-                    {
-                        var monthsPeriod = frequency > 3 ? 24 : 12;
-                        transactionDetailService.GenerateTransactionDetails(transaction.Id, date, amount, monthsPeriod, frequency, isService)
-                            .ForEach(x => transactionDetailService.Insert(x));
-                    }
+                    transactionService.CreateTransaction(dto);
                 }
                 catch (Exception ex)
                 {
@@ -199,26 +191,6 @@ namespace MoneyAdministrator.Presenters
                 }
                 GrdRefreshData();
             }
-        }
-
-        private void ButtonNewPayClick(object? sender, EventArgs e)
-        {
-            //Inicializo los servicios
-            var transactionDetailService = new TransactionDetailService(_databasePath);
-            var ccSummaryService = new CCSummaryService(_databasePath);
-
-            //Busco el resumen asociado a la transaccion
-            var transactionDetail = transactionDetailService.Get(_view.SelectedId);
-            if (transactionDetail is null)
-                return;
-
-            var summary = ccSummaryService.GetAll().Where(x => x.TransactionId == transactionDetail.TransactionId).FirstOrDefault();
-            if (summary is null) 
-                return;
-
-            var creditCardPayPresenter = new CreditCardPayPresenter(_databasePath, summary.Id);
-            creditCardPayPresenter.Show();
-            GrdRefreshData();
         }
 
         private void ButtonUpdateClick(object? sender, EventArgs e)
@@ -233,55 +205,58 @@ namespace MoneyAdministrator.Presenters
                     var entityService = new EntityService(_databasePath);
 
                     //Compruebo que el transactionDetail existe
-                    var transactionDetail = transactionDetailService.Get(_view.SelectedId);
-                    if (transactionDetail == null)
+                    var detail = transactionDetailService.Get(_view.SelectedDto.Id);
+                    if (detail == null)
                     {
                         CommonMessageBox.errorMessageShow("La transacción seleccionada no existe", MessageBoxButtons.OK);
                         return;
                     }
 
-                    //Obtengo los objetos a editar
-                    var transactionDetails = transactionDetail.Transaction.TransactionDetails;
-
-                    //Obtengo los valores
-                    var entity = new Entity() { Name = _view.EntityName };
-                    var date = _view.Date;
+                    //Transaction Inputs
+                    var transactionType = _view.SelectedDto.TransactionType;
                     var description = _view.Description;
-                    var amount = _view.Amount;
                     var currencyId = _view.Currency.Id;
+
+                    //Details Inputs
+                    var date = _view.Date;
+                    var amount = _view.Amount;
                     var installments = _view.InstallmentMax;
                     var frequency = _view.Frequency;
-                    var isService = _view.IsService;
 
-                    //Compruebo si la entidad ya existe, si no existe la inserto
-                    var searchEntity = entityService.GetByName(entity.Name);
-                    if (searchEntity == null)
+                    //Si la entidad no existe la inserto
+                    var entity = entityService.GetByName(_view.EntityName);
+                    if (entity is null)
+                    {
+                        entity = new Entity
+                        {
+                            Name = _view.EntityName,
+                            EntityTypeId = 1, //General
+                        };
                         entityService.Insert(entity);
-                    else
-                        entity = searchEntity;
+                    }
 
                     //Modifico la transaccion
-                    transactionDetail.Transaction.EntityId = entity.Id;
-                    transactionDetail.Transaction.CurrencyId = currencyId;
-                    transactionDetail.Transaction.Description = description;
-                    transactionDetailService.Update(transactionDetail);
+                    detail.Transaction.EntityId = entity.Id;
+                    detail.Transaction.CurrencyId = currencyId;
+                    detail.Transaction.Description = description;
+                    transactionDetailService.Update(detail);
 
-                    //Si es transaccion unica
-                    if (!IsService() && !IsInstallment())
+                    //Si es transaccion simple
+                    if (transactionType == TransactionType.Single)
                     {
-                        transactionDetail.Date = date;
-                        transactionDetail.Amount = amount;
+                        detail.Date = date;
+                        detail.Amount = amount;
 
-                        transactionDetailService.Update(transactionDetail);
+                        transactionDetailService.Update(detail);
                     }
                     //Si es transaccion en cuotas
-                    else if (IsInstallment())
+                    else if (transactionType == TransactionType.Installments)
                     {
-                        string message = "Al modificar esta cuota, también se modificarán todas las cuotas relacionadas. ¿Desea continuar con la modificación?";
-                        string title = "Confirmar modificación de cuotas";
+                        string message = "Al modificar esta cuota se modificarán todas las cuotas relacionadas. ¿Desea continuar?";
+                        string title = "Actualización de cuotas";
 
                         if (CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNo, title) == DialogResult.Yes)
-                            transactionDetail.Transaction.TransactionDetails.ToList()
+                            detail.Transaction.TransactionDetails.ToList()
                             .ForEach(x =>
                             {
                                 x.Date = new DateTime(x.Date.Year, x.Date.Month, date.Day);
@@ -289,36 +264,109 @@ namespace MoneyAdministrator.Presenters
                                 transactionDetailService.Update(x);
                             });
                     }
-                    //Si es transaccion de servicio
-                    else if (IsService())
+                    //Si es un servicio
+                    else if (transactionType == TransactionType.Service)
                     {
-                        string message = "Al modificar esta transacción de servicio, se modificará la transacción seleccionada y se insertarán nuevas transacciones a futuro relacionadas. ¿Desea continuar con la modificación?";
-                        string title = "Confirmar modificación de servicio";
+                        //Obtengo los objetos a editar
+                        var allDetails = detail.Transaction.TransactionDetails;
 
-                        if (CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNo, title) == DialogResult.Yes)
+                        var current = allDetails
+                            .Where(x => x.Date.Date <= date.Date)
+                            .OrderByDescending(x => x.Date)
+                            .FirstOrDefault();
+
+                        var futureDetails = allDetails
+                            .Where(x => x.Date.Date > date.Date)
+                            .ToList();
+
+                        if (futureDetails.Count == 0)
                         {
-                            //Elimino desde la transaccion actual en adelante
-                            transactionDetailService.GetAll()
-                            .Where(x => x.TransactionId == transactionDetail.Transaction.Id && x.Id >= transactionDetail.Id).ToList()
-                            .ForEach(x => transactionDetailService.Delete(x));
+                            transactionDetailService.UpdateServiceTransaction(detail, date, amount, true);
+                        }
+                        else
+                        {
+                            string message = "Al modificar este servicio, cambiarán todos los futuros vinculados. ¿Confirmas?";
+                            string title = "Actualización de servicio";
 
-                            var monthsPeriod = frequency > 3 ? 24 : 12;
-                            transactionDetailService.GenerateTransactionDetails(
-                                transactionDetail.Transaction.Id, date, amount, monthsPeriod, frequency, isService)
-                                .ToList().ForEach(x => transactionDetailService.Insert(x));
+                            var dialogResult = CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNo, title);
+
+                            if (dialogResult == DialogResult.Yes)
+                            {
+                                transactionDetailService.UpdateServiceTransaction(detail, date, amount, true);
+                            }
+                            else if (dialogResult == DialogResult.No)
+                            {
+                                transactionDetailService.UpdateServiceTransaction(detail, date, amount, false);
+                            }
                         }
                     }
+
+                    //var date = _view.SelectedDto.Date;
+                    //var current = allDetails.Where(x => x.Date.Date <= _view.SelectedDto.Date.Date &&
+                    //x.EndDate.Date >= _view.SelectedDto.Date.Date).FirstOrDefault();
+
+                    //if (current.Date == date)
+                    //{
+                    //    transactionDetailService.Delete(current);
+                    //}
+                    //else
+                    //{
+                    //    current.EndDate = date.AddMonths(-1);
+                    //    transactionDetailService.Update(current);
+                    //}
+
+                    //elimino detalles futuros
+                    //foreach (var futureDetail in allDetails.Where(x => x.Date > _view.SelectedDto.Date).ToList())
+                    //    transactionDetailService.Delete(futureDetail);
+
+                    //Si es transaccion en cuotas
+                    //else if (transactionType == TransactionType.Service)
+                    //{
+                    //    //Elimino desde la transaccion actual en adelante
+                    //    transactionDetailService.GetAll()
+                    //    .Where(x => x.TransactionId == transactionDetail.Transaction.Id && x.Id >= transactionDetail.Id).ToList()
+                    //    .ForEach(x => transactionDetailService.Delete(x));
+
+                    //    var monthsPeriod = frequency > 3 ? 24 : 12;
+                    //    transactionDetailService.GenerateTransactionDetails(
+                    //        transactionDetail.Transaction.Id, date, amount, monthsPeriod, frequency, isService)
+                    //        .ToList().ForEach(x => transactionDetailService.Insert(x));
+                    //}
+
+                    ////Si es transaccion de servicio
+                    //else if (IsService())
+                    //{
+                    //    string message = "Al modificar esta transacción de servicio, se modificará la transacción seleccionada y se insertarán nuevas transacciones a futuro relacionadas. ¿Desea continuar con la modificación?";
+                    //    string title = "Confirmar modificación de servicio";
+
+                    //    if (CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNo, title) == DialogResult.Yes)
+                    //    {
+                    //        //Elimino desde la transaccion actual en adelante
+                    //        transactionDetailService.GetAll()
+                    //        .Where(x => x.TransactionId == transactionDetail.Transaction.Id && x.Id >= transactionDetail.Id).ToList()
+                    //        .ForEach(x => transactionDetailService.Delete(x));
+
+                    //        var monthsPeriod = frequency > 3 ? 24 : 12;
+                    //        transactionDetailService.GenerateTransactionDetails(
+                    //            transactionDetail.Transaction.Id, date, amount, monthsPeriod, frequency, isService)
+                    //            .ToList().ForEach(x => transactionDetailService.Insert(x));
+                    //    }
+                    //}
                 }
                 catch (Exception ex)
                 {
                     CommonMessageBox.errorMessageShow(ex.Message, MessageBoxButtons.OK);
                 }
+
                 GrdRefreshData();
             }
         }
 
         private void ButtonDeleteClick(object? sender, EventArgs e)
         {
+            if (_view.SelectedDto is null)
+                return;
+
             using (new CursorWait())
             {
                 try
@@ -329,49 +377,67 @@ namespace MoneyAdministrator.Presenters
                     var creditCardSummaryService = new CCSummaryService(_databasePath);
 
                     //Compruebo que el transactionDetail existe
-                    var transactionDetail = transactionDetailService.Get(_view.SelectedId);
-                    if (transactionDetail == null)
+                    var detail = transactionDetailService.Get(_view.SelectedDto.Id);
+                    if (detail is null)
                     {
                         CommonMessageBox.errorMessageShow("La transacción seleccionada ya ha sido eliminada", MessageBoxButtons.OK);
                         return;
                     }
 
-                    var transaction = transactionDetail.Transaction;
-                    var transactionDetails = transactionDetail.Transaction.TransactionDetails;
+                    var allDetails = detail.Transaction.TransactionDetails.ToList();
 
+                    //Elimino transaccion unica
+                    if (_view.SelectedDto.TransactionType == TransactionType.Single)
+                    {
+                        //Elimino el detalle
+                        transactionDetailService.Delete(detail);
+                    }
                     //Elimino una transaccion en cuotas
-                    if (transactionDetails.Max(x => x.Installment) > 1)
+                    else if (_view.SelectedDto.TransactionType == TransactionType.Installments)
                     {
                         string message = "Al eliminar esta cuota, también se eliminarán todas las cuotas relacionadas. ¿Desea continuar con la eliminación?";
                         string title = "Confirmar eliminación de cuotas";
 
                         if (CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNo, title) == DialogResult.Yes)
-                            foreach (var td in transactionDetails)
+                            foreach (var td in allDetails)
                                 transactionDetailService.Delete(td);
                     }
                     //Elimino un servicio
-                    else if (transactionDetails.Max(x => x.Frequency) > 0)
+                    else if (_view.SelectedDto.TransactionType == TransactionType.Service)
                     {
-                        string message = "Al eliminar esta transacción de servicio, se dará por finalizado el servicio y se eliminarán " +
-                            "tanto la transacción seleccionada como las futuras transacciones relacionadas. ¿Desea continuar con la eliminación?";
+                        string message = "Al eliminar este servicio, se dará por finalizado y se eliminarán " +
+                            "tanto la transacción seleccionada como las futuras transacciones. ¿Desea continuar con la eliminación?";
                         string title = "Confirmar finalización de servicio";
 
                         if (CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNo, title) == DialogResult.Yes)
                         {
-                            foreach (var td in transactionDetails.Where(x => x.Id >= transactionDetail.Id).ToList())
-                                transactionDetailService.Delete(td);
+                            var date = _view.SelectedDto.Date;
+                            var current = allDetails.Where(x => x.Date.Date <= _view.SelectedDto.Date.Date && x.EndDate.Date >= _view.SelectedDto.Date.Date).FirstOrDefault();
+
+                            if (current.Date == date)
+                            {
+                                transactionDetailService.Delete(current);
+                            }
+                            else
+                            {
+                                current.EndDate = date.AddMonths(-1);
+                                transactionDetailService.Update(current);
+                            }
+
+                            //elimino detalles futuros
+                            foreach (var futureDetail in allDetails.Where(x => x.Date > _view.SelectedDto.Date).ToList())
+                                transactionDetailService.Delete(futureDetail);
                         }
                     }
-                    //Elimino transaccion unica
-                    else
+                    else if (_view.SelectedDto.TransactionType == TransactionType.CreditCardOutstanding)
                     {
                         //Compruebo si la transaccion esta asociada a una tarjeta de credito
-                        var ccSummary = creditCardSummaryService.GetAll().Where(x => x.TransactionId == transaction.Id).FirstOrDefault();
-                        if (ccSummary != null)
+                        var summary = creditCardSummaryService.GetAll().Where(x => x.TransactionId == _view.SelectedDto.Id).FirstOrDefault();
+                        if (summary != null)
                         {
-                            string descripcion = $"{ccSummary.CreditCard.CreditCardBrand.Name} : ●●●● ●●●● ●●●● {ccSummary.CreditCard.LastFourNumbers}";
+                            string descripcion = $"{summary.CreditCard.CreditCardBrand.Name} *{summary.CreditCard.LastFourNumbers}";
                             string message = $"Al eliminar este servicio, también se eliminará el resumen de tarjeta de crédito relacionado " +
-                                $"({descripcion} : {transactionDetails.First().Date.ToString("yyyy-MM")}). ¿Desea continuar con la eliminación?";
+                                $"({descripcion} : {_view.SelectedDto.Date.ToString("yyyy-MM")}). ¿Desea continuar con la eliminación?";
                             string title = "Confirmar eliminación de cuotas";
 
                             if (CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNo, title) == DialogResult.No)
@@ -379,13 +445,14 @@ namespace MoneyAdministrator.Presenters
                         }
 
                         //Elimino el detalle
-                        transactionDetailService.Delete(transactionDetail);
+                        transactionDetailService.Delete(detail);
                     }
                 }
                 catch (Exception ex)
                 {
                     CommonMessageBox.errorMessageShow(ex.Message, MessageBoxButtons.OK);
                 }
+
                 GrdRefreshData();
             }
         }
@@ -395,17 +462,46 @@ namespace MoneyAdministrator.Presenters
             _closeView();
         }
 
-        private void SelectedYearChange(object? sender, EventArgs e)
-        {
-            GrdRefreshData();
-        }
-
         private void ButtonEntitySearchClick(object? sender, EventArgs e)
         {
             var selectedId = new EntityPresenter(_databasePath).Show();
             var entity = new EntityService(_databasePath).Get(selectedId);
             if (entity != null)
                 _view.EntityName = entity.Name;
+        }
+
+        private void GrdDoubleClick(object? sender, EventArgs e)
+        {
+            SelectTransaction();
+        }
+
+        private void GrdValueChange(object? sender, EventArgs e)
+        {
+            using (new CursorWait())
+            {
+                if (_view.CheckBoxChangeDto is null)
+                    return;
+
+                //Inicializo los servicios
+                var detailsService = new TransactionDetailService(_databasePath);
+
+                var detail = detailsService.Get(_view.CheckBoxChangeDto.Id);
+                var type = detail.Transaction.TransactionType;
+
+                //Si es una transaccion simple o de tarjeta de credito
+                if (type == TransactionType.Single || type == TransactionType.CreditCardOutstanding)
+                {
+                    detail.Concider = _view.CheckBoxChangeDto.Concider;
+                    detail.Paid = _view.CheckBoxChangeDto.Paid;
+
+                    detailsService.Update(detail);
+                }
+                //Si es una transaccion servicio o en cuotas
+                else if (type == TransactionType.Service || type == TransactionType.Installments)
+                {
+                    detailsService.UpdateCheckBox(detail, _view.CheckBoxChangeDto.Date, _view.CheckBoxChangeDto.Concider, _view.CheckBoxChangeDto.Paid);
+                }
+            }
         }
     }
 }

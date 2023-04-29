@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MoneyAdministrator.Common.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -18,6 +19,9 @@ namespace MoneyAdministrator.Models
 
         [Required(ErrorMessage = "Falta especificar la moneda")]
         public int CurrencyId { get; set; }
+
+        [Required(ErrorMessage = "Falta especificar el tipo de transaccion")]
+        public TransactionType TransactionType { get; set; }
 
         [StringLength(150, ErrorMessage = "La descripción no puede superar los 150 caracteres")]
         public string Description { get; set; }

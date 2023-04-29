@@ -25,7 +25,6 @@ namespace MoneyAdministrator.Utilities
 
             //Personalizo el comportamiento
             _grd.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            _grd.EditMode = DataGridViewEditMode.EditProgrammatically;
 
             //Personalizo la apariencia
             _grd.RowHeadersVisible = false;

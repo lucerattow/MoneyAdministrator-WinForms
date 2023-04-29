@@ -19,6 +19,11 @@ namespace MoneyAdministrator.Services
             _unitOfWork = new UnitOfWork(databasePath);
         }
 
+        public SalaryService(IUnitOfWork UnitOfWork)
+        {
+            _unitOfWork = UnitOfWork;
+        }
+
         public List<Salary> GetAll()
         {
             return _unitOfWork.SalaryRepository.GetAll().OrderByDescending(x => x.Date).ToList();

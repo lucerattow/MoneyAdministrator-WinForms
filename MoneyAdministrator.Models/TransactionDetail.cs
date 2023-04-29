@@ -19,12 +19,19 @@ namespace MoneyAdministrator.Models
         [Required(ErrorMessage = "Falta ingresar la fecha de la transacción")]
         public DateTime Date { get; set; }
 
+        [Required(ErrorMessage = "Falta ingresar la fecha final de la transacción")]
+        public DateTime EndDate { get; set; }
+
         [Required(ErrorMessage = "Falta ingresar el monto de la transacción")]
         public decimal Amount { get; set; }
 
-        public int Installment { get; set; }
-
         public int Frequency { get; set; }
+
+        [DefaultValue(true)]
+        public bool Concider { get; set; }
+
+        [DefaultValue(false)]
+        public bool Paid { get; set; }
 
         //foreign keys
         public virtual Transaction Transaction { get; set; }

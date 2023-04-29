@@ -135,38 +135,42 @@ namespace MoneyAdministrator.Views.Modals
             ControlConfig.DataGridViewSetup(_grd);
 
             //Configuracion de columnas
-            _grd.Columns.Add(new DataGridViewColumn() //0 Id
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
                 Name = "id",
                 HeaderText = "Id",
+                ReadOnly = true,
+                Visible = false,
+            }); //0 id
+            _grd.Columns.Add(new DataGridViewColumn()
+            {
                 CellTemplate = new DataGridViewTextBoxCell(),
                 DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
-                Visible = false,
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //1 Banco
-            {
                 Name = "bankEntity",
                 HeaderText = "Banco",
-                CellTemplate = new DataGridViewTextBoxCell(),
                 Width = 200,
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //2 Tipo de tarjeta
+                ReadOnly = true,
+            }); //1 bankEntity
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
                 Name = "type",
                 HeaderText = "Tipo de tarjeta",
-                CellTemplate = new DataGridViewTextBoxCell(),
                 Width = 150,
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
-            });
-            _grd.Columns.Add(new DataGridViewColumn() //3 Numeros
+                ReadOnly = true,
+            }); //2 type
+            _grd.Columns.Add(new DataGridViewColumn()
             {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
                 Name = "lastFourNumbers",
                 HeaderText = "Numeros",
-                CellTemplate = new DataGridViewTextBoxCell(),
                 Width = 180,
-                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight },
-            });
+                ReadOnly = true,
+            }); //3 lastFourNumbers
         }
 
         private void AssosiateEvents()
