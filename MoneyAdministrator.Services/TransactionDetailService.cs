@@ -88,8 +88,28 @@ namespace MoneyAdministrator.Services
                     //Si es una transaccion de cuotas, genero el string con formato "1 / 3"
                     string installments = "";
                     if (detail.Transaction.TransactionType == TransactionType.Installments)
+                    {
+                        var initInstallment = details
+                            .Where(x => x.TransactionId == detail.TransactionId)
+                            .OrderByDescending(x => x.Date)
+                            .LastOrDefault();
+
+                        var allInstallment = details
+                            .Where(x => x.TransactionId == detail.TransactionId)
+                            .OrderByDescending(x => x.Date)
+                            .ToList();
+
+                        var maxInstallment = details
+                            .Where(x => x.TransactionId == detail.TransactionId)
+                            .OrderByDescending(x => x.Date)
+                            .FirstOrDefault();
+
+                        int maxinst = DateTimeTools.GetMonthDifference(initInstallment.Date, maxInstallment.EndDate);
+                        int currentInst = DateTimeTools.GetMonthDifference(initInstallment.Date, detail.Date);
+
                         //Se suma 1 ya que en todos los casos la cuota 1 es la 0 realmente
-                        installments = months > 1 ? $"{i + 1} / {months + 1}" : "";
+                        installments = maxinst >= 1 ? $"{currentInst + i + 1} / {maxinst + 1}" : "";
+                    }
 
                     //Genero el detalle
                     result.Add(new TransactionViewDto()
