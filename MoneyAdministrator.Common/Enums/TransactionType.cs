@@ -8,9 +8,9 @@ namespace MoneyAdministrator.Common.Enums
 {
     public enum TransactionType
     {
+        CreditCardOutstanding,
         Single,
         Service,
         Installments,
-        CreditCardOutstanding,
     }
 }

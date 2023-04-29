@@ -86,8 +86,8 @@ namespace MoneyAdministrator.Utilities.ControlTools
 
         public static Point GetTopLeft(DataGridViewCellPaintingEventArgs e) => new Point(e.CellBounds.Left, e.CellBounds.Top);
 
-        public static Point GetBottomRight(DataGridViewCellPaintingEventArgs e) => new Point(e.CellBounds.Right - 1, e.CellBounds.Bottom);
+        public static Point GetBottomRight(DataGridViewCellPaintingEventArgs e) => new Point(e.CellBounds.Right - 1, e.CellBounds.Bottom - 1);
 
-        public static Point GetBottomLeft(DataGridViewCellPaintingEventArgs e) => new Point(e.CellBounds.Left, e.CellBounds.Bottom);
+        public static Point GetBottomLeft(DataGridViewCellPaintingEventArgs e) => new Point(e.CellBounds.Left, e.CellBounds.Bottom - 1);
     }
 }

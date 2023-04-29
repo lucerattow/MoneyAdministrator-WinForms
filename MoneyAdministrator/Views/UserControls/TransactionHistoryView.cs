@@ -158,21 +158,6 @@ namespace MoneyAdministrator.Views.UserControls
                 if (datasource.Count <= 0)
                     return;
 
-                //Separador futuro
-                Color sepFutureBackColor = Color.FromArgb(170, 200, 255);
-                Color sepFutureForeColor = Color.Black;
-
-                //Separador año actual
-                Color sepCurrentBackColor = Color.FromArgb(75, 135, 230);
-                Color sepCurrentForeColor = Color.White;
-
-                //Separador mes actual
-                Color sepCurrentMonthBackColor = Color.FromArgb(40, 70, 200);
-
-                //Separador antiguo
-                Color sepOldestBackColor = Color.FromArgb(200, 200, 200);
-                Color sepOldestForeColor = Color.Black;
-
                 var row = 0;
                 foreach (var year in datasource.OrderByDescending(x => x.Date).Select(x => x.Date.Year).Distinct())
                     for (var month = 12; month >= 1; month--)
@@ -183,61 +168,143 @@ namespace MoneyAdministrator.Views.UserControls
                         if (monthTransactions.Count == 0)
                             continue;
 
+                        //Determino los separadores
                         DateTime separatorDate = new DateTime(year, month, 1);
-                        //Añado un separador
-                        row = _grd.Rows.Add(new object[]
-                        {
-                            -1,
-                            0,
-                            0,
-                            separatorDate.ToString("yyyy"),
-                            separatorDate.ToString("(MM) MMM"),
-                            "",
-                            "",
-                            "",
-                            "",
-                            false,
-                            false,
-                        });
+                        AddGrdMonthSeparator(_grd, ref row, separatorDate.ToString("yyyy"), separatorDate.ToString("(MM) MMM"));
+                        PaintGrdMonthSeparator(_grd, row, year, month);
 
-                        //Pinto el separador
-                        if (year > DateTime.Now.Year)
-                            PaintDgvCells.PaintSeparator(_grd, row, sepFutureBackColor, sepFutureForeColor);
+                        //Obtengo los detalles pasivos
+                        var passive = monthTransactions.Where(x => x.Amount < 0)
+                            .OrderByDescending(x => x.TransactionType).ToList();
 
-                        else if (year == DateTime.Now.Year && month == DateTime.Now.Month)
-                            PaintDgvCells.PaintSeparator(_grd, row, sepCurrentMonthBackColor, sepCurrentForeColor);
+                        //Obtengo los detalles activos
+                        var assets = monthTransactions.Where(x => x.Amount >= 0)
+                            .OrderByDescending(x => x.TransactionType).ToList();
 
-                        else if (year == DateTime.Now.Year)
-                            PaintDgvCells.PaintSeparator(_grd, row, sepCurrentBackColor, sepCurrentForeColor);
+                        //Añado los detalles services pasivos
+                        AddGrdRows(_grd, ref row, passive, "Pasivos", true);
 
-                        else if (year < DateTime.Now.Year)
-                            PaintDgvCells.PaintSeparator(_grd, row, sepOldestBackColor, sepOldestForeColor);
-
-                        //Caso contrario añado los registros a la tabla
-                        foreach (var transaction in monthTransactions)
-                        {
-                            row = _grd.Rows.Add(new object[]
-                            {
-                                transaction.Id,
-                                transaction.TransactionType,
-                                transaction.Frequency,
-                                transaction.Date.ToString("yyyy-MM-dd"),
-                                transaction.EntityName,
-                                transaction.Description,
-                                transaction.Installment,
-                                transaction.CurrencyName,
-                                transaction.Amount.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
-                                transaction.Concider,
-                                transaction.Paid,
-                            });
-
-                            //Pinto el monto segun corresponda
-                            PaintDgvCells.PaintDecimal(_grd, row, "amount");
-                        }
+                        //Añado los detalles services activos
+                        AddGrdRows(_grd, ref row, assets, "Activos", false);
                     }
             }
 
             GrdStartingScroll();
+        }
+
+        private void AddGrdRows(DataGridView grd, ref int row, List<TransactionViewDto> dto, string separatorText, bool isPasive)
+        {
+            for (int i = 0; i < dto.Count; i++)
+            {
+                //Añado separador de servicios
+                if (i == 0)
+                {
+                    AddGrdValueSeparator(grd, ref row, separatorText);
+                    PaintGrdValueSeparator(grd, row, isPasive);
+                }
+
+                AddGrdRow(grd, ref row, dto[i]);
+            }
+        }
+
+        private void AddGrdRow(DataGridView grd, ref int row, TransactionViewDto dto)
+        {
+            row = grd.Rows.Add(new object[]
+            {
+                dto.Id,
+                dto.TransactionType,
+                dto.Frequency,
+                dto.Date.ToString("yyyy-MM-dd"),
+                dto.EntityName,
+                dto.Description,
+                dto.Installment,
+                dto.CurrencyName,
+                dto.Amount.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
+                dto.Concider,
+                dto.Paid,
+            });
+
+            //Pinto el monto segun corresponda
+            PaintDgvCells.PaintDecimal(grd, row, "amount");
+        }
+
+        private void AddGrdMonthSeparator(DataGridView grd, ref int row, string dateRow, string entityRow)
+        {
+            row = grd.Rows.Add(new object[]
+            {
+                -1,
+                0,
+                0,
+                dateRow,
+                entityRow,
+                "",
+                "",
+                "",
+                "",
+                false,
+                false,
+            });
+        }
+
+        private void AddGrdValueSeparator(DataGridView grd, ref int row, string text)
+        {
+            row = grd.Rows.Add(new object[]
+            {
+                -1,
+                0,
+                0,
+                "",
+                text,
+                "",
+                "",
+                "",
+                "",
+                false,
+                false,
+            });
+        }
+
+        private void PaintGrdMonthSeparator(DataGridView grd, int row, int year, int month)
+        {
+            //Separador futuro
+            Color sepFutureBackColor = Color.FromArgb(170, 200, 255);
+            Color sepFutureForeColor = Color.Black;
+            //Separador año actual
+            Color sepCurrentBackColor = Color.FromArgb(75, 135, 230);
+            Color sepCurrentForeColor = Color.White;
+            //Separador mes actual
+            Color sepCurrentMonthBackColor = Color.FromArgb(40, 70, 200);
+            //Separador antiguo
+            Color sepOldestBackColor = Color.FromArgb(200, 200, 200);
+            Color sepOldestForeColor = Color.Black;
+
+            //Pinto el separador
+            if (year > DateTime.Now.Year)
+                PaintDgvCells.PaintSeparator(grd, row, sepFutureBackColor, sepFutureForeColor);
+
+            else if (year == DateTime.Now.Year && month == DateTime.Now.Month)
+                PaintDgvCells.PaintSeparator(grd, row, sepCurrentMonthBackColor, sepCurrentForeColor);
+
+            else if (year == DateTime.Now.Year)
+                PaintDgvCells.PaintSeparator(grd, row, sepCurrentBackColor, sepCurrentForeColor);
+
+            else if (year < DateTime.Now.Year)
+                PaintDgvCells.PaintSeparator(grd, row, sepOldestBackColor, sepOldestForeColor);
+        }
+
+        private void PaintGrdValueSeparator(DataGridView grd, int row, bool isPassive)
+        {
+            //Separador Pasivos
+            Color sepPassivesBackColor = Color.FromArgb(244, 204, 204);
+            Color sepPassivesForeColor = Color.Black;
+            //Separador Activos
+            Color sepAssetsBackColor = Color.FromArgb(230, 255, 113);
+            Color sepAssetsForeColor = Color.Black;
+
+            if (isPassive)
+                PaintDgvCells.PaintSeparator(grd, row, sepPassivesBackColor, sepPassivesForeColor);
+            else
+                PaintDgvCells.PaintSeparator(grd, row, sepAssetsBackColor, sepAssetsForeColor);
         }
 
         private void GrdSetup()
@@ -414,7 +481,7 @@ namespace MoneyAdministrator.Views.UserControls
             _txtAmount.Text = "0";
             _cbCurrency.SelectedIndex = _cbCurrency.FindStringExact("ARS");
 
-            _ckbService.Checked = false;
+            _ckbInstallments.Checked = false;
             _txtInstallmentCurrent.Text = "";
             _txtInstallments.Text = "";
 
@@ -525,25 +592,28 @@ namespace MoneyAdministrator.Views.UserControls
             //Consulto si la fila es un separador
             var isSeparator = (int)_grd.Rows[e.RowIndex].Cells["id"].Value == -1;
 
-            //Evito que se muestren checkboxes en los separadores
-            if (isSeparator && (e.ColumnIndex == 9 || e.ColumnIndex == 10))
+            if (isSeparator)
             {
-                // Establece el estilo de fondo de la celda igual al estilo de fondo del DataGridView
-                e.CellStyle.BackColor = _grd.Rows[e.RowIndex].Cells["id"].Style.BackColor;
-                e.CellStyle.SelectionBackColor = _grd.Rows[e.RowIndex].Cells["id"].Style.SelectionBackColor;
+                // Dibuja el contenido predeterminado de la celda
+                e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.Border);
 
-                // Dibuja la celda con el estilo personalizado
-                e.PaintBackground(e.CellBounds, true);
+                //Evito que se muestren checkboxes en los separadores
+                if (e.ColumnIndex == 9 || e.ColumnIndex == 10)
+                    e.PaintBackground(e.CellBounds, true);
+
+                // Pinto el borde derecho de la fecha
+                if (e.ColumnIndex == 3)
+                    DataGridViewTools.PaintCellBorder(e, cellBorder, DataGridViewBorder.RightBorder);
+
+                // Pinto el borde inferior
+                DataGridViewTools.PaintCellBorder(e, cellBorder, DataGridViewBorder.BottomBorder);
+
                 e.Handled = true;
             }
             else
             {
                 // Dibuja el contenido predeterminado de la celda
                 e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.Border);
-
-                // Pinto el borde superior de la fecha
-                if (e.RowIndex != 0 && (int)_grd.Rows[e.RowIndex - 1].Cells["id"].Value == -1)
-                    DataGridViewTools.PaintCellBorder(e, cellBorder, DataGridViewBorder.TopBorder);
 
                 // Pinto el borde derecho de la fecha
                 if (e.ColumnIndex == 3)
