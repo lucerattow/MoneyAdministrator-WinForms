@@ -245,6 +245,7 @@ namespace MoneyAdministrator.Presenters
                     if (transactionType == TransactionType.Single)
                     {
                         detail.Date = date;
+                        detail.EndDate = date;
                         detail.Amount = amount;
 
                         transactionDetailService.Update(detail);
