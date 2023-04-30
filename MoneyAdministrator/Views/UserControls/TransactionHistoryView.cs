@@ -616,6 +616,35 @@ namespace MoneyAdministrator.Views.UserControls
             ButtonsLogic();
         }
 
+        private void _grd_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            var grd = sender as DataGridView;
+
+            //Si es un separador
+            if ((int)grd.Rows[e.RowIndex].Cells["id"].Value < 0)
+                return;
+
+            //si el click NO es en los checkbox
+            if (e.ColumnIndex != 9 && e.ColumnIndex != 10)
+                return;
+
+            _checkBoxChangeDto = new TransactionViewDto
+            {
+                Id = (int)grd.Rows[e.RowIndex].Cells["id"].Value,
+                TransactionType = (TransactionType)grd.Rows[e.RowIndex].Cells["type"].Value,
+                Frequency = (int)grd.Rows[e.RowIndex].Cells["frequency"].Value,
+                Date = DateTimeTools.Convert((string)grd.Rows[e.RowIndex].Cells["date"].Value, "yyyy-MM-dd"),
+                EntityName = (string)grd.Rows[e.RowIndex].Cells["entity"].Value,
+                Description = (string)grd.Rows[e.RowIndex].Cells["description"].Value,
+                Installment = (string)grd.Rows[e.RowIndex].Cells["installments"].Value,
+                CurrencyName = (string)grd.Rows[e.RowIndex].Cells["currency"].Value,
+                Amount = DecimalTools.Convert((string)grd.Rows[e.RowIndex].Cells["amount"].Value),
+                Concider = (bool)grd.Rows[e.RowIndex].Cells["concider"].Value,
+                Paid = (bool)grd.Rows[e.RowIndex].Cells["paid"].Value,
+            };
+            GrdValueChange.Invoke(sender, e);
+        }
+
         private void _grd_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             //Si la fila es la de los headers
@@ -662,35 +691,6 @@ namespace MoneyAdministrator.Views.UserControls
         private void _grd_Resize(object sender, EventArgs e)
         {
             _grd.Columns["description"].Width = _grd.Width - _colWidthTotal - 19;
-        }
-
-        private void _grd_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            var grd = sender as DataGridView;
-
-            //Si es un separador
-            if ((int)grd.Rows[e.RowIndex].Cells["id"].Value == -1)
-                return;
-
-            //si el click NO es en los checkbox
-            if (e.ColumnIndex != 9 && e.ColumnIndex != 10)
-                return;
-
-            _checkBoxChangeDto = new TransactionViewDto
-            {
-                Id = (int)grd.Rows[e.RowIndex].Cells["id"].Value,
-                TransactionType = (TransactionType)grd.Rows[e.RowIndex].Cells["type"].Value,
-                Frequency = (int)grd.Rows[e.RowIndex].Cells["frequency"].Value,
-                Date = DateTimeTools.Convert((string)grd.Rows[e.RowIndex].Cells["date"].Value, "yyyy-MM-dd"),
-                EntityName = (string)grd.Rows[e.RowIndex].Cells["entity"].Value,
-                Description = (string)grd.Rows[e.RowIndex].Cells["description"].Value,
-                Installment = (string)grd.Rows[e.RowIndex].Cells["installments"].Value,
-                CurrencyName = (string)grd.Rows[e.RowIndex].Cells["currency"].Value,
-                Amount = DecimalTools.Convert((string)grd.Rows[e.RowIndex].Cells["amount"].Value),
-                Concider = (bool)grd.Rows[e.RowIndex].Cells["concider"].Value,
-                Paid = (bool)grd.Rows[e.RowIndex].Cells["paid"].Value,
-            };
-            GrdValueChange.Invoke(sender, e);
         }
 
         public event EventHandler ButtonInsertClick;
