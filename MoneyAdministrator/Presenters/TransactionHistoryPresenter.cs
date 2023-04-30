@@ -117,6 +117,7 @@ namespace MoneyAdministrator.Presenters
 
             //Indico que hay que hacer focus en esta transaccion modificada
             _view.FocusRow = detail.Id;
+            GrdRefreshData();
         }
 
         private void UpdateInstallment(TransactionDetail detail)
@@ -160,6 +161,7 @@ namespace MoneyAdministrator.Presenters
 
             //Indico que hay que hacer focus en esta transaccion modificada
             _view.FocusRow = detail.Id;
+            GrdRefreshData();
         }
 
         private void UpdateService(TransactionDetail detail)
@@ -172,11 +174,11 @@ namespace MoneyAdministrator.Presenters
             var current = allDetails.Where(x => x.Date <= _view.Date).OrderByDescending(x => x.Date).FirstOrDefault();
             var futureDetails = allDetails.Where(x => x.Date > _view.Date).ToList();
 
-            var modifiedId = 0;
+            _view.FocusRow = detail.Id;
             if (futureDetails.Count == 0)
             {
                 //Actualizo el servicio y guardo el ID del detalle que se debe seleccionar
-                modifiedId = transactionDetailService.UpdateServiceTransaction(detail, _view.Date, _view.Amount, true);
+                _view.FocusRow = transactionDetailService.UpdateServiceTransaction(detail, _view.Date, _view.Amount, _view.Frequency, true);
             }
             else
             {
@@ -186,14 +188,16 @@ namespace MoneyAdministrator.Presenters
 
                 var dialogResult = CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNoCancel, title);
 
-                if (dialogResult == DialogResult.Yes)
-                    modifiedId = transactionDetailService.UpdateServiceTransaction(detail, _view.Date, _view.Amount, true);
-                else if (dialogResult == DialogResult.No)
-                    modifiedId = transactionDetailService.UpdateServiceTransaction(detail, _view.Date, _view.Amount, false);
-            }
+                if (dialogResult != DialogResult.Cancel)
+                {
+                    if (dialogResult == DialogResult.Yes)
+                        _view.FocusRow = transactionDetailService.UpdateServiceTransaction(detail, _view.Date, _view.Amount, _view.Frequency, true);
+                    else if (dialogResult == DialogResult.No)
+                        _view.FocusRow = transactionDetailService.UpdateServiceTransaction(detail, _view.Date, _view.Amount, _view.Frequency, false);
 
-            //Indico que hay que hacer focus en esta transaccion modificada
-            _view.FocusRow = modifiedId;
+                    GrdRefreshData();
+                }
+            }
         }
 
         //events
@@ -311,12 +315,6 @@ namespace MoneyAdministrator.Presenters
                     var description = _view.Description;
                     var currencyId = _view.Currency.Id;
 
-                    //Details Inputs
-                    var date = _view.Date;
-                    var amount = _view.Amount;
-                    var installments = _view.InstallmentMax;
-                    var frequency = _view.Frequency;
-
                     //Si la entidad no existe la inserto
                     var entity = entityService.GetByName(_view.EntityName);
                     if (entity is null)
@@ -347,8 +345,6 @@ namespace MoneyAdministrator.Presenters
                 {
                     CommonMessageBox.errorMessageShow(ex.Message, MessageBoxButtons.OK);
                 }
-
-                GrdRefreshData();
             }
         }
 

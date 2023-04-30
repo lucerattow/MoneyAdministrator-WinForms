@@ -161,7 +161,7 @@ namespace MoneyAdministrator.Services
             }
         }
 
-        public int UpdateServiceTransaction(TransactionDetail detail, DateTime date, decimal amount, bool overrideNext)
+        public int UpdateServiceTransaction(TransactionDetail detail, DateTime date, decimal amount, int frequency, bool overrideNext)
         {
             string errorMessage = "Ocurrió un error al actualizar el servicio";
 
@@ -194,6 +194,10 @@ namespace MoneyAdministrator.Services
                 }
                 else
                 {
+                    if (current.Frequency != frequency)
+                        throw new Exception("No es posible actualizar este servicio ya que cambiaste la frecuencia del mismo y existen detalles futuros vinculados, " +
+                            "se recomienda cambiarán todos los detalles futuros vinculados.");
+
                     var futureDetail = futureDetails.LastOrDefault();
                     endDate = futureDetail.Date.AddMonths(-current.Frequency);
                 }
@@ -203,6 +207,7 @@ namespace MoneyAdministrator.Services
                 current.Date = date;
                 current.EndDate = endDate;
                 current.Amount = amount;
+                current.Frequency = frequency;
 
                 Update(current);
                 return current.Id;
@@ -220,7 +225,7 @@ namespace MoneyAdministrator.Services
                     Date = date,
                     EndDate = endDate,
                     Amount = amount,
-                    Frequency = current.Frequency,
+                    Frequency = frequency,
                     Concider = true,
                     Paid = false,
                 };
