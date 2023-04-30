@@ -63,13 +63,33 @@ namespace MoneyAdministrator.CustomControls
 
         private void this_KeyDown(object sender, KeyEventArgs e)
         {
+            //Al hacer ctrl v, reemplazo el contenido por el clipboard
+            if (e.Control && e.KeyCode == Keys.V)
+            {
+                //Indica que ya se ha manejado el evento
+                e.Handled = true;
+                e.SuppressKeyPress = true;// Evita que el evento KeyPress se dispare
+
+                //Obtiene el texto del portapapeles
+                string clipboardText = GetDecimalFromString(Clipboard.GetText());
+
+                //Si el clipboard contenia valores validos, reemplazo el contenido del textbox
+                if (!string.IsNullOrEmpty(clipboardText))
+                    this.Text = clipboardText;
+
+                if (clipboardText.Contains('-'))
+                    _operatorSymbol = "-";
+                else
+                    _operatorSymbol = "+";
+            }
+
             //Al precionar delete, lo cambio por un backspace
             if (e.KeyCode == Keys.Delete)
             {
-                e.Handled = true; // Indica que ya se ha manejado el evento
-                e.SuppressKeyPress = true; // Evita que el evento KeyPress se dispare
+                e.Handled = true; //Indica que ya se ha manejado el evento
+                e.SuppressKeyPress = true; //Evita que el evento KeyPress se dispare
 
-                // Realiza la lógica de la tecla Backspace
+                //Realiza la lógica de la tecla Backspace
                 int cursorPosition = this.SelectionStart;
                 if (cursorPosition > 0)
                 {
@@ -77,7 +97,8 @@ namespace MoneyAdministrator.CustomControls
                     this.SelectionStart = cursorPosition - 1;
                 }
             }
-            // Hacer handle de los caracteres "-" y "+"
+
+            //Hacer handle de los caracteres "-" y "+"
             if (e.KeyCode == Keys.OemMinus || e.KeyCode == Keys.Subtract || e.KeyCode == Keys.Oemplus || e.KeyCode == Keys.Add)
             {
                 if (!_operatorSymbolIsConstant)
@@ -87,8 +108,8 @@ namespace MoneyAdministrator.CustomControls
                         _operatorSymbol = "+";
 
                 this_TextChanged(sender, EventArgs.Empty);
-                e.Handled = true; // Indica que ya se ha manejado el evento
-                e.SuppressKeyPress = true; // Evita que el evento KeyPress se dispare
+                e.Handled = true; //Indica que ya se ha manejado el evento
+                e.SuppressKeyPress = true;// Evita que el evento KeyPress se dispare
             }
         }
 
@@ -133,5 +154,11 @@ namespace MoneyAdministrator.CustomControls
                     this.ForeColor = Color.FromArgb(80, 80, 80);
             }
         }
+
+        private string GetDecimalFromString(string input)
+        {
+            return new string(input.Where(c => char.IsDigit(c) || c == '-' || c == '.' || c == ',').ToArray());
+        }
+
     }
 }
