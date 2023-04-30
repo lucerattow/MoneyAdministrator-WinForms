@@ -110,6 +110,11 @@ namespace MoneyAdministrator.Services
                         //Se suma 1 ya que en todos los casos la cuota 1 es la 0 realmente
                         installments = maxinst >= 1 ? $"{currentInst + i + 1} / {maxinst + 1}" : "";
                     }
+                    //Si es un servicio, uso la columna installments para notificar que esta transaccion es un servicio
+                    else if (detail.Transaction.TransactionType == TransactionType.Service)
+                    {
+                        installments = "servicio";
+                    }
 
                     //Genero el detalle
                     result.Add(new TransactionViewDto()
