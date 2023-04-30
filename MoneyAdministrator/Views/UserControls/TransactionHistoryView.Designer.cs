@@ -379,6 +379,7 @@
             _grd.Name = "_grd";
             _grd.Size = new Size(851, 267);
             _grd.TabIndex = 13;
+            _grd.CellMouseClick += _grd_CellMouseClick;
             _grd.CellMouseDoubleClick += _grd_CellMouseDoubleClick;
             _grd.CellPainting += _grd_CellPainting;
             _grd.CellValueChanged += _grd_CellValueChanged;

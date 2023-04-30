@@ -590,6 +590,19 @@ namespace MoneyAdministrator.Views.UserControls
                 _ckbInstallments.Checked = false;
         }
 
+        private void _grd_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            var grd = sender as DataGridView;
+
+            //Si es un separador
+            if ((int)grd.Rows[e.RowIndex].Cells["id"].Value < 0)
+                return;
+
+            //Si no se esta editando un detalle, actualizo la fecha para crear una transaccion
+            if (_selectedDto is null)
+                this.Date = DateTimeTools.Convert((string)grd.Rows[e.RowIndex].Cells["date"].Value, "yyyy-MM-dd");
+        }
+
         private void _grd_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             var grd = sender as DataGridView;
