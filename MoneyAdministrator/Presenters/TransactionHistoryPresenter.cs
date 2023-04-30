@@ -246,6 +246,9 @@ namespace MoneyAdministrator.Presenters
                     detail.Transaction.Description = description;
                     transactionDetailService.Update(detail);
 
+                    //Variable que seleccionara la transaccion modificada
+                    var modifiedId = detail.Id;
+
                     //Si es transaccion simple
                     if (transactionType == TransactionType.Single)
                     {
@@ -315,14 +318,16 @@ namespace MoneyAdministrator.Presenters
 
                         if (futureDetails.Count == 0)
                         {
-                            transactionDetailService.UpdateServiceTransaction(detail, date, amount, true);
+                            //Actualizo el servicio y guardo el ID del detalle que se debe seleccionar
+                            modifiedId = transactionDetailService.UpdateServiceTransaction(detail, date, amount, true);
                         }
                         else
                         {
-                            string message = "Al modificar este servicio, cambiarán todos los futuros vinculados. ¿Confirmas?";
+                            string message = "Al modificar este servicio, cambiarán todos los futuros vinculados. ¿Confirmas? " +
+                                "(\"No\" para actualizar hasta el proximo precio)";
                             string title = "Actualización de servicio";
 
-                            var dialogResult = CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNo, title);
+                            var dialogResult = CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNoCancel, title);
 
                             if (dialogResult == DialogResult.Yes)
                             {
@@ -336,7 +341,7 @@ namespace MoneyAdministrator.Presenters
                     }
 
                     //Indico que hay que hacer focus en esta transaccion modificada
-                    _view.FocusRow = detail.Id;
+                    _view.FocusRow = modifiedId;
                 }
                 catch (Exception ex)
                 {

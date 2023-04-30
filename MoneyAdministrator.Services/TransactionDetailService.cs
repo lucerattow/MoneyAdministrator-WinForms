@@ -161,70 +161,60 @@ namespace MoneyAdministrator.Services
             }
         }
 
-        public void UpdateServiceTransaction(TransactionDetail detail, DateTime date, decimal amount, bool overrideNext)
+        public int UpdateServiceTransaction(TransactionDetail detail, DateTime date, decimal amount, bool overrideNext)
         {
+            string errorMessage = "Ocurrió un error al actualizar el servicio";
+
             var details = detail.Transaction.TransactionDetails.OrderByDescending(x => x.Date).ToList();
 
             var current = details
                 .Where(x => x.Date.Date <= date.Date)
                 .FirstOrDefault();
 
+            var endDate = DateTime.MaxValue;
+
+            var futureDetails = details
+                .Where(x => x.Date.Date > date.Date)
+                .ToList();
+
+            //Manejo posibles errores
+            if (current is null)
+                throw new NullReferenceException(errorMessage);
+            if (futureDetails is null)
+                throw new NullReferenceException(errorMessage);
+
+            if (futureDetails.Count > 0)
+                if (overrideNext)
+                {
+                    //Elimino los detalles futuros
+                    foreach (var futureDetail in futureDetails)
+                    {
+                        Delete(futureDetail);
+                    }
+                }
+                else
+                {
+                    var futureDetail = futureDetails.LastOrDefault();
+                    endDate = futureDetail.Date.AddMonths(-current.Frequency);
+                }
+
             if (current.Date.Date == date.Date)
             {
-                var endDate = DateTime.MaxValue;
-                var futureDetails = details
-                    .Where(x => x.Date.Date > date.Date)
-                    .ToList();
-
-                if (futureDetails.Count > 0)
-                    if (overrideNext)
-                    {
-                        //Elimino los detalles futuros
-                        foreach (var futureDetail in futureDetails)
-                        {
-                            Delete(futureDetail);
-                        }
-                    }
-                    else
-                    {
-                        var futureDetail = futureDetails.LastOrDefault();
-                        endDate = futureDetail.Date.AddMonths(-current.Frequency);
-                    }
-
                 current.Date = date;
                 current.EndDate = endDate;
                 current.Amount = amount;
 
                 Update(current);
+                return current.Id;
             }
             else
             {
-                var endDate = DateTime.MaxValue;
-                var futureDetails = details
-                    .Where(x => x.Date.Date > date.Date)
-                    .ToList();
-
-                if (futureDetails.Count > 0)
-                    if (overrideNext)
-                    {
-                        //Elimino los detalles futuros
-                        foreach (var futureDetail in futureDetails)
-                        {
-                            Delete(futureDetail);
-                        }
-                    }
-                    else
-                    {
-                        var futureDetail = futureDetails.LastOrDefault();
-                        endDate = futureDetail.Date.AddMonths(-current.Frequency);
-                    }
-
                 //Actualizo la transaccion que se volveria el ultimo antes de actualizar
                 current.EndDate = date.AddMonths(-current.Frequency);
                 Update(current);
 
                 //Creo la transaccion nueva
-                Insert(new TransactionDetail
+                var newDetail = new TransactionDetail
                 {
                     TransactionId = current.TransactionId,
                     Date = date,
@@ -233,7 +223,10 @@ namespace MoneyAdministrator.Services
                     Frequency = current.Frequency,
                     Concider = true,
                     Paid = false,
-                });
+                };
+                Insert(newDetail);
+
+                return newDetail.Id;
             }
         }
 
