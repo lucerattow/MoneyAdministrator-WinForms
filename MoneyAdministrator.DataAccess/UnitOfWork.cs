@@ -1,4 +1,5 @@
-﻿using MoneyAdministrator.DataAccess.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using MoneyAdministrator.DataAccess.Interfaces;
 using MoneyAdministrator.Models;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace MoneyAdministrator.DataAccess
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext _dbContext;
 
         private IRepository<CCSummary>? _ccResumeRepository;
         private IRepository<CCSummaryDetail>? _ccResumeDetailRepository;
@@ -26,45 +27,45 @@ namespace MoneyAdministrator.DataAccess
 
         public UnitOfWork(string databasePath)
         {
-            _context = new AppDbContext(databasePath);
+            _dbContext = new AppDbContext(databasePath);
         }
 
         public IRepository<CCSummary> CCResumeRepository => 
-            _ccResumeRepository ??= new Repository<CCSummary>(_context);
+            _ccResumeRepository ??= new Repository<CCSummary>(_dbContext);
 
         public IRepository<CCSummaryDetail> CCResumeDetailRepository => 
-            _ccResumeDetailRepository ??= new Repository<CCSummaryDetail>(_context);
+            _ccResumeDetailRepository ??= new Repository<CCSummaryDetail>(_dbContext);
 
         public IRepository<CreditCard> CreditCardRepository => 
-            _creditCardRepository ??= new Repository<CreditCard>(_context);
+            _creditCardRepository ??= new Repository<CreditCard>(_dbContext);
 
         public IRepository<CreditCardBrand> CreditCardTypeRepository => 
-            _creditCardTypeRepository ??= new Repository<CreditCardBrand>(_context);
+            _creditCardTypeRepository ??= new Repository<CreditCardBrand>(_dbContext);
 
         public IRepository<Currency> CurrencyRepository => 
-            _currencyRepository ??= new Repository<Currency>(_context);
+            _currencyRepository ??= new Repository<Currency>(_dbContext);
 
         public IRepository<CurrencyValue> CurrencyValueRepository => 
-            _currencyValueRepository ??= new Repository<CurrencyValue>(_context);
+            _currencyValueRepository ??= new Repository<CurrencyValue>(_dbContext);
 
         public IRepository<Entity> EntityRepository => 
-            _entityRepository ??= new Repository<Entity>(_context);
+            _entityRepository ??= new Repository<Entity>(_dbContext);
 
         public IRepository<EntityType> EntityTypeRepository => 
-            _entityTypeRepository ??= new Repository<EntityType>(_context);
+            _entityTypeRepository ??= new Repository<EntityType>(_dbContext);
 
         public IRepository<Salary> SalaryRepository => 
-            _salaryRepository ??= new Repository<Salary>(_context);
+            _salaryRepository ??= new Repository<Salary>(_dbContext);
 
         public IRepository<TransactionDetail> TransactionDetailRepository => 
-            _transactionDetailRepository ??= new Repository<TransactionDetail>(_context);
+            _transactionDetailRepository ??= new Repository<TransactionDetail>(_dbContext);
 
         public IRepository<Transaction> TransactionRepository => 
-            _transactionRepository ??= new Repository<Transaction>(_context);
+            _transactionRepository ??= new Repository<Transaction>(_dbContext);
 
         public void Save()
         {
-            _context.SaveChanges();
+            _dbContext.SaveChanges();
         }
 
         private bool _disposed = false;
@@ -75,7 +76,7 @@ namespace MoneyAdministrator.DataAccess
             {
                 if (disposing)
                 {
-                    _context.Dispose();
+                    _dbContext.Dispose();
                 }
             }
             _disposed = true;
