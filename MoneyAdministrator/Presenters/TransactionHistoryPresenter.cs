@@ -107,6 +107,95 @@ namespace MoneyAdministrator.Presenters
             }
         }
 
+        private void UpdateSingle(TransactionDetail detail)
+        {
+            detail.Date = _view.Date;
+            detail.EndDate = _view.Date;
+            detail.Amount = _view.Amount;
+
+            new TransactionDetailService(_databasePath).Update(detail);
+
+            //Indico que hay que hacer focus en esta transaccion modificada
+            _view.FocusRow = detail.Id;
+        }
+
+        private void UpdateInstallment(TransactionDetail detail)
+        {
+            string message = "Al modificar esta cuota se modificarán todas las cuotas relacionadas. ¿Desea continuar?";
+            string title = "Actualización de cuotas";
+
+            if (CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNo, title) == DialogResult.Yes)
+            {
+                //Obtengo el detalle inicial
+                var initDetailDate = detail.Transaction.TransactionDetails.OrderBy(x => x.Date).Select(x => x.Date).FirstOrDefault();
+
+                //Obtengo la fecha del detalle actual
+                var currentDetailDate = detail.Date;
+
+                //Calculo la diferencia de meses y actualizo la fecha incial de las cuotas
+                var difference = DateTimeTools.GetMonthDifference(currentDetailDate, _view.Date);
+                var initDate = initDetailDate.AddMonths(difference);
+
+                var dateToCompare = new DateTime(initDate.Year, initDate.Month, initDate.Day > 28 ? 28 : initDate.Day);
+                //Actualizo las fechas de cada cuota
+                foreach (var details in detail.Transaction.TransactionDetails.OrderBy(x => x.Date))
+                {
+                    //Calculo la diferencia entre fechas y me dedico a sumar meses a las fechas originales
+                    difference = DateTimeTools.GetMonthDifference(details.Date, dateToCompare);
+
+                    var newDate = details.Date.AddMonths(difference);
+                    var newEndDate = details.EndDate.AddMonths(difference);
+                    newEndDate = new DateTime(newEndDate.Year, newEndDate.Month, dateToCompare.Day);
+
+                    //Actualizo el detalle
+                    details.Date = new DateTime(newDate.Year, newDate.Month, dateToCompare.Day);
+                    details.EndDate = newEndDate;
+                    details.Amount = _view.Amount;
+                    new TransactionDetailService(_databasePath).Update(detail);
+
+                    //guardo la nueva fecha inicial de la proxima cuota
+                    dateToCompare = newEndDate.AddMonths(1);
+                }
+            }
+
+            //Indico que hay que hacer focus en esta transaccion modificada
+            _view.FocusRow = detail.Id;
+        }
+
+        private void UpdateService(TransactionDetail detail)
+        {
+            //Inicializo el servicio
+            var transactionDetailService = new TransactionDetailService(_databasePath);
+
+            //Obtengo los objetos a editar
+            var allDetails = detail.Transaction.TransactionDetails;
+            var current = allDetails.Where(x => x.Date <= _view.Date).OrderByDescending(x => x.Date).FirstOrDefault();
+            var futureDetails = allDetails.Where(x => x.Date > _view.Date).ToList();
+
+            var modifiedId = 0;
+            if (futureDetails.Count == 0)
+            {
+                //Actualizo el servicio y guardo el ID del detalle que se debe seleccionar
+                modifiedId = transactionDetailService.UpdateServiceTransaction(detail, _view.Date, _view.Amount, true);
+            }
+            else
+            {
+                string message = "Al modificar este servicio, cambiarán todos los futuros vinculados. ¿Confirmas? " +
+                    "(\"No\" para actualizar hasta el proximo precio)";
+                string title = "Actualización de servicio";
+
+                var dialogResult = CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNoCancel, title);
+
+                if (dialogResult == DialogResult.Yes)
+                    modifiedId = transactionDetailService.UpdateServiceTransaction(detail, _view.Date, _view.Amount, true);
+                else if (dialogResult == DialogResult.No)
+                    modifiedId = transactionDetailService.UpdateServiceTransaction(detail, _view.Date, _view.Amount, false);
+            }
+
+            //Indico que hay que hacer focus en esta transaccion modificada
+            _view.FocusRow = modifiedId;
+        }
+
         //events
         private void ButtonNewPayClick(object? sender, EventArgs e)
         {
@@ -246,102 +335,13 @@ namespace MoneyAdministrator.Presenters
                     detail.Transaction.Description = description;
                     transactionDetailService.Update(detail);
 
-                    //Variable que seleccionara la transaccion modificada
-                    var modifiedId = detail.Id;
-
-                    //Si es transaccion simple
+                    //Dependiendo el tipo de transaccion, la modifico de forma diferente
                     if (transactionType == TransactionType.Single)
-                    {
-                        detail.Date = date;
-                        detail.EndDate = date;
-                        detail.Amount = amount;
-
-                        transactionDetailService.Update(detail);
-                    }
-                    //Si es transaccion en cuotas
+                        UpdateSingle(detail);
                     else if (transactionType == TransactionType.Installments)
-                    {
-                        string message = "Al modificar esta cuota se modificarán todas las cuotas relacionadas. ¿Desea continuar?";
-                        string title = "Actualización de cuotas";
-
-                        if (CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNo, title) == DialogResult.Yes)
-                        {
-                            //Obtengo el detalle inicial
-                            var initDetailDate = detail.Transaction.TransactionDetails
-                                .OrderBy(x => x.Date)
-                                .Select(x => x.Date)
-                                .FirstOrDefault();
-
-                            //Obtengo la fecha del detalle actual
-                            var currentDetailDate = detail.Date;
-
-                            //Calculo la diferencia de meses y actualizo la fecha incial de las cuotas
-                            var difference = DateTimeTools.GetMonthDifference(currentDetailDate, date);
-                            var initDate = initDetailDate.AddMonths(difference);
-
-                            var dateToCompare = new DateTime(initDate.Year, initDate.Month, initDate.Day > 28 ? 28 : initDate.Day);
-                            //Actualizo las fechas de cada cuota
-                            foreach (var details in detail.Transaction.TransactionDetails.OrderBy(x => x.Date))
-                            {
-                                //Calculo la diferencia entre fechas y me dedico a sumar meses a las fechas originales
-                                difference = DateTimeTools.GetMonthDifference(details.Date, dateToCompare);
-
-                                var newDate = details.Date.AddMonths(difference);
-                                var newEndDate = details.EndDate.AddMonths(difference);
-                                newEndDate = new DateTime(newEndDate.Year, newEndDate.Month, dateToCompare.Day);
-
-                                //Actualizo el detalle
-                                details.Date = new DateTime(newDate.Year, newDate.Month, dateToCompare.Day);
-                                details.EndDate = newEndDate;
-                                details.Amount = amount;
-                                transactionDetailService.Update(detail);
-
-                                //guardo la nueva fecha inicial de la proxima cuota
-                                dateToCompare = newEndDate.AddMonths(1);
-                            }
-                        }
-                    }
-                    //Si es un servicio
+                        UpdateInstallment(detail);
                     else if (transactionType == TransactionType.Service)
-                    {
-                        //Obtengo los objetos a editar
-                        var allDetails = detail.Transaction.TransactionDetails;
-
-                        var current = allDetails
-                            .Where(x => x.Date.Date <= date.Date)
-                            .OrderByDescending(x => x.Date)
-                            .FirstOrDefault();
-
-                        var futureDetails = allDetails
-                            .Where(x => x.Date.Date > date.Date)
-                            .ToList();
-
-                        if (futureDetails.Count == 0)
-                        {
-                            //Actualizo el servicio y guardo el ID del detalle que se debe seleccionar
-                            modifiedId = transactionDetailService.UpdateServiceTransaction(detail, date, amount, true);
-                        }
-                        else
-                        {
-                            string message = "Al modificar este servicio, cambiarán todos los futuros vinculados. ¿Confirmas? " +
-                                "(\"No\" para actualizar hasta el proximo precio)";
-                            string title = "Actualización de servicio";
-
-                            var dialogResult = CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNoCancel, title);
-
-                            if (dialogResult == DialogResult.Yes)
-                            {
-                                transactionDetailService.UpdateServiceTransaction(detail, date, amount, true);
-                            }
-                            else if (dialogResult == DialogResult.No)
-                            {
-                                transactionDetailService.UpdateServiceTransaction(detail, date, amount, false);
-                            }
-                        }
-                    }
-
-                    //Indico que hay que hacer focus en esta transaccion modificada
-                    _view.FocusRow = modifiedId;
+                        UpdateService(detail);
                 }
                 catch (Exception ex)
                 {
