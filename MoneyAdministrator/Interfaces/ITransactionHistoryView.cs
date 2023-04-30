@@ -14,6 +14,7 @@ namespace MoneyAdministrator.Interfaces
         //properties//properties
         TransactionViewDto? SelectedDto { get; set; }
         TransactionViewDto? CheckBoxChangeDto { get; }
+        int FocusRow { get; set; }
 
         //properties fields
         string EntityName { get; set; }

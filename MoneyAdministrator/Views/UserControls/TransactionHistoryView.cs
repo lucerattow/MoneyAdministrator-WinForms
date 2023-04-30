@@ -1,23 +1,15 @@
 ﻿using MoneyAdministrator.Common.DTOs;
+using MoneyAdministrator.Common.Enums;
+using MoneyAdministrator.Common.Utilities.TypeTools;
 using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Models;
-using MoneyAdministrator.Utilities.Disposable;
 using MoneyAdministrator.Utilities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using MoneyAdministrator.Common.Utilities.TypeTools;
 using MoneyAdministrator.Utilities.ControlTools;
+using MoneyAdministrator.Utilities.Disposable;
+using System.Collections;
 using System.Configuration;
-using System.Reflection.Metadata.Ecma335;
-using MoneyAdministrator.Common.Enums;
+using System.Data;
+using System.Globalization;
 
 namespace MoneyAdministrator.Views.UserControls
 {
@@ -35,6 +27,7 @@ namespace MoneyAdministrator.Views.UserControls
         //fields
         private TransactionViewDto? _selectedDto;
         private TransactionViewDto? _checkBoxChangeDto;
+        private int _focusRow = 0;
 
         //properties
         public TransactionViewDto? SelectedDto
@@ -45,6 +38,11 @@ namespace MoneyAdministrator.Views.UserControls
         public TransactionViewDto? CheckBoxChangeDto
         {
             get => _checkBoxChangeDto;
+        }
+        public int FocusRow
+        {
+            get => _focusRow;
+            set => _focusRow = value;
         }
 
         //properties fields
@@ -189,7 +187,7 @@ namespace MoneyAdministrator.Views.UserControls
                     }
             }
 
-            GrdStartingScroll();
+            GrdSetScroll(_grd, _focusRow);
         }
 
         private void AddGrdRows(DataGridView grd, ref int row, List<TransactionViewDto> dto, string separatorText, bool isPasive)
@@ -250,7 +248,7 @@ namespace MoneyAdministrator.Views.UserControls
         {
             row = grd.Rows.Add(new object[]
             {
-                -1,
+                -2,
                 0,
                 0,
                 "",
@@ -405,26 +403,63 @@ namespace MoneyAdministrator.Views.UserControls
             }); //10 paid
         }
 
-        private void GrdStartingScroll()
+        private void GrdSetScroll(DataGridView grd, int detailId = 0)
         {
             int rowIndex = -1;
 
-            for (int i = 0; i < _grd.Rows.Count; i++)
+            //Obtengo la lista de filas con los valores que necesito para buscar
+            int distanceToSeparator = 0;
+
+            var values = new List<RowItem>();
+            foreach (DataGridViewRow row in grd.Rows)
             {
-                //Compruebo que no sea un separador
-                if ((int)_grd.Rows[i].Cells["id"].Value == -1)
+                distanceToSeparator++;
+
+                //Ignoro los separadores
+                if ((int)row.Cells["id"].Value == -1)
+                {
+                    distanceToSeparator = 0;
+                    continue;
+                }
+                else if ((int)row.Cells["id"].Value == -2)
                     continue;
 
-                DateTime rowDate = DateTimeTools.Convert(_grd.Rows[i].Cells["date"].Value.ToString(), "yyyy-MM-dd");
-
-                if (rowDate.Year == DateTime.Now.Year && rowDate.Month == DateTime.Now.Month)
+                values.Add(new RowItem
                 {
-                    rowIndex = i;
-                    break;
-                }
+                    RowId = grd.Rows.IndexOf(row),
+                    DetailId = (int)row.Cells["id"].Value,
+                    Date = DateTimeTools.Convert((string)row.Cells["date"].Value, "yyyy-MM-dd"),
+                    DistanceToSeparator = distanceToSeparator,
+                });
             }
 
-            DataGridViewTools.ScrollToRow(_grd, rowIndex, -3);
+            if (detailId == 0)
+            {
+                var findedValue = values
+                    .Where(x => x.Date.Year == DateTime.Now.Year && x.Date.Month == DateTime.Now.Month)
+                    .FirstOrDefault();
+
+                if (findedValue is null)
+                    return;
+
+                rowIndex = findedValue.RowId - findedValue.DistanceToSeparator;
+            }
+            else
+            {
+                var findedValue = values
+                    .Where(x => x.DetailId == detailId)
+                    .LastOrDefault();
+
+                if (findedValue is null)
+                    return;
+
+                rowIndex = findedValue.RowId - findedValue.DistanceToSeparator;
+
+                grd.ClearSelection();
+                grd.Rows[findedValue.RowId].Selected = true;
+            }
+
+            DataGridViewTools.ScrollToRow(grd, rowIndex, -1);
         }
 
         private void ControlsSetup()
@@ -469,6 +504,7 @@ namespace MoneyAdministrator.Views.UserControls
         {
             _selectedDto = null;
             _checkBoxChangeDto = null;
+            _focusRow = 0;
 
             ClearInputs();
         }
@@ -508,7 +544,6 @@ namespace MoneyAdministrator.Views.UserControls
         {
             ButtonUpdateClick.Invoke(sender, e);
             Clear();
-            ButtonsLogic();
         }
 
         private void _tsbDelete_Click(object sender, EventArgs e)
@@ -554,7 +589,7 @@ namespace MoneyAdministrator.Views.UserControls
             var grd = sender as DataGridView;
 
             //Si es un separador
-            if ((int)grd.Rows[e.RowIndex].Cells["id"].Value == -1)
+            if ((int)grd.Rows[e.RowIndex].Cells["id"].Value < 0)
                 return;
 
             //Si el doble click es en los checkbox
@@ -590,7 +625,7 @@ namespace MoneyAdministrator.Views.UserControls
             Color cellBorder = Color.FromArgb(50, 50, 50);
 
             //Consulto si la fila es un separador
-            var isSeparator = (int)_grd.Rows[e.RowIndex].Cells["id"].Value == -1;
+            var isSeparator = (int)_grd.Rows[e.RowIndex].Cells["id"].Value < 0;
 
             if (isSeparator)
             {
@@ -666,5 +701,13 @@ namespace MoneyAdministrator.Views.UserControls
         public event EventHandler ButtonEntitySearchClick;
         public event EventHandler GrdDoubleClick;
         public event EventHandler GrdValueChange;
+    }
+
+    internal class RowItem
+    {
+        public int RowId { get; set; }
+        public int DetailId { get; set; }
+        public DateTime Date { get; set; }
+        public int DistanceToSeparator { get; set; }
     }
 }

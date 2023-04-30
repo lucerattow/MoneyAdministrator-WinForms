@@ -35,7 +35,7 @@ namespace MoneyAdministrator.Utilities
             _grd.BackgroundColor = Color.FromArgb(235,235,235);
             _grd.DefaultCellStyle = new DataGridViewCellStyle()
             {
-                SelectionBackColor = Color.FromArgb(240, 240, 240),
+                SelectionBackColor = Color.FromArgb(150, 220, 220),
                 SelectionForeColor = Color.FromArgb(40, 40, 40),
             };
             _grd.RowTemplate.Height = 23;

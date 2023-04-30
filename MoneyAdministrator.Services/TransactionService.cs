@@ -80,7 +80,7 @@ namespace MoneyAdministrator.Services
         }
 
         //methods
-        public void CreateTransaction(TransactionDetailDto dto)
+        public int CreateTransaction(TransactionDetailDto dto)
         {
             //Inserto la transaccion
             var transaction = new Transaction()
@@ -105,6 +105,8 @@ namespace MoneyAdministrator.Services
                 Paid = false,
             };
             new TransactionDetailService(_unitOfWork).Insert(detail);
+
+            return detail.Id;
         }
 
         private void UpdateCreditCardSummary()

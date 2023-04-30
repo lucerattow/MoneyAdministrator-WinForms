@@ -32,10 +32,10 @@ namespace MoneyAdministrator.Common.Utilities.TypeTools
             }
         }
 
-        public static int GetMonthDifference(DateTime date1, DateTime date2)
+        public static int GetMonthDifference(DateTime startDate, DateTime endDate)
         {
-            int yearsDifference = date2.Year - date1.Year;
-            int monthsDifference = date2.Month - date1.Month;
+            int yearsDifference = endDate.Year - startDate.Year;
+            int monthsDifference = endDate.Month - startDate.Month;
             int totalMonthsDifference = (yearsDifference * 12) + monthsDifference;
 
             return totalMonthsDifference;

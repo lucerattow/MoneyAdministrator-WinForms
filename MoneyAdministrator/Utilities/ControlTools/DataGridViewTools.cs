@@ -16,8 +16,10 @@ namespace MoneyAdministrator.Utilities.ControlTools
                 {
                     if (offSet > 0)
                         offSet--;
-                    else if (offSet < 0) 
+                    else if (offSet < 0)
                         offSet++;
+                    else if (offSet == 0)
+                        break;
                 }
                 rowToShow += offSet;
 

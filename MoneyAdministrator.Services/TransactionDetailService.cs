@@ -191,9 +191,9 @@ namespace MoneyAdministrator.Services
                         endDate = futureDetail.Date.AddMonths(-current.Frequency);
                     }
 
-                detail.Date = date;
-                detail.EndDate = endDate;
-                detail.Amount = amount;
+                current.Date = date;
+                current.EndDate = endDate;
+                current.Amount = amount;
 
                 Update(current);
             }

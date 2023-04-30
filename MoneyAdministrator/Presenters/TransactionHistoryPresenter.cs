@@ -11,8 +11,10 @@ using MoneyAdministrator.Views;
 using MoneyAdministrator.Views.UserControls;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics.Metrics;
 using System.Windows.Forms.Design;
 using static iText.IO.Util.IntHashtable;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace MoneyAdministrator.Presenters
@@ -183,7 +185,10 @@ namespace MoneyAdministrator.Presenters
                         Amount = _view.Amount,
                         Frequency = _view.Frequency,
                     };
-                    transactionService.CreateTransaction(dto);
+                    int id = transactionService.CreateTransaction(dto);
+
+                    //Indico que hay que hacer focus en esta transaccion recien creada
+                    _view.FocusRow = id;
                 }
                 catch (Exception ex)
                 {
@@ -302,57 +307,8 @@ namespace MoneyAdministrator.Presenters
                         }
                     }
 
-                    //var date = _view.SelectedDto.Date;
-                    //var current = allDetails.Where(x => x.Date.Date <= _view.SelectedDto.Date.Date &&
-                    //x.EndDate.Date >= _view.SelectedDto.Date.Date).FirstOrDefault();
-
-                    //if (current.Date == date)
-                    //{
-                    //    transactionDetailService.Delete(current);
-                    //}
-                    //else
-                    //{
-                    //    current.EndDate = date.AddMonths(-1);
-                    //    transactionDetailService.Update(current);
-                    //}
-
-                    //elimino detalles futuros
-                    //foreach (var futureDetail in allDetails.Where(x => x.Date > _view.SelectedDto.Date).ToList())
-                    //    transactionDetailService.Delete(futureDetail);
-
-                    //Si es transaccion en cuotas
-                    //else if (transactionType == TransactionType.Service)
-                    //{
-                    //    //Elimino desde la transaccion actual en adelante
-                    //    transactionDetailService.GetAll()
-                    //    .Where(x => x.TransactionId == transactionDetail.Transaction.Id && x.Id >= transactionDetail.Id).ToList()
-                    //    .ForEach(x => transactionDetailService.Delete(x));
-
-                    //    var monthsPeriod = frequency > 3 ? 24 : 12;
-                    //    transactionDetailService.GenerateTransactionDetails(
-                    //        transactionDetail.Transaction.Id, date, amount, monthsPeriod, frequency, isService)
-                    //        .ToList().ForEach(x => transactionDetailService.Insert(x));
-                    //}
-
-                    ////Si es transaccion de servicio
-                    //else if (IsService())
-                    //{
-                    //    string message = "Al modificar esta transacción de servicio, se modificará la transacción seleccionada y se insertarán nuevas transacciones a futuro relacionadas. ¿Desea continuar con la modificación?";
-                    //    string title = "Confirmar modificación de servicio";
-
-                    //    if (CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNo, title) == DialogResult.Yes)
-                    //    {
-                    //        //Elimino desde la transaccion actual en adelante
-                    //        transactionDetailService.GetAll()
-                    //        .Where(x => x.TransactionId == transactionDetail.Transaction.Id && x.Id >= transactionDetail.Id).ToList()
-                    //        .ForEach(x => transactionDetailService.Delete(x));
-
-                    //        var monthsPeriod = frequency > 3 ? 24 : 12;
-                    //        transactionDetailService.GenerateTransactionDetails(
-                    //            transactionDetail.Transaction.Id, date, amount, monthsPeriod, frequency, isService)
-                    //            .ToList().ForEach(x => transactionDetailService.Insert(x));
-                    //    }
-                    //}
+                    //Indico que hay que hacer focus en esta transaccion modificada
+                    _view.FocusRow = detail.Id;
                 }
                 catch (Exception ex)
                 {
