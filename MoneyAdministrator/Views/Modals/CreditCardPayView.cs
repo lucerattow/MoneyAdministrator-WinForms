@@ -47,11 +47,11 @@ namespace MoneyAdministrator.Views.Modals
         }
         public DateTime PayDay
         {
-            get => _dtpDate.Value;
+            get => _dtpDate.Value.Date;
             set
             {
-                _constDatePay = value;
-                _dtpDate.Value = value;
+                _constDatePay = value.Date;
+                _dtpDate.Value = _constDatePay;
             }
         }
         public decimal AmountPay

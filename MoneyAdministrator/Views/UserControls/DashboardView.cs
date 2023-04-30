@@ -26,19 +26,19 @@ namespace MoneyAdministrator.Views.UserControls
 
         public DateTime? SelectedRecordPeriod
         {
-            get => _selectedRecordPeriod;
+            get => _selectedRecordPeriod?.Date;
             set
             {
-                _selectedRecordPeriod = value;
+                _selectedRecordPeriod = value?.Date;
                 if (value != null)
-                    _dtpDate.Value = (DateTime)value;
+                    _dtpDate.Value = ((DateTime)value).Date;
                 else
                     _dtpDate.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             }
         }
         public DateTime Period
         {
-            get => _dtpDate.Value;
+            get => _dtpDate.Value.Date;
         }
         public decimal UsdValue
         {

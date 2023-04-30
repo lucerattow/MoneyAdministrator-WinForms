@@ -53,8 +53,8 @@ namespace MoneyAdministrator.Views.UserControls
         }
         public DateTime Date
         {
-            get => _dtpDate.Value;
-            set => _dtpDate.Value = value;
+            get => _dtpDate.Value.Date;
+            set => _dtpDate.Value = value.Date;
         }
         public string Description
         {

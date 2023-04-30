@@ -56,18 +56,18 @@ namespace MoneyAdministrator.Views
         }
         public DateTime Period
         {
-            get => _dtpDatePeriod.Value;
-            set => _dtpDatePeriod.Value = value;
+            get => _dtpDatePeriod.Value.Date;
+            set => _dtpDatePeriod.Value = value.Date;
         }
         public DateTime Date
         {
             get => DateTimeTools.Convert(_txtDate.Text, ConfigurationManager.AppSettings["DateFormat"]);
             set
             {
-                if (value == new DateTime(1, 1, 1))
+                if (value.Date == new DateTime(1, 1, 1))
                     _txtDate.Text = "";
                 else
-                    _txtDate.Text = value.ToString(ConfigurationManager.AppSettings["DateFormat"]);
+                    _txtDate.Text = value.Date.ToString(ConfigurationManager.AppSettings["DateFormat"]);
             }
         }
         public DateTime Expiration
@@ -75,10 +75,10 @@ namespace MoneyAdministrator.Views
             get => DateTimeTools.Convert(_txtDateExpiration.Text, ConfigurationManager.AppSettings["DateFormat"]);
             set
             {
-                if (value == new DateTime(1, 1, 1))
+                if (value.Date == new DateTime(1, 1, 1))
                     _txtDateExpiration.Text = "";
                 else
-                    _txtDateExpiration.Text = value.ToString(ConfigurationManager.AppSettings["DateFormat"]);
+                    _txtDateExpiration.Text = value.Date.ToString(ConfigurationManager.AppSettings["DateFormat"]);
             }
         }
         public DateTime NextDate
@@ -86,10 +86,10 @@ namespace MoneyAdministrator.Views
             get => DateTimeTools.Convert(_txtDateNext.Text, ConfigurationManager.AppSettings["DateFormat"]);
             set
             {
-                if (value == new DateTime(1, 1, 1))
+                if (value.Date == new DateTime(1, 1, 1))
                     _txtDateNext.Text = "";
                 else
-                    _txtDateNext.Text = value.ToString(ConfigurationManager.AppSettings["DateFormat"]);
+                    _txtDateNext.Text = value.Date.ToString(ConfigurationManager.AppSettings["DateFormat"]);
             }
         }
         public DateTime NextExpiration
@@ -97,10 +97,10 @@ namespace MoneyAdministrator.Views
             get => DateTimeTools.Convert(_txtDateNextExpiration.Text, ConfigurationManager.AppSettings["DateFormat"]);
             set
             {
-                if (value == new DateTime(1, 1, 1))
+                if (value.Date == new DateTime(1, 1, 1))
                     _txtDateNextExpiration.Text = "";
                 else
-                    _txtDateNextExpiration.Text = value.ToString(ConfigurationManager.AppSettings["DateFormat"]);
+                    _txtDateNextExpiration.Text = value.Date.ToString(ConfigurationManager.AppSettings["DateFormat"]);
             }
         }
         public decimal TotalArs
@@ -239,7 +239,7 @@ namespace MoneyAdministrator.Views
 
             datasource = datasource.OrderByDescending(x => x.Period).ToList();
 
-            DateTime date = DateTime.MaxValue;
+            DateTime date = DateTime.MaxValue.Date;
             var yearNode = new TreeNode();
 
             for (int i = 0; i < datasource.Count; i++)
