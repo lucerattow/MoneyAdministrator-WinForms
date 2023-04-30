@@ -262,13 +262,41 @@ namespace MoneyAdministrator.Presenters
                         string title = "Actualización de cuotas";
 
                         if (CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNo, title) == DialogResult.Yes)
-                            detail.Transaction.TransactionDetails.ToList()
-                            .ForEach(x =>
+                        {
+                            //Obtengo el detalle inicial
+                            var initDetailDate = detail.Transaction.TransactionDetails
+                                .OrderBy(x => x.Date)
+                                .Select(x => x.Date)
+                                .FirstOrDefault();
+
+                            //Obtengo la fecha del detalle actual
+                            var currentDetailDate = detail.Date;
+
+                            //Calculo la diferencia de meses y actualizo la fecha incial de las cuotas
+                            var difference = DateTimeTools.GetMonthDifference(currentDetailDate, date);
+                            var initDate = initDetailDate.AddMonths(difference);
+
+                            var dateToCompare = new DateTime(initDate.Year, initDate.Month, initDate.Day > 28 ? 28 : initDate.Day);
+                            //Actualizo las fechas de cada cuota
+                            foreach (var details in detail.Transaction.TransactionDetails.OrderBy(x => x.Date))
                             {
-                                x.Date = new DateTime(x.Date.Year, x.Date.Month, date.Day);
-                                x.Amount = amount;
-                                transactionDetailService.Update(x);
-                            });
+                                //Calculo la diferencia entre fechas y me dedico a sumar meses a las fechas originales
+                                difference = DateTimeTools.GetMonthDifference(details.Date, dateToCompare);
+
+                                var newDate = details.Date.AddMonths(difference);
+                                var newEndDate = details.EndDate.AddMonths(difference);
+                                newEndDate = new DateTime(newEndDate.Year, newEndDate.Month, dateToCompare.Day);
+
+                                //Actualizo el detalle
+                                details.Date = new DateTime(newDate.Year, newDate.Month, dateToCompare.Day);
+                                details.EndDate = newEndDate;
+                                details.Amount = amount;
+                                transactionDetailService.Update(detail);
+
+                                //guardo la nueva fecha inicial de la proxima cuota
+                                dateToCompare = newEndDate.AddMonths(1);
+                            }
+                        }
                     }
                     //Si es un servicio
                     else if (transactionType == TransactionType.Service)
