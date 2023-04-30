@@ -493,11 +493,17 @@ namespace MoneyAdministrator.Views.UserControls
         private void ButtonsLogic()
         {
             var isCreditCardRest = _selectedDto?.TransactionType == TransactionType.CreditCardOutstanding;
+            var isService = _selectedDto?.TransactionType == TransactionType.Service;
 
             _tsbInsert.Enabled = _selectedDto == null;
             _tsbUpdate.Enabled = _selectedDto != null && !isCreditCardRest;
             _tsbDelete.Enabled = _selectedDto != null;
             _tsbNewPay.Enabled = _selectedDto != null && isCreditCardRest;
+
+            _dtpDate.Enabled = !(isCreditCardRest || isService);
+
+            _ckbInstallments.Enabled = _selectedDto == null;
+            _ckbService.Enabled = _selectedDto == null;
         }
 
         private void Clear()
