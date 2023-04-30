@@ -66,10 +66,6 @@ namespace MoneyAdministrator.CustomControls
             //Al hacer ctrl v, reemplazo el contenido por el clipboard
             if (e.Control && e.KeyCode == Keys.V)
             {
-                //Indica que ya se ha manejado el evento
-                e.Handled = true;
-                e.SuppressKeyPress = true;// Evita que el evento KeyPress se dispare
-
                 //Obtiene el texto del portapapeles
                 string clipboardText = GetDecimalFromString(Clipboard.GetText());
 
@@ -81,6 +77,12 @@ namespace MoneyAdministrator.CustomControls
                     _operatorSymbol = "-";
                 else
                     _operatorSymbol = "+";
+
+                this_TextChanged(sender, EventArgs.Empty);
+
+                //Indica que ya se ha manejado el evento
+                e.Handled = true;
+                e.SuppressKeyPress = true;// Evita que el evento KeyPress se dispare
             }
 
             //Al precionar delete, lo cambio por un backspace
