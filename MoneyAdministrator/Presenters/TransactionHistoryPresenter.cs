@@ -179,6 +179,8 @@ namespace MoneyAdministrator.Presenters
             {
                 //Actualizo el servicio y guardo el ID del detalle que se debe seleccionar
                 _view.FocusRow = transactionDetailService.UpdateServiceTransaction(detail, _view.Date, _view.Amount, _view.Frequency, true);
+
+                GrdRefreshData();
             }
             else
             {
