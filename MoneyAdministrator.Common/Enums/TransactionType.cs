@@ -10,7 +10,7 @@ namespace MoneyAdministrator.Common.Enums
     {
         CreditCardOutstanding,
         Single,
-        Service,
         Installments,
+        Service,
     }
 }
