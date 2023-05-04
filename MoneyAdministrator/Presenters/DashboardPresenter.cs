@@ -3,6 +3,7 @@ using MoneyAdministrator.Common.Utilities.TypeTools;
 using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Models;
 using MoneyAdministrator.Services;
+using MoneyAdministrator.Services.Controllers;
 using MoneyAdministrator.Utilities.Disposable;
 using MoneyAdministrator.Views.UserControls;
 using System;
@@ -51,11 +52,11 @@ namespace MoneyAdministrator.Presenters
             using (new CursorWait())
             {
                 //Obtengo los servicios
-                var transactionDetailService = new TransactionDetailService(_databasePath);
                 var currencyValueService = new CurrencyValueService(_databasePath);
                 var salaryService = new SalaryService(_databasePath);
 
-                var transactionDetails = transactionDetailService.GetIntermediateDetailDtos().Where(x => x.Concider == true).ToList();
+                var transactionDetails = new TransactionHistoryController(_databasePath)
+                    .GetIntermediateDetailDtos().Where(x => x.Concider == true).ToList();
 
                 List<DashboardDto> dtos = new List<DashboardDto>();
 
@@ -109,7 +110,7 @@ namespace MoneyAdministrator.Presenters
                         }
                     }
                 }
-                
+
                 this._view.GrdRefreshData(dtos);
             }
         }

@@ -182,11 +182,11 @@ namespace MoneyAdministrator.Views.UserControls
 
                     //Pinto el separador
                     if (year > DateTime.Now.Year)
-                        PaintDgvCells.PaintSeparator(_grd, row, sepFutureBackColor, sepFutureForeColor);
+                        DataGridViewTools.PaintSeparator(_grd, row, sepFutureBackColor, sepFutureForeColor);
                     else if (year == DateTime.Now.Year)
-                        PaintDgvCells.PaintSeparator(_grd, row, sepCurrentBackColor, sepCurrentForeColor);
+                        DataGridViewTools.PaintSeparator(_grd, row, sepCurrentBackColor, sepCurrentForeColor);
                     else if (year < DateTime.Now.Year)
-                        PaintDgvCells.PaintSeparator(_grd, row, sepOldestBackColor, sepOldestForeColor);
+                        DataGridViewTools.PaintSeparator(_grd, row, sepOldestBackColor, sepOldestForeColor);
 
                     //Añado los registros a la tabla
                     foreach (var dashboardDto in yearDashboarDtos)
@@ -208,17 +208,15 @@ namespace MoneyAdministrator.Views.UserControls
                         {
                             //Pinto el periodo actual
                             if (col == 0)
-                                PaintDgvCells.PaintCurrentDate(_grd, row, col);
+                                DataGridViewTools.PaintCurrentDate(_grd, row, col);
 
                             //Pinto los valores de moneda
                             if (col >= 1)
-                                PaintDgvCells.PaintDecimal(_grd, row, col);
+                                DataGridViewTools.PaintDecimal(_grd, row, col);
                         }
                     }
                 }
             }
-
-            GrdStartingScroll();
         }
 
         public void ClearInputs()
@@ -251,7 +249,7 @@ namespace MoneyAdministrator.Views.UserControls
 
         private void GrdHeaderSetup()
         {
-            ControlConfig.DataGridViewSetup(_grdHeader);
+            DataGridViewTools.DataGridViewSetup(_grdHeader);
 
             //Configuracion de columnas
             _grdHeader.Columns.Add(new DataGridViewColumn() //0 Resumen
@@ -287,7 +285,7 @@ namespace MoneyAdministrator.Views.UserControls
             int groupUsdCompare = 2;
             int groupWallet = 5;
 
-            ControlConfig.DataGridViewSetup(_grd);
+            DataGridViewTools.DataGridViewSetup(_grd);
 
             //Configuracion de columnas
             _grd.Columns.Add(new DataGridViewColumn()
@@ -362,28 +360,6 @@ namespace MoneyAdministrator.Views.UserControls
                 Width = _colWalletWidth / groupWallet,
                 ReadOnly = true,
             }); //6 walletBalance
-        }
-
-        private void GrdStartingScroll()
-        {
-            int rowIndex = -1;
-
-            for (int i = 0; i < _grd.Rows.Count; i++)
-            {
-                //Compruebo que no sea un separador
-                if (!DateTimeTools.TestDate(_grd.Rows[i].Cells["date"].Value.ToString(), "yyyy-MM"))
-                    continue;
-
-                DateTime rowDate = DateTimeTools.Convert(_grd.Rows[i].Cells["date"].Value.ToString(), "yyyy-MM");
-
-                if (rowDate.Year == DateTime.Now.Year && rowDate.Month == 12)
-                {
-                    rowIndex = i;
-                    break;
-                }
-            }
-
-            DataGridViewTools.ScrollToRow(_grd, rowIndex, -3);
         }
 
         private void AssosiateEvents()

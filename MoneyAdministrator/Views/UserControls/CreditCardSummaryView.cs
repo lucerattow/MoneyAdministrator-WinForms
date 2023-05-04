@@ -5,6 +5,7 @@ using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Models;
 using MoneyAdministrator.Services;
 using MoneyAdministrator.Utilities;
+using MoneyAdministrator.Utilities.ControlTools;
 using MoneyAdministrator.Utilities.Disposable;
 using System.Configuration;
 using System.Globalization;
@@ -299,7 +300,7 @@ namespace MoneyAdministrator.Views
                         });
 
                         //Pinto el monto segun corresponda
-                        PaintDgvCells.PaintDecimal(_grd_payments, row, "amount");
+                        DataGridViewTools.PaintDecimal(_grd_payments, row, "amount");
                     }
                 }
             }
@@ -370,7 +371,7 @@ namespace MoneyAdministrator.Views
             });
 
             //Pinto el separador
-            PaintDgvCells.PaintSeparator(_grd, row, separatorBackColor, separatorForeColor);
+            DataGridViewTools.PaintSeparator(_grd, row, separatorBackColor, separatorForeColor);
 
             foreach (var ccSummaryDetail in datasource)
             {
@@ -385,8 +386,8 @@ namespace MoneyAdministrator.Views
                 });
 
                 //Pinto el monto segun corresponda
-                PaintDgvCells.PaintDecimal(_grd, row, "amountArs");
-                PaintDgvCells.PaintDecimal(_grd, row, "amountUsd");
+                DataGridViewTools.PaintDecimal(_grd, row, "amountArs");
+                DataGridViewTools.PaintDecimal(_grd, row, "amountUsd");
             }
         }
 
@@ -459,7 +460,7 @@ namespace MoneyAdministrator.Views
 
         private void GrdSetup()
         {
-            ControlConfig.DataGridViewSetup(_grd);
+            DataGridViewTools.DataGridViewSetup(_grd);
 
             //Configuracion de columnas
             _grd.Columns.Add(new DataGridViewColumn()
@@ -510,7 +511,7 @@ namespace MoneyAdministrator.Views
 
         private void GrdPaymentsSetup()
         {
-            ControlConfig.DataGridViewSetup(_grd_payments);
+            DataGridViewTools.DataGridViewSetup(_grd_payments);
 
             //Configuracion de columnas
             _grd_payments.Columns.Add(new DataGridViewColumn() //0 id

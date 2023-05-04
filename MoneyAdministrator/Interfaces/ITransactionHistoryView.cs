@@ -39,6 +39,12 @@ namespace MoneyAdministrator.Interfaces
         /// <summary>Envio los datos de las transacciones al GRD de transaccionHistory</summary>
         /// <param name="datasource">DTOs para rellenar la GRD de transaccionHistory</param>
         void GrdRefreshData(List<TransactionViewDto> datasource);
+        /// <summary>Envio los datos de la nueva transaccion insertada</summary>
+        /// <param name="datasource">DTO a insertar en la GRD de transaccionHistory</param>
+        void GrdAddInserterValue(TransactionViewDto dto);
+        /// <summary>Envio los datos de la transaccion modificada</summary>
+        /// <param name="datasource">DTO para modificar en la GRD de transaccionHistory</param>
+        void GrdUpdateValue(TransactionViewDto dto);
 
         //events
         event EventHandler ButtonInsertClick;

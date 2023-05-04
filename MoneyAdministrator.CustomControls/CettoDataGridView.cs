@@ -65,6 +65,7 @@ namespace MoneyAdministrator.CustomControls
             data.CopyTo(AllCells, InitialCells.Length);
 
             //Compruebo si la fila se debe insertar o añadir normalmente
+            var originalRow = row;
             if (row == -1)
                 row = Rows.Add(AllCells);
             else
@@ -73,10 +74,10 @@ namespace MoneyAdministrator.CustomControls
                 row++;
             }
 
-            Rows[row].Cells[3].Style.BackColor = this.BackgroundColor;
-            Rows[row].Cells[3].Style.ForeColor = this.BackgroundColor;
-            Rows[row].Cells[3].Style.SelectionBackColor = this.BackgroundColor;
-            Rows[row].Cells[3].Style.SelectionForeColor = this.BackgroundColor;
+            Rows[originalRow].Cells[3].Style.BackColor = this.BackgroundColor;
+            Rows[originalRow].Cells[3].Style.ForeColor = this.BackgroundColor;
+            Rows[originalRow].Cells[3].Style.SelectionBackColor = this.BackgroundColor;
+            Rows[originalRow].Cells[3].Style.SelectionForeColor = this.BackgroundColor;
 
             UpdateRowVisibility();
 

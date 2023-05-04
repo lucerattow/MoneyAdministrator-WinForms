@@ -12,7 +12,7 @@ namespace MoneyAdministrator.Common.Utilities.TypeTools
         public static int Convert(string input)
         {
             input = input.Trim();
-            input = StringTools.GetDecimalFromString(input);
+            input = StringTools.GetNumbersFromString(input);
 
             if (string.IsNullOrEmpty(input))
                 return 0;

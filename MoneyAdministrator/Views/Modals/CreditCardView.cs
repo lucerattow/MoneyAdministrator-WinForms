@@ -3,6 +3,7 @@ using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Models;
 using MoneyAdministrator.Services.Utilities;
 using MoneyAdministrator.Utilities;
+using MoneyAdministrator.Utilities.ControlTools;
 using MoneyAdministrator.Utilities.Disposable;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
@@ -132,7 +133,7 @@ namespace MoneyAdministrator.Views.Modals
 
         private void GrdSetup()
         {
-            ControlConfig.DataGridViewSetup(_grd);
+            DataGridViewTools.DataGridViewSetup(_grd);
 
             //Configuracion de columnas
             _grd.Columns.Add(new DataGridViewColumn()

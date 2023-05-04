@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MoneyAdministrator.Models;
 using System.Configuration;
+using MoneyAdministrator.Utilities.ControlTools;
 
 namespace MoneyAdministrator.Views.Modals
 {
@@ -122,7 +123,7 @@ namespace MoneyAdministrator.Views.Modals
                         });
 
                         //Pinto el monto segun corresponda
-                        PaintDgvCells.PaintDecimal(_grd, row, "amount");
+                        DataGridViewTools.PaintDecimal(_grd, row, "amount");
                     }
                 }
             }
@@ -145,7 +146,7 @@ namespace MoneyAdministrator.Views.Modals
 
         private void GrdSetup()
         {
-            ControlConfig.DataGridViewSetup(_grd);
+            DataGridViewTools.DataGridViewSetup(_grd);
 
             //Configuracion de columnas
             _grd.Columns.Add(new DataGridViewColumn()

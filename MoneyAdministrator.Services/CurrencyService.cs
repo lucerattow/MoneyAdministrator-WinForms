@@ -29,6 +29,11 @@ namespace MoneyAdministrator.Services
             return _unitOfWork.CurrencyRepository.GetById(id);
         }
 
+        public Currency GetByName(string name)
+        {
+            return _unitOfWork.CurrencyRepository.GetAll().Where(x => x.Name == name).FirstOrDefault();
+        }
+
         public void Insert(Currency model)
         {
             //Valido el modelo

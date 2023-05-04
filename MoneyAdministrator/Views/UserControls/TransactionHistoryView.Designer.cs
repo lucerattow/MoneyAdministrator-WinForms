@@ -1,4 +1,6 @@
-﻿namespace MoneyAdministrator.Views.UserControls
+﻿using MoneyAdministrator.CustomControls;
+
+namespace MoneyAdministrator.Views.UserControls
 {
     partial class TransactionHistoryView
     {
@@ -56,13 +58,13 @@
             _lblAmount = new Label();
             _dtpDate = new DateTimePicker();
             panel2 = new Panel();
-            _grd = new DataGridView();
+            _cettogrd = new CettoDataGridView();
             _toolStripButton.SuspendLayout();
             panel1.SuspendLayout();
             groupBox2.SuspendLayout();
             groupBox1.SuspendLayout();
             panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)_grd).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)_cettogrd).BeginInit();
             SuspendLayout();
             // 
             // _toolStripButton
@@ -363,27 +365,27 @@
             // panel2
             // 
             panel2.BackColor = Color.White;
-            panel2.Controls.Add(_grd);
+            panel2.Controls.Add(_cettogrd);
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(0, 143);
             panel2.Name = "panel2";
             panel2.Size = new Size(861, 277);
             panel2.TabIndex = 19;
             // 
-            // _grd
+            // _cettogrd
             // 
-            _grd.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            _grd.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            _grd.Location = new Point(5, 5);
-            _grd.Margin = new Padding(4);
-            _grd.Name = "_grd";
-            _grd.Size = new Size(851, 267);
-            _grd.TabIndex = 13;
-            _grd.CellMouseClick += _grd_CellMouseClick;
-            _grd.CellMouseDoubleClick += _grd_CellMouseDoubleClick;
-            _grd.CellPainting += _grd_CellPainting;
-            _grd.CellValueChanged += _grd_CellValueChanged;
-            _grd.Resize += _grd_Resize;
+            _cettogrd.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            _cettogrd.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            _cettogrd.Location = new Point(5, 5);
+            _cettogrd.Margin = new Padding(4);
+            _cettogrd.Name = "_cettogrd";
+            _cettogrd.Size = new Size(851, 267);
+            _cettogrd.TabIndex = 13;
+            _cettogrd.CellMouseClick += _grd_CellMouseClick;
+            _cettogrd.CellMouseDoubleClick += _grd_CellMouseDoubleClick;
+            _cettogrd.CellPainting += _grd_CellPainting;
+            _cettogrd.CellValueChanged += _grd_CellValueChanged;
+            _cettogrd.Resize += _grd_Resize;
             // 
             // TransactionHistoryView
             // 
@@ -405,7 +407,7 @@
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)_grd).EndInit();
+            ((System.ComponentModel.ISupportInitialize)_cettogrd).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -440,6 +442,6 @@
         private GroupBox groupBox2;
         private CheckBox _ckbInstallments;
         private GroupBox groupBox1;
-        private DataGridView _grd;
+        private CettoDataGridView _cettogrd;
     }
 }
