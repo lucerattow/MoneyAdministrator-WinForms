@@ -5,4 +5,25 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Files\Images\check_box.png" />
+    <None Remove="Files\Images\check_box_checked.png" />
+    <None Remove="Files\Images\check_box_checked_green.png" />
+    <None Remove="Files\Images\expand_circle_collapsed.svg" />
+    <None Remove="Files\Images\expand_circle_collapsed_fill.svg" />
+    <None Remove="Files\Images\expand_circle_expanded.svg" />
+    <None Remove="Files\Images\expand_circle_expanded_fill.svg" />
+    <None Remove="Files\Images\expand_collapse_gray.png" />
+    <None Remove="Files\Images\expand_expanded_gray.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Files\Images\check_box.png" />
+    <EmbeddedResource Include="Files\Images\check_box_checked.png" />
+    <EmbeddedResource Include="Files\Images\check_box_checked_green.png" />
+    <EmbeddedResource Include="Files\Images\expand_collapse_gray.png" />
+    <EmbeddedResource Include="Files\Images\expand_expanded_gray.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Svg" Version="3.4.4" />
+  </ItemGroup>
 </Project>
