@@ -169,8 +169,7 @@ namespace MoneyAdministrator.Views.UserControls
 
                         //Determino los separadores
                         DateTime separatorDate = new DateTime(year, month, 1);
-                        AddGrdMonthSeparator(_cettogrd, ref row, separatorDate, separatorDate.ToString("(MM) MMM"));
-                        PaintGrdMonthSeparator(_cettogrd, row, year, month);
+                        GrdInsertMonthSeparator(ref row, separatorDate);
 
                         //Obtengo los detalles pasivos
                         var passive = monthTransactions.Where(x => x.Amount < 0)
@@ -181,43 +180,280 @@ namespace MoneyAdministrator.Views.UserControls
                             .OrderByDescending(x => x.TransactionType).ToList();
 
                         //Añado los detalles services pasivos
-                        AddGrdRows(_cettogrd, ref row, passive, "Pasivos", true);
+                        if (passive.Count > 0)
+                        {
+                            GrdInsertAmountSeparator(ref row, true);
+                            foreach (var dto in passive)
+                                GrdAddRow(ref row, dto);
+                        }
 
                         //Añado los detalles services activos
-                        AddGrdRows(_cettogrd, ref row, assets, "Activos", false);
+                        if (assets.Count > 0)
+                        {
+                            GrdInsertAmountSeparator(ref row, false);
+                            foreach (var dto in assets)
+                                GrdAddRow(ref row, dto);
+                        }
                     }
             }
         }
 
-
-
-
-        private void GrdAddInsertedRow(TransactionViewDto dto)
-        { 
-            
-        }
-
-        private void GrdInsertMonthSeparator(CettoDataGridView grd, ref int row, DateTime date, bool IsActualMonthSeparator)
+        public void GrdAddInsertedRow(TransactionViewDto dto)
         {
-            row = grd.RowsInsert(row, new object[]
+            DateTime date = dto.Date;
+            //var IsPassive = dto.Amount < 0;
+
+            int initGroupIndex = _cettogrd.Rows.Count;
+            int endGroupIndex = _cettogrd.Rows.Count;
+
+            //Obtengo la posicion del separador con el año y mes iguales a mi dto
+            for (int index = 0; index < _cettogrd.Rows.Count; index++)
             {
-                -1,
-                0,
-                0,
-                date.ToString("yyyy"),
-                "",
-                "",
-                "",
-                "",
-                "",
-                false,
-                false,
-            }, true, 0, IsActualMonthSeparator);
+                //Si no es un separador, ignoro la fila
+                if ((int)_cettogrd.Rows[index].Cells["id"].Value != -1)
+                    continue;
+
+                var year = IntTools.Convert(_cettogrd.Rows[index].Cells["date"].Value.ToString());
+                var month = IntTools.Convert(_cettogrd.Rows[index].Cells["entity"].Value.ToString());
+
+                //Obtengo el separador actual
+                if (date.Year == year && date.Month == month)
+                    initGroupIndex = index;
+
+                //Obtengo el separador siguiente (osea el que deberia seguir a este dto)
+                if (date.Year < year || (date.Year == year && date.Month < month))
+                {
+                    endGroupIndex = index - 1;
+                    break;
+                }
+            }
+
+            //Si el index del grupo es igual a la ultima fila significa que no existe, por ende lo creo desde 0
+            if (initGroupIndex == _cettogrd.Rows.Count)
+            {
+                //Añado el separador
+                GrdInsertMonthSeparator(ref initGroupIndex, date);
+                //Como el separador es el ultimo en la lista actualizo el endgroupindex
+                endGroupIndex = _cettogrd.Rows.Count;
+            }
+
+            //Determino si el dto es pasivo o activo
+            var isPasive = dto.Amount < 0;
+
+            //Compruebo que existan separadores por valor
+            if (initGroupIndex != endGroupIndex)
+            {
+                //Obtengo las row index de los separadores de valor
+                var passiveIndex = -1;
+                var assetsIndex = -1;
+                for (int index = initGroupIndex + 1; index <= endGroupIndex; index++)
+                {
+                    if ((int)_cettogrd.Rows[index].Cells["id"].Value != -2)
+                        continue;
+
+                    if (_cettogrd.Rows[index].Cells["entity"].Value.ToString() == "Pasivos")
+                        passiveIndex = index;
+
+                    if (_cettogrd.Rows[index].Cells["entity"].Value.ToString() == "Activos")
+                        assetsIndex = index;
+                }
+
+                //Determino si es necesario insertar un separador y termino de definir los rangos del grupo de celdas
+                if (isPasive)
+                {
+                    //Si no existe el separador lo inserto
+                    if (passiveIndex == -1)
+                        GrdInsertAmountSeparator(ref initGroupIndex, isPasive);
+                    else
+                        initGroupIndex = passiveIndex;
+
+                    //Guardo la ultima row del grupo
+                    endGroupIndex = assetsIndex != -1 ? assetsIndex - 1 : endGroupIndex;
+                }
+                else
+                {
+                    if (assetsIndex == -1)
+                        GrdInsertAmountSeparator(ref initGroupIndex, isPasive);
+                    else
+                        initGroupIndex = assetsIndex;
+                }
+            }
+            //Si no habia separador por mes, entonces añado el separador por valor directamente
+            else
+            {
+                GrdInsertAmountSeparator(ref initGroupIndex, isPasive);
+            }
+
+            //Determinar en que posicion añadir al dto, de modo que quede filtrado por typo y fecha
+            var insertIndex = -1;
+            for (int index = initGroupIndex ; index <= endGroupIndex; index++)
+            {
+                insertIndex = index;
+                DateTime rowDate = DateTimeTools.Convert((string)_cettogrd.Rows[index + 1].Cells["date"].Value, "yyyy-MM-dd");
+                TransactionType type = (TransactionType)_cettogrd.Rows[index + 1].Cells["type"].Value;
+                string description = (string)_cettogrd.Rows[index + 1].Cells["description"].Value;
+
+                //Comparo que la transaccion sea menor o igual
+                //Comparo que la fecha sea menor o igual
+                //Comparo el orden alfabetico de la descripcion
+                if (dto.TransactionType <= type && 
+                    rowDate <= dto.Date && 
+                    String.Compare(dto.Description, description) >= 0)
+                    break;
+            }
+
+            GrdAddRow(ref insertIndex, dto, true);
         }
 
+        private void GrdInsertMonthSeparator(ref int row, DateTime date, bool insert = false)
+        {
+            var isCollapsed = true;
 
+            if (date.Year == DateTime.Now.Year && date.Month == DateTime.Now.Month)
+                isCollapsed = false;
 
+            //Inserto el mes
+            if (insert)
+                row = _cettogrd.RowsInsert(row, new object[]
+                {
+                    -1,
+                    0,
+                    0,
+                    date.ToString("yyyy"),
+                    date.ToString("(MM) MMM"),
+                    "",
+                    "",
+                    "",
+                    "",
+                    false,
+                    false,
+                }, true, 0, isCollapsed);
+            else
+                row = _cettogrd.RowsAdd(new object[]
+                {
+                    -1,
+                    0,
+                    0,
+                    date.ToString("yyyy"),
+                    date.ToString("(MM) MMM"),
+                    "",
+                    "",
+                    "",
+                    "",
+                    false,
+                    false,
+                }, true, 0, isCollapsed);
 
+            //Separador futuro
+            Color sepFutureBackColor = Color.FromArgb(252, 229, 205);
+            Color sepFutureForeColor = Color.Black;
+            //Separador año actual
+            Color sepCurrentBackColor = Color.FromArgb(255, 153, 0);
+            Color sepCurrentForeColor = Color.White;
+            //Separador mes actual
+            Color sepCurrentMonthBackColor = Color.FromArgb(178, 107, 0);
+            //Separador antiguo
+            Color sepOldestBackColor = Color.FromArgb(217, 217, 217);
+            Color sepOldestForeColor = Color.Black;
+
+            //Pinto el separador
+            if (date.Year > DateTime.Now.Year)
+                CettoDataGridViewTools.PaintSeparator(_cettogrd, row, sepFutureBackColor, sepFutureForeColor);
+
+            else if (date.Year == DateTime.Now.Year && date.Month == DateTime.Now.Month)
+                CettoDataGridViewTools.PaintSeparator(_cettogrd, row, sepCurrentMonthBackColor, sepCurrentForeColor);
+
+            else if (date.Year == DateTime.Now.Year)
+                CettoDataGridViewTools.PaintSeparator(_cettogrd, row, sepCurrentBackColor, sepCurrentForeColor);
+
+            else if (date.Year < DateTime.Now.Year)
+                CettoDataGridViewTools.PaintSeparator(_cettogrd, row, sepOldestBackColor, sepOldestForeColor);
+        }
+
+        private void GrdInsertAmountSeparator(ref int row, bool isPasive, bool insert = false)
+        {
+            var text = isPasive ? "Pasivos" : "Activos";
+
+            if (insert)
+                row = _cettogrd.RowsInsert(row, new object[]
+                {
+                    -2,
+                    0,
+                    0,
+                    "",
+                    text,
+                    "",
+                    "",
+                    "",
+                    "",
+                    false,
+                    false,
+                }, false, 1, false);
+            else
+                row = _cettogrd.RowsAdd(new object[]
+                {
+                    -2,
+                    0,
+                    0,
+                    "",
+                    text,
+                    "",
+                    "",
+                    "",
+                    "",
+                    false,
+                    false,
+                }, false, 1, false);
+
+            //Separador Pasivos
+            Color sepPassivesBackColor = Color.FromArgb(244, 204, 204);
+            Color sepPassivesForeColor = Color.Black;
+            //Separador Activos
+            Color sepAssetsBackColor = Color.FromArgb(230, 255, 113);
+            Color sepAssetsForeColor = Color.Black;
+
+            if (isPasive)
+                CettoDataGridViewTools.PaintSeparator(_cettogrd, row, sepPassivesBackColor, sepPassivesForeColor);
+            else
+                CettoDataGridViewTools.PaintSeparator(_cettogrd, row, sepAssetsBackColor, sepAssetsForeColor);
+        }
+
+        private void GrdAddRow(ref int row, TransactionViewDto dto, bool insert = false)
+        {
+            if (insert)
+                row = _cettogrd.RowsInsert(row, new object[]
+                {
+                    dto.Id,
+                    dto.TransactionType,
+                    dto.Frequency,
+                    dto.Date.ToString("yyyy-MM-dd"),
+                    dto.EntityName,
+                    dto.Description,
+                    dto.Installment,
+                    dto.CurrencyName,
+                    dto.Amount.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
+                    dto.Concider,
+                    dto.Paid,
+                }, false, 1, false);
+            else
+                row = _cettogrd.RowsAdd(new object[]
+                {
+                    dto.Id,
+                    dto.TransactionType,
+                    dto.Frequency,
+                    dto.Date.ToString("yyyy-MM-dd"),
+                    dto.EntityName,
+                    dto.Description,
+                    dto.Installment,
+                    dto.CurrencyName,
+                    dto.Amount.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
+                    dto.Concider,
+                    dto.Paid,
+                }, false, 1, false);
+
+            //Pinto el monto segun corresponda
+            DataGridViewTools.PaintDecimal(_cettogrd, row, "amount");
+        }
 
 
 
@@ -231,8 +467,7 @@ namespace MoneyAdministrator.Views.UserControls
             int rowIndex = -1;
             for (int index = 0; index < _cettogrd.Rows.Count; index++)
             {
-                if ((int)_cettogrd.Rows[index].Cells["id"].Value >= 0 ||
-                    (int)_cettogrd.Rows[index].Cells["id"].Value == -2)
+                if ((int)_cettogrd.Rows[index].Cells["id"].Value != 0)
                     continue;
 
                 var year = IntTools.Convert(_cettogrd.Rows[index].Cells["date"].Value.ToString());

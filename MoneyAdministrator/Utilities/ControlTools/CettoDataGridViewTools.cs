@@ -11,6 +11,9 @@ namespace MoneyAdministrator.Utilities.ControlTools
     {
         public static void PaintSeparator(CettoDataGridView grd, int row, Color backColor, Color foreColor)
         {
+            if (row >= grd.Rows.Count)
+                return;
+
             for (int col = 4; col < grd.Rows[row].Cells.Count; col++)
             {
                 var cell = grd.Rows[row].Cells[col];

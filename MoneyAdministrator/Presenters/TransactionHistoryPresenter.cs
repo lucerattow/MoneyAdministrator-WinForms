@@ -84,7 +84,7 @@ namespace MoneyAdministrator.Presenters
                 throw new Exception("No es posible mostrar el nuevo detalle, intente recargar la pestaña");
             else
             {
-                _view.GrdAddInserterValue(dto);
+                _view.GrdAddInsertedRow(dto);
             }
         }
 

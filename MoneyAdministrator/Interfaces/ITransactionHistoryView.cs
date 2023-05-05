@@ -41,7 +41,7 @@ namespace MoneyAdministrator.Interfaces
         void GrdRefreshData(List<TransactionViewDto> datasource);
         /// <summary>Envio los datos de la nueva transaccion insertada</summary>
         /// <param name="datasource">DTO a insertar en la GRD de transaccionHistory</param>
-        void GrdAddInserterValue(TransactionViewDto dto);
+        void GrdAddInsertedRow(TransactionViewDto dto);
         /// <summary>Envio los datos de la transaccion modificada</summary>
         /// <param name="datasource">DTO para modificar en la GRD de transaccionHistory</param>
         void GrdUpdateValue(TransactionViewDto dto);
