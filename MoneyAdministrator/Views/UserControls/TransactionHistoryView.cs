@@ -630,7 +630,7 @@ namespace MoneyAdministrator.Views.UserControls
             }); //9 amount
             _cettogrd.Columns.Add(new DataGridViewCheckBoxColumn()
             {
-                CellTemplate = new DataGridViewCheckBoxCell(),
+                CellTemplate = new CettoDataGridViewCheckBoxCell(),
                 DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleCenter },
                 Name = "concider",
                 HeaderText = "Sumar",
