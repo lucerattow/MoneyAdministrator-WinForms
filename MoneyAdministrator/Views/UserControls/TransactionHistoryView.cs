@@ -222,7 +222,7 @@ namespace MoneyAdministrator.Views.UserControls
                 //Ontengo el id del separador actual
                 if (dtoDate == separatorDate)
                 {
-                    initGroupIndex = index;
+                    initGroupIndex = index + 1;
                 }
 
                 //obtengo el id del proximo separador
@@ -246,7 +246,7 @@ namespace MoneyAdministrator.Views.UserControls
                 //Obtengo las row index de los separadores de valor
                 var passiveIndex = -1;
                 var assetsIndex = -1;
-                for (int index = initGroupIndex + 1; index <= endGroupIndex; index++)
+                for (int index = initGroupIndex; index < endGroupIndex; index++)
                 {
                     if ((int)_cettogrd.Rows[index].Cells["id"].Value != -2)
                         continue;
@@ -266,12 +266,16 @@ namespace MoneyAdministrator.Views.UserControls
                 {
                     //Si no existe el separador lo inserto
                     if (passiveIndex == -1)
+                    {
                         GrdInsertAmountSeparator(ref initGroupIndex, isPasive, true);
+                        initGroupIndex = initGroupIndex + 1;
+                        assetsIndex = assetsIndex != -1 ? assetsIndex + 1 : -1;
+                    }
                     else
                         initGroupIndex = passiveIndex + 1;
 
                     //Guardo la ultima row del grupo
-                    endGroupIndex = assetsIndex != -1 ? assetsIndex - 1 : endGroupIndex;
+                    endGroupIndex = assetsIndex != -1 ? assetsIndex : endGroupIndex;
                 }
                 else
                 {
