@@ -503,7 +503,7 @@ namespace MoneyAdministrator.Views.UserControls
             Color ForeColor = Color.Black;
 
             if (!active)
-                ForeColor = Color.FromArgb(220, 220, 220);
+                ForeColor = Color.FromArgb(200, 200, 200);
 
             //Pinto el color de la fuente en cada celda
             for (int i = 4; i < _cettogrd.Rows[row].Cells.Count; i++)
