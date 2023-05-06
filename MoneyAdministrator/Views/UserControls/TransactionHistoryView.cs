@@ -786,8 +786,12 @@ namespace MoneyAdministrator.Views.UserControls
 
         private void _tsbUpdate_Click(object sender, EventArgs e)
         {
+            var rowIndex = _cettogrd.FirstDisplayedScrollingRowIndex;
+
             ButtonUpdateClick.Invoke(sender, e);
             Clear();
+            
+            _cettogrd.FirstDisplayedScrollingRowIndex = rowIndex;
         }
 
         private void _tsbDelete_Click(object sender, EventArgs e)
