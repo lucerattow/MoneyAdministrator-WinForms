@@ -223,17 +223,13 @@ namespace MoneyAdministrator.Views.UserControls
                 if (dtoDate == separatorDate)
                 {
                     initGroupIndex = index;
-                    endGroupIndex = index;
                 }
 
                 //obtengo el id del proximo separador
-                if (dtoDate >= separatorDate)
+                if (dtoDate > separatorDate)
                 {
-                    if (dtoDate > separatorDate)
-                    {
-                        endGroupIndex = index;
-                        break;
-                    }
+                    endGroupIndex = index;
+                    break;
                 }
             }
 
@@ -537,7 +533,7 @@ namespace MoneyAdministrator.Views.UserControls
 
                 //Compruebo si abajo hay un detalle
                 var nextIndex = index + 1;
-                if (nextIndex <= _cettogrd.Rows.Count && (int)_cettogrd.Rows[nextIndex].Cells["id"].Value > 0)
+                if (nextIndex < _cettogrd.Rows.Count && (int)_cettogrd.Rows[nextIndex].Cells["id"].Value > 0)
                     downIsDetail = true;
 
                 //Elimino el registro
@@ -573,11 +569,6 @@ namespace MoneyAdministrator.Views.UserControls
                     }
                 }
             }
-        }
-
-        private void GrdSelectRow()
-        { 
-        
         }
 
         private void GrdSetup()
@@ -959,13 +950,5 @@ namespace MoneyAdministrator.Views.UserControls
         public event EventHandler ButtonEntitySearchClick;
         public event EventHandler GrdDoubleClick;
         public event EventHandler GrdValueChange;
-    }
-
-    internal class RowItem
-    {
-        public int RowId { get; set; }
-        public int DetailId { get; set; }
-        public DateTime Date { get; set; }
-        public int DistanceToSeparator { get; set; }
     }
 }
