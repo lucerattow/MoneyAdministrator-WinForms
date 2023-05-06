@@ -41,6 +41,7 @@ namespace MoneyAdministrator.Services.Controllers
             return new TransactionViewDto()
             {
                 Id = detail.Id,
+                TransactionId = detail.TransactionId,
                 TransactionType = detail.Transaction.TransactionType,
                 Frequency = detail.Frequency,
                 Date = detail.Date,
@@ -57,27 +58,33 @@ namespace MoneyAdministrator.Services.Controllers
         public List<TransactionViewDto> GetIntermediateDetailDtos()
         {
             var result = new List<TransactionViewDto>();
+
             //Obtengo la lista de detalles
             var details = new TransactionDetailService(_databasePath).GetAll();
             if (details.Count == 0)
                 return result;
+
             //Obtengo los valores del dashboard para generar los servicios correctamente
             var usdList = new CurrencyValueService(_databasePath).GetAll().OrderByDescending(x => x.Date);
             var salaryList = new SalaryService(_databasePath).GetAll().OrderByDescending(x => x.Date);
+
             //Obtengo la lista de años
             var yearsTransactions = details.Select(x => x.Date.Year).Distinct().ToList();
             var yearsUsd = usdList.Select(x => x.Date.Year).Distinct().ToList();
             var yearssalary = salaryList.Select(x => x.Date.Year).Distinct().ToList();
+
             //Unifico la lista de años
             var allYears = new List<int>();
             allYears.AddRange(yearsTransactions);
             allYears.AddRange(yearsUsd);
             allYears.AddRange(yearssalary);
+
             //Genero los años intermedios si es que faltan
             var initYear = allYears.Min();
             var endYear = allYears.Max();
             allYears.Clear();
             allYears.AddRange(IntTools.GetIntermediateNumbers(initYear, endYear));
+
             //Genero la fecha maxima de servicios
             var maxDate = new DateTime(allYears.Max() + 1, 1, 1);
             maxDate = maxDate.AddDays(-1);
@@ -87,8 +94,10 @@ namespace MoneyAdministrator.Services.Controllers
                 var endDate = detail.EndDate;
                 if (detail.Transaction.TransactionType == TransactionType.Service && detail.EndDate > maxDate)
                     endDate = maxDate;
+
                 //Obtengo la diferencia de meses
                 int months = DateTimeTools.GetMonthDifference(detail.Date, endDate);
+
                 //Genero una transaccion por cada mes
                 for (int i = 0; i <= months; i += detail.Frequency)
                 {
@@ -98,6 +107,7 @@ namespace MoneyAdministrator.Services.Controllers
                     result.Add(new TransactionViewDto()
                     {
                         Id = detail.Id,
+                        TransactionId = detail.TransactionId,
                         TransactionType = detail.Transaction.TransactionType,
                         Frequency = detail.Frequency,
                         Date = detail.Date.AddMonths(i),
@@ -114,59 +124,15 @@ namespace MoneyAdministrator.Services.Controllers
             return result;
         }
 
-        public int InsertNewTransaction(string entityName, int currencyId, string description, DateTime date, bool isInstallments,
-            int installmentMax, bool IsService, decimal amount, int frequency)
+        public int InsertNewTransaction(TransactionViewDto detailDto, int installmentMax)
         {
             //Inicializo los servicios
             var transactionService = new TransactionService(_databasePath);
             var entityService = new EntityService(_databasePath);
+            var currencyService = new CurrencyService(_databasePath);
             //Transaction Inputs
             var transactionType = TransactionType.Single;
-            //Si la entidad no existe la inserto
-            var entity = entityService.GetByName(entityName);
-            if (entity is null)
-            {
-                entity = new Entity
-                {
-                    Name = entityName,
-                    EntityTypeId = 1, //General
-                };
-                entityService.Insert(entity);
-            }
-            //Determino el tipo de transaccion
-            var endDate = date;
-            if (isInstallments)
-            {
-                transactionType = TransactionType.Installments;
-                //Se resta 1 ya que la cuota 1 es el mes inicial
-                endDate = date.AddMonths(installmentMax - 1);
-            }
-            else if (IsService)
-            {
-                transactionType = TransactionType.Service;
-                endDate = DateTime.MaxValue;
-            }
-            var dto = new TransactionDetailDto
-            {
-                EntityId = entity.Id,
-                CurrencyId = currencyId,
-                TransactionType = transactionType,
-                Description = description,
-                //details
-                Date = date,
-                EndDate = endDate,
-                Amount = amount,
-                Frequency = frequency,
-            };
-            return transactionService.CreateTransaction(dto);
-        }
 
-        public int UpdateTransaction(TransactionViewDto detailDto, bool overrideNextService = false)
-        {
-            //Inicializo los servicios
-            var entityService = new EntityService(_databasePath);
-            var currencyService = new CurrencyService(_databasePath);
-            var transactionDetailService = new TransactionDetailService(_databasePath);
             //Si la entidad no existe la inserto
             var entity = entityService.GetByName(detailDto.EntityName);
             if (entity is null)
@@ -178,18 +144,73 @@ namespace MoneyAdministrator.Services.Controllers
                 };
                 entityService.Insert(entity);
             }
+
             //Si la moneda no existe lanzo error
-            var currency = currencyService.GetByName(detailDto.EntityName);
+            var currency = currencyService.GetByName(detailDto.CurrencyName);
             if (currency is null)
                 throw new Exception("La moneda seleccionada no es valida");
+
+            //Determino el tipo de transaccion
+            var endDate = detailDto.Date;
+            if (detailDto.TransactionType == TransactionType.Installments)
+            {
+                //Se resta 1 ya que la cuota 1 es el mes inicial
+                endDate = detailDto.Date.AddMonths(installmentMax - 1);
+            }
+            else if (detailDto.TransactionType == TransactionType.Service)
+            {
+                endDate = DateTime.MaxValue;
+            }
+
+            var dto = new TransactionDetailDto
+            {
+                EntityId = entity.Id,
+                CurrencyId = currency.Id,
+                TransactionType = detailDto.TransactionType,
+                Description = detailDto.Description,
+                //details
+                Date = detailDto.Date,
+                EndDate = endDate,
+                Amount = detailDto.Amount,
+                Frequency = detailDto.Frequency,
+            };
+            return transactionService.CreateTransaction(dto);
+        }
+
+        public int UpdateTransaction(TransactionViewDto detailDto, bool overrideNextService = false)
+        {
+            //Inicializo los servicios
+            var entityService = new EntityService(_databasePath);
+            var currencyService = new CurrencyService(_databasePath);
+            var transactionDetailService = new TransactionDetailService(_databasePath);
+
+            //Si la entidad no existe la inserto
+            var entity = entityService.GetByName(detailDto.EntityName);
+            if (entity is null)
+            {
+                entity = new Entity
+                {
+                    Name = detailDto.EntityName,
+                    EntityTypeId = 1, //General
+                };
+                entityService.Insert(entity);
+            }
+
+            //Si la moneda no existe lanzo error
+            var currency = currencyService.GetByName(detailDto.CurrencyName);
+            if (currency is null)
+                throw new Exception("La moneda seleccionada no es valida");
+
             //Modifico la transaccion
             var detail = transactionDetailService.Get(detailDto.Id);
             detail.Transaction.EntityId = entity.Id;
             detail.Transaction.CurrencyId = currency.Id;
             detail.Transaction.Description = detailDto.Description;
             transactionDetailService.Update(detail);
+
             //variable para guardar el id del detalle
             var detailId = -1;
+
             //Dependiendo el tipo de transaccion, la modifico de forma diferente
             var transactionType = detail.Transaction.TransactionType;
             if (transactionType == TransactionType.Single)
@@ -287,15 +308,19 @@ namespace MoneyAdministrator.Services.Controllers
         {
             //Inicializo el servicio
             var service = new TransactionDetailService(_databasePath);
+
             //Obtengo el detalle inicial
             var detail = service.Get(detailDto.Id);
             var initDetailDate = detail.Transaction.TransactionDetails.OrderBy(x => x.Date).Select(x => x.Date).FirstOrDefault();
+
             //Obtengo la fecha del detalle actual
             var currentDetailDate = detailDto.Date;
+
             //Calculo la diferencia de meses y actualizo la fecha incial de las cuotas
             var difference = DateTimeTools.GetMonthDifference(currentDetailDate, detailDto.Date);
             var initDate = initDetailDate.AddMonths(difference);
             var dateToCompare = new DateTime(initDate.Year, initDate.Month, initDate.Day > 28 ? 28 : initDate.Day);
+
             //Actualizo las fechas de cada cuota
             foreach (var details in detail.Transaction.TransactionDetails.OrderBy(x => x.Date))
             {
@@ -304,11 +329,13 @@ namespace MoneyAdministrator.Services.Controllers
                 var newDate = details.Date.AddMonths(difference);
                 var newEndDate = details.EndDate.AddMonths(difference);
                 newEndDate = new DateTime(newEndDate.Year, newEndDate.Month, dateToCompare.Day);
+
                 //Actualizo el detalle
                 details.Date = new DateTime(newDate.Year, newDate.Month, dateToCompare.Day);
                 details.EndDate = newEndDate;
                 details.Amount = detailDto.Amount;
                 new TransactionDetailService(_databasePath).Update(details);
+
                 //guardo la nueva fecha inicial de la proxima cuota
                 dateToCompare = newEndDate.AddMonths(1);
             }

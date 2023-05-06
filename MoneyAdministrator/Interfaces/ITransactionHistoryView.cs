@@ -14,7 +14,6 @@ namespace MoneyAdministrator.Interfaces
         //properties//properties
         TransactionViewDto? SelectedDto { get; set; }
         TransactionViewDto? CheckBoxChangeDto { get; }
-        int FocusRow { get; set; }
 
         //properties fields
         string EntityName { get; set; }
@@ -41,10 +40,9 @@ namespace MoneyAdministrator.Interfaces
         void GrdRefreshData(List<TransactionViewDto> datasource);
         /// <summary>Envio los datos de la nueva transaccion insertada</summary>
         /// <param name="datasource">DTO a insertar en la GRD de transaccionHistory</param>
-        void GrdAddInsertedRow(TransactionViewDto dto);
-        /// <summary>Envio los datos de la transaccion modificada</summary>
-        /// <param name="datasource">DTO para modificar en la GRD de transaccionHistory</param>
-        void GrdUpdateValue(TransactionViewDto dto);
+        void GrdInsertRows(List<TransactionViewDto> dto);
+        /// <summary>Elimina el detalle seleccionado y los relacionados</summary>
+        void GrdDeleteSelected(bool deleteSeparators = true);
 
         //events
         event EventHandler ButtonInsertClick;

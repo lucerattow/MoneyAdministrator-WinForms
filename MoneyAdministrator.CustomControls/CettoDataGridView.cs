@@ -70,7 +70,6 @@ namespace MoneyAdministrator.CustomControls
             else
             {
                 Rows.Insert(row, AllCells);
-                row++;
             }
 
             Rows[row].Cells[3].Style.BackColor = this.BackgroundColor;
@@ -81,6 +80,11 @@ namespace MoneyAdministrator.CustomControls
             UpdateRowVisibility();
 
             return row;
+        }
+
+        public void RowDelete(int rowIndex)
+        { 
+            this.Rows.RemoveAt(rowIndex);
         }
 
         public void RowsClear()

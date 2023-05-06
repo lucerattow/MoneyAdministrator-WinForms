@@ -77,25 +77,34 @@ namespace MoneyAdministrator.Presenters
             }
         }
 
-        private void GrdAddInserterValue(int detailId)
+        private void GrdInsertRows(int detailId)
         {
-            var dto = _controller.GetDetailById(detailId);
+            var dto = _controller.GetIntermediateDetailDtos().Where(x => x.Id == detailId).ToList();
+
             if (dto is null)
                 throw new Exception("No es posible mostrar el nuevo detalle, intente recargar la pestaña");
             else
             {
-                _view.GrdAddInsertedRow(dto);
+                _view.GrdInsertRows(dto);
             }
         }
 
-        private void GrdUpdateValue(int detailId)
+        private void GrdUpdateValue(int detailId, DateTime date)
         {
-            var dto = _controller.GetDetailById(detailId);
+            var detail = _controller.GetDetailById(detailId);
+            if (detail is null)
+                throw new Exception("No es posible mostrar el detalle modificado, intente recargar la pestaña");
+
+            var dto = _controller.GetIntermediateDetailDtos().Where(x => x.TransactionId == detail.TransactionId).ToList();
             if (dto is null)
                 throw new Exception("No es posible mostrar el detalle modificado, intente recargar la pestaña");
             else
             {
-                _view.GrdUpdateValue(dto);
+                if (dto.Count > 0 && dto[0].TransactionType == TransactionType.Service)
+                {
+                    dto = dto.Where(x => x.Date >= date).ToList();
+                }
+                _view.GrdInsertRows(dto);
             }
         }
 
@@ -155,9 +164,19 @@ namespace MoneyAdministrator.Presenters
             {
                 try
                 {
-                    var id = _controller.InsertNewTransaction(_view.EntityName, _view.Currency.Id, _view.Description, _view.Date,
-                        _view.IsInstallment, _view.InstallmentMax, _view.IsService, _view.Amount, _view.Frequency);
-                    GrdAddInserterValue(id);
+                    var type = _view.IsService ? TransactionType.Service : (_view.IsInstallment ? TransactionType.Installments : TransactionType.Single);
+                    var newDetail = new TransactionViewDto
+                    {
+                        TransactionType = type,
+                        EntityName = _view.EntityName,
+                        CurrencyName = _view.Currency.Name,
+                        Description = _view.Description,
+                        Date = _view.Date,
+                        Amount = _view.Amount,
+                        Frequency = _view.Frequency,
+                    };
+                    var id = _controller.InsertNewTransaction(newDetail, _view.InstallmentMax);
+                    GrdInsertRows(id);
                 }
                 catch (Exception ex)
                 {
@@ -172,6 +191,9 @@ namespace MoneyAdministrator.Presenters
             {
                 try
                 {
+                    //Guardo la fecha para graficar el update de servicios
+                    var saveCurrentDate = _view.SelectedDto.Date;
+
                     //Compruebo que el transactionDetail existe
                     var detail = _controller.GetDetailById(_view.SelectedDto.Id);
                     if (detail == null)
@@ -179,6 +201,7 @@ namespace MoneyAdministrator.Presenters
                         CommonMessageBox.errorMessageShow("La transacción seleccionada no existe", MessageBoxButtons.OK);
                         return;
                     }
+
                     //Modifico la vista con los nuevos valores
                     detail.EntityName = _view.EntityName;
                     detail.CurrencyName = _view.Currency.Name;
@@ -187,6 +210,7 @@ namespace MoneyAdministrator.Presenters
                     detail.Amount = _view.Amount;
                     detail.Frequency = _view.Frequency;
                     var modifiedDetailId = -1;
+
                     //Dependiendo el tipo de transaccion, la modifico de forma diferente
                     var transactionType = _view.SelectedDto.TransactionType;
                     if (transactionType == TransactionType.Single)
@@ -231,7 +255,9 @@ namespace MoneyAdministrator.Presenters
                                 return;
                         }
                     }
-                    GrdUpdateValue(modifiedDetailId);
+
+                    _view.GrdDeleteSelected(false);
+                    GrdUpdateValue(modifiedDetailId, saveCurrentDate);
                 }
                 catch (Exception ex)
                 {
@@ -244,6 +270,7 @@ namespace MoneyAdministrator.Presenters
         {
             if (_view.SelectedDto is null)
                 return;
+
             using (new CursorWait())
             {
                 try
@@ -255,6 +282,7 @@ namespace MoneyAdministrator.Presenters
                         CommonMessageBox.errorMessageShow("La transacción seleccionada ya ha sido eliminada", MessageBoxButtons.OK);
                         return;
                     }
+
                     //Dependiendo el tipo de transaccion, la modifico de forma diferente
                     var transactionType = _view.SelectedDto.TransactionType;
                     if (transactionType == TransactionType.Single)
@@ -289,12 +317,13 @@ namespace MoneyAdministrator.Presenters
                                 _controller.DeleteDetail(detail, _view.Date);
                         }
                     }
+
+                    _view.GrdDeleteSelected();
                 }
                 catch (Exception ex)
                 {
                     CommonMessageBox.errorMessageShow(ex.Message, MessageBoxButtons.OK);
                 }
-                GrdRefreshData();
             }
         }
 

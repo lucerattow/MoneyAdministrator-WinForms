@@ -40,11 +40,6 @@ namespace MoneyAdministrator.Views.UserControls
         {
             get => _checkBoxChangeDto;
         }
-        public int FocusRow
-        {
-            get => _focusRow;
-            set => _focusRow = value;
-        }
 
         //properties fields
         public string EntityName
@@ -198,10 +193,15 @@ namespace MoneyAdministrator.Views.UserControls
             }
         }
 
-        public void GrdAddInsertedRow(TransactionViewDto dto)
+        public void GrdInsertRows(List<TransactionViewDto> dtos)
+        {
+            foreach (var dto in dtos)
+                GrdInsertRow(dto);
+        }
+
+        public void GrdInsertRow(TransactionViewDto dto)
         {
             DateTime date = dto.Date;
-            //var IsPassive = dto.Amount < 0;
 
             int initGroupIndex = _cettogrd.Rows.Count;
             int endGroupIndex = _cettogrd.Rows.Count;
@@ -216,26 +216,30 @@ namespace MoneyAdministrator.Views.UserControls
                 var year = IntTools.Convert(_cettogrd.Rows[index].Cells["date"].Value.ToString());
                 var month = IntTools.Convert(_cettogrd.Rows[index].Cells["entity"].Value.ToString());
 
-                //Obtengo el separador actual
-                if (date.Year == year && date.Month == month)
-                    initGroupIndex = index;
+                DateTime separatorDate = new DateTime(year, month, 1);
+                DateTime dtoDate = new DateTime(date.Year, date.Month, 1);
 
-                //Obtengo el separador siguiente (osea el que deberia seguir a este dto)
-                if (date.Year < year || (date.Year == year && date.Month < month))
+                //Ontengo el id del separador actual
+                if (dtoDate == separatorDate)
                 {
-                    endGroupIndex = index - 1;
-                    break;
+                    initGroupIndex = index;
+                    endGroupIndex = index;
+                }
+
+                //obtengo el id del proximo separador
+                if (dtoDate >= separatorDate)
+                {
+                    if (dtoDate > separatorDate)
+                    {
+                        endGroupIndex = index;
+                        break;
+                    }
                 }
             }
 
-            //Si el index del grupo es igual a la ultima fila significa que no existe, por ende lo creo desde 0
-            if (initGroupIndex == _cettogrd.Rows.Count)
-            {
-                //Añado el separador
-                GrdInsertMonthSeparator(ref initGroupIndex, date);
-                //Como el separador es el ultimo en la lista actualizo el endgroupindex
-                endGroupIndex = _cettogrd.Rows.Count;
-            }
+            //Si no se encontro el separador, seteo el inicio en la misma fila que el final
+            if (endGroupIndex < initGroupIndex) 
+                initGroupIndex = endGroupIndex;
 
             //Determino si el dto es pasivo o activo
             var isPasive = dto.Amount < 0;
@@ -255,7 +259,10 @@ namespace MoneyAdministrator.Views.UserControls
                         passiveIndex = index;
 
                     if (_cettogrd.Rows[index].Cells["entity"].Value.ToString() == "Activos")
+                    {
                         assetsIndex = index;
+                        break;
+                    }
                 }
 
                 //Determino si es necesario insertar un separador y termino de definir los rangos del grupo de celdas
@@ -263,9 +270,9 @@ namespace MoneyAdministrator.Views.UserControls
                 {
                     //Si no existe el separador lo inserto
                     if (passiveIndex == -1)
-                        GrdInsertAmountSeparator(ref initGroupIndex, isPasive);
+                        GrdInsertAmountSeparator(ref initGroupIndex, isPasive, true);
                     else
-                        initGroupIndex = passiveIndex;
+                        initGroupIndex = passiveIndex + 1;
 
                     //Guardo la ultima row del grupo
                     endGroupIndex = assetsIndex != -1 ? assetsIndex - 1 : endGroupIndex;
@@ -273,36 +280,69 @@ namespace MoneyAdministrator.Views.UserControls
                 else
                 {
                     if (assetsIndex == -1)
-                        GrdInsertAmountSeparator(ref initGroupIndex, isPasive);
+                    {
+                        GrdInsertAmountSeparator(ref endGroupIndex, isPasive, true);
+                        initGroupIndex = endGroupIndex + 1;
+                        endGroupIndex = endGroupIndex + 1;
+                    }
                     else
-                        initGroupIndex = assetsIndex;
+                        initGroupIndex = assetsIndex + 1;
                 }
             }
             //Si no habia separador por mes, entonces añado el separador por valor directamente
             else
             {
-                GrdInsertAmountSeparator(ref initGroupIndex, isPasive);
+                //Añado el separador
+                GrdInsertMonthSeparator(ref initGroupIndex, date, true);
+                initGroupIndex++;
+                GrdInsertAmountSeparator(ref initGroupIndex, isPasive, true);
+                initGroupIndex++;
             }
+
+            //Si se insertaron separadores actualizo el endGroupIndex
+            if (endGroupIndex < initGroupIndex)
+                endGroupIndex = initGroupIndex;
 
             //Determinar en que posicion añadir al dto, de modo que quede filtrado por typo y fecha
-            var insertIndex = -1;
-            for (int index = initGroupIndex ; index <= endGroupIndex; index++)
+            var insertIndex = endGroupIndex;
+            for (int index = initGroupIndex ; index < endGroupIndex; index++)
             {
-                insertIndex = index;
-                DateTime rowDate = DateTimeTools.Convert((string)_cettogrd.Rows[index + 1].Cells["date"].Value, "yyyy-MM-dd");
-                TransactionType type = (TransactionType)_cettogrd.Rows[index + 1].Cells["type"].Value;
-                string description = (string)_cettogrd.Rows[index + 1].Cells["description"].Value;
+                DateTime rowDate = DateTimeTools.Convert((string)_cettogrd.Rows[index].Cells["date"].Value, "yyyy-MM-dd");
+                TransactionType type = (TransactionType)_cettogrd.Rows[index].Cells["type"].Value;
+                string description = _cettogrd.Rows[index].Cells["description"].Value.ToString();
 
-                //Comparo que la transaccion sea menor o igual
-                //Comparo que la fecha sea menor o igual
-                //Comparo el orden alfabetico de la descripcion
-                if (dto.TransactionType <= type && 
-                    rowDate <= dto.Date && 
-                    String.Compare(dto.Description, description) >= 0)
+                if (dto.TransactionType > type) 
+                {
+                    insertIndex = index;
                     break;
+                }
+                else if (dto.TransactionType >= type)
+                {
+                    if (dto.Date > rowDate)
+                    {
+                        insertIndex = index;
+                        break;
+                    }
+                    else if (dto.Date >= rowDate)
+                    {
+                        if (String.Compare(dto.Description, description) < 0)
+                        {
+                            insertIndex = index;
+                            break;
+                        }
+                    }
+                }
             }
 
+            //Añado el detalle
             GrdAddRow(ref insertIndex, dto, true);
+
+            //Si el detalle se encuentra en la fecha ingresada por el usuario le hago focus
+            if (dto.Date.Year == Date.Year && dto.Date.Month == Date.Month)
+            {
+                _cettogrd.ClearSelection();
+                _cettogrd.Rows[insertIndex].Selected = true;
+            }
         }
 
         private void GrdInsertMonthSeparator(ref int row, DateTime date, bool insert = false)
@@ -316,9 +356,6 @@ namespace MoneyAdministrator.Views.UserControls
             if (insert)
                 row = _cettogrd.RowsInsert(row, new object[]
                 {
-                    -1,
-                    0,
-                    0,
                     date.ToString("yyyy"),
                     date.ToString("(MM) MMM"),
                     "",
@@ -327,13 +364,14 @@ namespace MoneyAdministrator.Views.UserControls
                     "",
                     false,
                     false,
+                    -1,
+                    0,
+                    0,
+                    0,
                 }, true, 0, isCollapsed);
             else
                 row = _cettogrd.RowsAdd(new object[]
                 {
-                    -1,
-                    0,
-                    0,
                     date.ToString("yyyy"),
                     date.ToString("(MM) MMM"),
                     "",
@@ -342,6 +380,10 @@ namespace MoneyAdministrator.Views.UserControls
                     "",
                     false,
                     false,
+                    -1,
+                    0,
+                    0,
+                    0,
                 }, true, 0, isCollapsed);
 
             //Separador futuro
@@ -377,9 +419,6 @@ namespace MoneyAdministrator.Views.UserControls
             if (insert)
                 row = _cettogrd.RowsInsert(row, new object[]
                 {
-                    -2,
-                    0,
-                    0,
                     "",
                     text,
                     "",
@@ -388,13 +427,14 @@ namespace MoneyAdministrator.Views.UserControls
                     "",
                     false,
                     false,
+                    -2,
+                    0,
+                    0,
+                    0,
                 }, false, 1, false);
             else
                 row = _cettogrd.RowsAdd(new object[]
                 {
-                    -2,
-                    0,
-                    0,
                     "",
                     text,
                     "",
@@ -403,6 +443,10 @@ namespace MoneyAdministrator.Views.UserControls
                     "",
                     false,
                     false,
+                    -2,
+                    0,
+                    0,
+                    0,
                 }, false, 1, false);
 
             //Separador Pasivos
@@ -423,9 +467,6 @@ namespace MoneyAdministrator.Views.UserControls
             if (insert)
                 row = _cettogrd.RowsInsert(row, new object[]
                 {
-                    dto.Id,
-                    dto.TransactionType,
-                    dto.Frequency,
                     dto.Date.ToString("yyyy-MM-dd"),
                     dto.EntityName,
                     dto.Description,
@@ -434,13 +475,14 @@ namespace MoneyAdministrator.Views.UserControls
                     dto.Amount.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
                     dto.Concider,
                     dto.Paid,
+                    dto.Id,
+                    dto.TransactionId,
+                    dto.TransactionType,
+                    dto.Frequency,
                 }, false, 1, false);
             else
                 row = _cettogrd.RowsAdd(new object[]
                 {
-                    dto.Id,
-                    dto.TransactionType,
-                    dto.Frequency,
                     dto.Date.ToString("yyyy-MM-dd"),
                     dto.EntityName,
                     dto.Description,
@@ -449,313 +491,93 @@ namespace MoneyAdministrator.Views.UserControls
                     dto.Amount.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
                     dto.Concider,
                     dto.Paid,
+                    dto.Id,
+                    dto.TransactionId,
+                    dto.TransactionType,
+                    dto.Frequency,
                 }, false, 1, false);
 
             //Pinto el monto segun corresponda
             DataGridViewTools.PaintDecimal(_cettogrd, row, "amount");
         }
 
-
-
-
-
-        public void GrdAddInserterValue(TransactionViewDto dto)
+        public void GrdDeleteSelected(bool deleteSeparators = true)
         {
-            DateTime date = dto.Date;
-            var IsPassive = dto.Amount < 0;
-            //Obtengo la posicion del separador que corresponda
-            int rowIndex = -1;
+            var indexes = new List<int>();
             for (int index = 0; index < _cettogrd.Rows.Count; index++)
             {
-                if ((int)_cettogrd.Rows[index].Cells["id"].Value != 0)
+                //Si es un separador continuo
+                if ((int)_cettogrd.Rows[index].Cells["id"].Value < 0)
                     continue;
 
-                var year = IntTools.Convert(_cettogrd.Rows[index].Cells["date"].Value.ToString());
-                var month = IntTools.Convert(_cettogrd.Rows[index].Cells["entity"].Value.ToString());
-                //Comparo si ya existe un separador para la fecha de mi detalle
-                if (date.Year == year && date.Month == month)
-                    rowIndex = index;
+                //Si elimino un servicio, solo elimino los registros desde su fecha en adelante
+                if (SelectedDto.TransactionType == TransactionType.Service)
+                {
+                    DateTime currentDate = DateTimeTools.Convert(_cettogrd.Rows[index].Cells["date"].Value.ToString(), "yyyy-MM-dd");
+                    if (currentDate < SelectedDto.Date)
+                        break;
+                }
+
+                //Añado el row index a la lista de filas a borrar
+                if ((int)_cettogrd.Rows[index].Cells["transactionId"].Value == SelectedDto.TransactionId)
+                    indexes.Add(index);
             }
-            //Consulto si el separador existe
-            if (rowIndex != -1)
+
+            //Ordeno de mayor a menor las filas y las elimino
+            indexes = indexes.OrderByDescending(x => x).ToList();
+            foreach (var index in indexes)
             {
-                //Obtengo la ultima fila del grupo
-                var lastGroudIndex = -1;
-                for (int index = rowIndex + 1; index < _cettogrd.Rows.Count; index++)
+                var upIsDetail = false;
+                var downIsDetail = false;
+
+                //Compruebo si arriba hay un detalle
+                var previousIndex = index - 1;
+                if (previousIndex != -1 && (int)_cettogrd.Rows[previousIndex].Cells["id"].Value > 0)
+                    upIsDetail = true;
+
+                //Compruebo si abajo hay un detalle
+                var nextIndex = index + 1;
+                if (nextIndex <= _cettogrd.Rows.Count && (int)_cettogrd.Rows[nextIndex].Cells["id"].Value > 0)
+                    downIsDetail = true;
+
+                //Elimino el registro
+                _cettogrd.RowDelete(index);
+
+                //Si se marco que no se deben eliminar separadores, termino el codigo aqui
+                if (!deleteSeparators)
+                    continue;
+
+                //Comparo si es necesario eliminar los separadores
+                if (!upIsDetail && !downIsDetail)
                 {
-                    if ((int)_cettogrd.Rows[index].Cells["id"].Value == -1)
-                        break;
-                    lastGroudIndex = index;
-                }
-                //Si el separador existe, busco el separador de "Activos/Pasivos"
-                int secondSeparatorIndex = -1;
-                for (int index = rowIndex + 1; index < _cettogrd.Rows.Count; index++)
-                {
-                    if ((int)_cettogrd.Rows[index].Cells["id"].Value == -1)
-                        break;
-                    var separatorText = IsPassive ? "Pasivos" : "Activos";
-                    if (_cettogrd.Rows[index].Cells["entity"].Value.ToString() == separatorText)
-                        secondSeparatorIndex = index;
-                }
-                //Si el separador "Activo/Pasivo" no existe
-                if (secondSeparatorIndex == -1)
-                {
-                    if (IsPassive)
-                        AddGrdRows(_cettogrd, ref rowIndex, new List<TransactionViewDto> { dto }, "Pasivos", true, true);
+                    //Consulto 2 culumnas arriba esta el separador de mes
+                    var monthSeparatorIndex = (int)_cettogrd.Rows[previousIndex - 1].Cells["id"].Value == -1;
+
+                    //Si arriba es "Pasivos" y abajo NO es "Activos"
+                    if (_cettogrd.Rows[previousIndex].Cells["entity"].Value.ToString() == "Pasivos" &&
+                        _cettogrd.Rows[index].Cells["entity"].Value.ToString() != "Activos")
+                    {
+                        _cettogrd.RowDelete(previousIndex);
+                        _cettogrd.RowDelete(previousIndex - 1);
+                    }
+                    //Si arriba es "Activos" y no hay pasivos
+                    else if (monthSeparatorIndex && _cettogrd.Rows[previousIndex].Cells["entity"].Value.ToString() == "Activos")
+                    {
+                        _cettogrd.RowDelete(previousIndex);
+                        _cettogrd.RowDelete(previousIndex - 1);
+                    }
+                    //Elimino unicamente el separador de valor
                     else
-                        AddGrdRows(_cettogrd, ref rowIndex, new List<TransactionViewDto> { dto }, "Activos", false, true);
-                }
-                else
-                {
-                    //Busco el final del minigrupo de "Activo/Pasivo"
-                    for (int index = secondSeparatorIndex + 1; index < _cettogrd.Rows.Count; index++)
                     {
-                        //Si es un separador de fecha o de "activo/pasivo"
-                        if ((int)_cettogrd.Rows[index].Cells["id"].Value <= -1)
-                            break;
-                        else if (lastGroudIndex < index)
-                            lastGroudIndex = index;
-                    }
-                    //Inserto el detalle
-                    AddGrdRow(_cettogrd, ref lastGroudIndex, dto, true);
-                }
-            }
-            else
-            {
-                //Variable para fechas de separadores
-                DateTime separatorDate;
-                //Obtengo el index de la ultima fila
-                rowIndex = _cettogrd.Rows.Count;
-                //Obtengo la posicion del separador superior
-                for (int index = 0; index < _cettogrd.Rows.Count; index++)
-                {
-                    if ((int)_cettogrd.Rows[index].Cells["id"].Value != -1)
-                        continue;
-                    var year = IntTools.Convert(_cettogrd.Rows[index].Cells["date"].Value.ToString());
-                    var month = IntTools.Convert(_cettogrd.Rows[index].Cells["entity"].Value.ToString());
-                    var detailDate = new DateTime(date.Year, date.Month, 1);
-                    separatorDate = new DateTime(year, month, 1);
-                    //Compruebo si el separador encontrado es mas antiguo que el detalle actual
-                    if (detailDate > separatorDate)
-                    {
-                        //Le resto 1 para comenzar a añadir los registros detras de este separador
-                        rowIndex = index - 1;
+                        _cettogrd.RowDelete(previousIndex);
                     }
                 }
-                //Creo el separador
-                separatorDate = new DateTime(date.Year, date.Month, 1);
-                AddGrdMonthSeparator(_cettogrd, ref rowIndex, separatorDate, separatorDate.ToString("(MM) MMM"), true);
-                PaintGrdMonthSeparator(_cettogrd, rowIndex, date.Year, date.Month);
-                //Creo el separador de activos y pasivos, y creo la fila con el dto
-                if (IsPassive)
-                    AddGrdRows(_cettogrd, ref rowIndex, new List<TransactionViewDto> { dto }, "Pasivos", true, true);
-                else
-                    AddGrdRows(_cettogrd, ref rowIndex, new List<TransactionViewDto> { dto }, "Activos", false, true);
-            }
-            //Resalta la fila recién añadida
-            _cettogrd.ClearSelection();
-            _cettogrd.Rows[rowIndex].Selected = true;
-        }
-
-        public void GrdUpdateValue(TransactionViewDto dto)
-        {
-            foreach (DataGridViewRow row in _cettogrd.Rows)
-            {
-                if ((int)row.Cells["id"].Value == dto.Id)
-                {
-                    row.Cells["type"].Value = dto.TransactionType;
-                    row.Cells["frequency"].Value = dto.Frequency;
-                    row.Cells["date"].Value = dto.Date.ToString("yyyy-MM-dd");
-                    row.Cells["description"].Value = dto.Description;
-                    row.Cells["installments"].Value = dto.Installment;
-                    row.Cells["currency"].Value = dto.CurrencyName;
-                    row.Cells["amount"].Value = dto.Amount.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES"));
-                    row.Cells["concider"].Value = dto.Concider;
-                    row.Cells["paid"].Value = dto.Paid;
-                    _cettogrd.ClearSelection();
-                    row.Selected = true;
-                    break;
-                }
             }
         }
 
-        private void AddGrdRows(CettoDataGridView grd, ref int row, List<TransactionViewDto> dto, string separatorText, 
-            bool isPasive, bool middleInsert = false)
-        {
-            for (int i = 0; i < dto.Count; i++)
-            {
-                //Añado separador de servicios
-                if (i == 0)
-                {
-                    AddGrdValueSeparator(grd, ref row, separatorText, middleInsert);
-                    PaintGrdValueSeparator(grd, row, isPasive);
-                }
-
-                AddGrdRow(grd, ref row, dto[i], middleInsert);
-            }
-        }
-
-        private void AddGrdRow(CettoDataGridView grd, ref int row, TransactionViewDto dto, bool middleInsert = false)
-        {
-            if (middleInsert)
-            {
-                row = grd.RowsInsert(row, new object[]
-                {
-                    dto.Id,
-                    dto.TransactionType,
-                    dto.Frequency,
-                    dto.Date.ToString("yyyy-MM-dd"),
-                    dto.EntityName,
-                    dto.Description,
-                    dto.Installment,
-                    dto.CurrencyName,
-                    dto.Amount.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
-                    dto.Concider,
-                    dto.Paid,
-                }, false, 1, false);
-            }
-            else
-            {
-                row = grd.RowsAdd(new object[]
-                {
-                    dto.Id,
-                    dto.TransactionType,
-                    dto.Frequency,
-                    dto.Date.ToString("yyyy-MM-dd"),
-                    dto.EntityName,
-                    dto.Description,
-                    dto.Installment,
-                    dto.CurrencyName,
-                    dto.Amount.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
-                    dto.Concider,
-                    dto.Paid,
-                }, false, 1, false);
-            }
-
-            //Pinto el monto segun corresponda
-            DataGridViewTools.PaintDecimal(grd, row, "amount");
-        }
-
-        private void AddGrdMonthSeparator(CettoDataGridView grd, ref int row, DateTime date, string entityRow, bool middleInsert = false)
-        {
-            var isCollapser = true;
-            if (date.Year == DateTime.Now.Year && date.Month == DateTime.Now.Month)
-                isCollapser = false;
-            if (middleInsert)
-            {
-                row = grd.RowsInsert(row, new object[]
-                {
-                    -1,
-                    0,
-                    0,
-                    date.ToString("yyyy"),
-                    entityRow,
-                    "",
-                    "",
-                    "",
-                    "",
-                    false,
-                    false,
-                }, true, 0, isCollapser);
-            }
-            else
-            {
-                row = grd.RowsAdd(new object[]
-                {
-                    -1,
-                    0,
-                    0,
-                    date.ToString("yyyy"),
-                    entityRow,
-                    "",
-                    "",
-                    "",
-                    "",
-                    false,
-                    false,
-                }, true, 0, isCollapser);
-            }
-        }
-
-        private void AddGrdValueSeparator(CettoDataGridView grd, ref int row, string text, bool middleInsert = false)
-        {
-            if (middleInsert)
-            {
-                row = grd.RowsInsert(row, new object[]
-                {
-                -2,
-                0,
-                0,
-                "",
-                text,
-                "",
-                "",
-                "",
-                "",
-                false,
-                false,
-                }, false, 1, false);
-            }
-            else
-            {
-                row = grd.RowsAdd(new object[]
-                {
-                -2,
-                0,
-                0,
-                "",
-                text,
-                "",
-                "",
-                "",
-                "",
-                false,
-                false,
-                }, false, 1, false);
-            }
-        }
-
-        private void PaintGrdMonthSeparator(CettoDataGridView grd, int row, int year, int month)
-        {
-            //Separador futuro
-            Color sepFutureBackColor = Color.FromArgb(252, 229, 205);
-            Color sepFutureForeColor = Color.Black;
-            //Separador año actual
-            Color sepCurrentBackColor = Color.FromArgb(255, 153, 0);
-            Color sepCurrentForeColor = Color.White;
-            //Separador mes actual
-            Color sepCurrentMonthBackColor = Color.FromArgb(178, 107, 0);
-            //Separador antiguo
-            Color sepOldestBackColor = Color.FromArgb(217, 217, 217);
-            Color sepOldestForeColor = Color.Black;
-
-            //Pinto el separador
-            if (year > DateTime.Now.Year)
-                CettoDataGridViewTools.PaintSeparator(grd, row, sepFutureBackColor, sepFutureForeColor);
-
-            else if (year == DateTime.Now.Year && month == DateTime.Now.Month)
-                CettoDataGridViewTools.PaintSeparator(grd, row, sepCurrentMonthBackColor, sepCurrentForeColor);
-
-            else if (year == DateTime.Now.Year)
-                CettoDataGridViewTools.PaintSeparator(grd, row, sepCurrentBackColor, sepCurrentForeColor);
-
-            else if (year < DateTime.Now.Year)
-                CettoDataGridViewTools.PaintSeparator(grd, row, sepOldestBackColor, sepOldestForeColor);
-        }
-
-        private void PaintGrdValueSeparator(CettoDataGridView grd, int row, bool isPassive)
-        {
-            //Separador Pasivos
-            Color sepPassivesBackColor = Color.FromArgb(244, 204, 204);
-            Color sepPassivesForeColor = Color.Black;
-            //Separador Activos
-            Color sepAssetsBackColor = Color.FromArgb(230, 255, 113);
-            Color sepAssetsForeColor = Color.Black;
-
-            if (isPassive)
-                CettoDataGridViewTools.PaintSeparator(grd, row, sepPassivesBackColor, sepPassivesForeColor);
-            else
-                CettoDataGridViewTools.PaintSeparator(grd, row, sepAssetsBackColor, sepAssetsForeColor);
+        private void GrdSelectRow()
+        { 
+        
         }
 
         private void GrdSetup()
@@ -763,30 +585,7 @@ namespace MoneyAdministrator.Views.UserControls
             DataGridViewTools.DataGridViewSetup(_cettogrd);
 
             //Configuracion de columnas
-            _cettogrd.Columns.Add(new DataGridViewColumn()
-            {
-                CellTemplate = new DataGridViewTextBoxCell(),
-                Name = "id",
-                HeaderText = "Id",
-                ReadOnly = true,
-                Visible = false,
-            }); //0 id
-            _cettogrd.Columns.Add(new DataGridViewColumn()
-            {
-                CellTemplate = new DataGridViewTextBoxCell(),
-                Name = "type",
-                HeaderText = "Tipo",
-                ReadOnly = true,
-                Visible = false,
-            }); //1 type
-            _cettogrd.Columns.Add(new DataGridViewColumn()
-            {
-                CellTemplate = new DataGridViewTextBoxCell(),
-                Name = "frequency",
-                HeaderText = "Frecuencia",
-                ReadOnly = true,
-                Visible = false,
-            }); //2 frequency
+            //El CettoDataGridView inserta 4 columnas automaticamente, por lo que los demas indices se corren luego del 3
             _cettogrd.Columns.Add(new DataGridViewColumn()
             {
                 CellTemplate = new DataGridViewTextBoxCell(),
@@ -795,7 +594,7 @@ namespace MoneyAdministrator.Views.UserControls
                 HeaderText = "Fecha",
                 Width = _colWidthDate,
                 ReadOnly = true,
-            }); //3 date
+            }); //4 date
             _cettogrd.Columns.Add(new DataGridViewColumn()
             {
                 CellTemplate = new DataGridViewTextBoxCell(),
@@ -803,14 +602,14 @@ namespace MoneyAdministrator.Views.UserControls
                 HeaderText = "Entidad",
                 Width = _colWidthEntity,
                 ReadOnly = true,
-            }); //4 entity
+            }); //5 entity
             _cettogrd.Columns.Add(new DataGridViewColumn()
             {
                 CellTemplate = new DataGridViewTextBoxCell(),
                 Name = "description",
                 HeaderText = "Descripcion",
                 ReadOnly = true,
-            }); //5 description
+            }); //6 description
             _cettogrd.Columns.Add(new DataGridViewColumn()
             {
                 CellTemplate = new DataGridViewTextBoxCell(),
@@ -819,7 +618,7 @@ namespace MoneyAdministrator.Views.UserControls
                 HeaderText = "Cuotas",
                 Width = _colWidthInstall,
                 ReadOnly = true,
-            }); //6 installments
+            }); //7 installments
             _cettogrd.Columns.Add(new DataGridViewColumn()
             {
                 CellTemplate = new DataGridViewTextBoxCell(),
@@ -828,7 +627,7 @@ namespace MoneyAdministrator.Views.UserControls
                 HeaderText = "Moneda",
                 Width = _colWidthCurrency,
                 ReadOnly = true,
-            }); //7 currency
+            }); //8 currency
             _cettogrd.Columns.Add(new DataGridViewColumn()
             {
                 CellTemplate = new DataGridViewTextBoxCell(),
@@ -837,7 +636,7 @@ namespace MoneyAdministrator.Views.UserControls
                 HeaderText = "Monto",
                 Width = _colWidthAmount,
                 ReadOnly = true,
-            }); //8 amount
+            }); //9 amount
             _cettogrd.Columns.Add(new DataGridViewCheckBoxColumn()
             {
                 CellTemplate = new DataGridViewCheckBoxCell(),
@@ -845,7 +644,7 @@ namespace MoneyAdministrator.Views.UserControls
                 Name = "concider",
                 HeaderText = "Sumar",
                 Width = _colCheckBox,
-            }); //9 concider
+            }); //10 concider
             _cettogrd.Columns.Add(new DataGridViewCheckBoxColumn()
             {
                 CellTemplate = new CettoDataGridViewGreenCheckBoxCell(),
@@ -853,7 +652,39 @@ namespace MoneyAdministrator.Views.UserControls
                 Name = "paid",
                 HeaderText = "Pagado",
                 Width = _colCheckBox,
-            }); //10 paid
+            }); //11 paid
+            _cettogrd.Columns.Add(new DataGridViewColumn()
+            {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                Name = "id",
+                HeaderText = "Id",
+                ReadOnly = true,
+                Visible = false,
+            }); //12 id
+            _cettogrd.Columns.Add(new DataGridViewColumn()
+            {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                Name = "transactionId",
+                HeaderText = "Transaction Id",
+                ReadOnly = true,
+                Visible = false,
+            }); //13 transactionId
+            _cettogrd.Columns.Add(new DataGridViewColumn()
+            {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                Name = "type",
+                HeaderText = "Tipo",
+                ReadOnly = true,
+                Visible = false,
+            }); //14 type
+            _cettogrd.Columns.Add(new DataGridViewColumn()
+            {
+                CellTemplate = new DataGridViewTextBoxCell(),
+                Name = "frequency",
+                HeaderText = "Frecuencia",
+                ReadOnly = true,
+                Visible = false,
+            }); //15 frequency
         }
 
         private void ControlsSetup()
@@ -1008,12 +839,13 @@ namespace MoneyAdministrator.Views.UserControls
                 return;
 
             //Si el doble click es en los checkbox
-            if (e.ColumnIndex == 13 || e.ColumnIndex == 14)
+            if (e.ColumnIndex == 10 || e.ColumnIndex == 11)
                 return;
 
             _selectedDto = new TransactionViewDto
             {
                 Id = (int)grd.Rows[e.RowIndex].Cells["id"].Value,
+                TransactionId = (int)grd.Rows[e.RowIndex].Cells["transactionId"].Value,
                 TransactionType = (TransactionType)grd.Rows[e.RowIndex].Cells["type"].Value,
                 Frequency = (int)grd.Rows[e.RowIndex].Cells["frequency"].Value,
                 Date = DateTimeTools.Convert((string)grd.Rows[e.RowIndex].Cells["date"].Value, "yyyy-MM-dd"),
@@ -1040,12 +872,13 @@ namespace MoneyAdministrator.Views.UserControls
                 return;
 
             //si el click NO es en los checkbox
-            if (e.ColumnIndex != 13 && e.ColumnIndex != 14)
+            if (e.ColumnIndex != 10 && e.ColumnIndex != 11)
                 return;
 
             _checkBoxChangeDto = new TransactionViewDto
             {
                 Id = (int)grd.Rows[e.RowIndex].Cells["id"].Value,
+                TransactionId = (int)grd.Rows[e.RowIndex].Cells["transactionId"].Value,
                 TransactionType = (TransactionType)grd.Rows[e.RowIndex].Cells["type"].Value,
                 Frequency = (int)grd.Rows[e.RowIndex].Cells["frequency"].Value,
                 Date = DateTimeTools.Convert((string)grd.Rows[e.RowIndex].Cells["date"].Value, "yyyy-MM-dd"),
@@ -1087,11 +920,11 @@ namespace MoneyAdministrator.Views.UserControls
                 e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.Border);
 
                 //Evito que se muestren checkboxes en los separadores
-                if (e.ColumnIndex == 13 || e.ColumnIndex == 14)
+                if (e.ColumnIndex == 10 || e.ColumnIndex == 11)
                     e.PaintBackground(e.CellBounds, true);
 
                 // Pinto el borde derecho de la fecha
-                if (e.ColumnIndex == 7)
+                if (e.ColumnIndex == 4)
                     DataGridViewTools.PaintCellBorder(e, cellBorder, DataGridViewBorder.RightBorder);
 
                 // Pinto el borde inferior
@@ -1105,7 +938,7 @@ namespace MoneyAdministrator.Views.UserControls
                 e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.Border);
 
                 // Pinto el borde derecho de la fecha
-                if (e.ColumnIndex == 7)
+                if (e.ColumnIndex == 4)
                     DataGridViewTools.PaintCellBorder(e, cellBorder, DataGridViewBorder.RightBorder);
 
                 // Indica que hemos manejado el evento y no se requiere el dibujo predeterminado

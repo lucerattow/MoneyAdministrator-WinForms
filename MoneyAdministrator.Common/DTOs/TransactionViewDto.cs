@@ -6,6 +6,7 @@ namespace MoneyAdministrator.Common.DTOs
     {
         //hide properties
         public int Id { get; set; }
+        public int TransactionId { get; set; }
         public TransactionType TransactionType { get; set; }
         public int Frequency { get; set; }
 
