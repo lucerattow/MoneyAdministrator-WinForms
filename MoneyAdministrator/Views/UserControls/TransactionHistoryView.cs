@@ -494,7 +494,26 @@ namespace MoneyAdministrator.Views.UserControls
                 }, false, 1, false);
 
             //Pinto el monto segun corresponda
-            DataGridViewTools.PaintDecimal(_cettogrd, row, "amount");
+            GrdPaintDetail(row, dto.Concider);
+        }
+
+        private void GrdPaintDetail(int row, bool active)
+        {
+            //Colores
+            Color ForeColor = Color.Black;
+
+            if (!active)
+                ForeColor = Color.FromArgb(220, 220, 220);
+
+            //Pinto el color de la fuente en cada celda
+            for (int i = 4; i < _cettogrd.Rows[row].Cells.Count; i++)
+            {
+                _cettogrd.Rows[row].Cells[i].Style.ForeColor = ForeColor;
+            }
+
+            //Si esta activo, pinto el monto
+            if (active)
+                DataGridViewTools.PaintDecimal(_cettogrd, row, "amount");
         }
 
         public void GrdDeleteSelected(bool deleteSeparators = true)
@@ -882,6 +901,9 @@ namespace MoneyAdministrator.Views.UserControls
                 Paid = (bool)grd.Rows[e.RowIndex].Cells["paid"].Value,
             };
             GrdValueChange.Invoke(sender, e);
+
+            //Repinto la fila
+            GrdPaintDetail(e.RowIndex, (bool)grd.Rows[e.RowIndex].Cells["concider"].Value);
         }
 
         private void _grd_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
