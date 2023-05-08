@@ -1,4 +1,5 @@
-﻿using MoneyAdministrator.Common.DTOs;
+﻿using MoneyAdministrator.Common.DTOs.Views;
+using MoneyAdministrator.Common.Enums;
 using MoneyAdministrator.Common.Utilities.TypeTools;
 using MoneyAdministrator.Models;
 using System;
@@ -12,8 +13,8 @@ namespace MoneyAdministrator.Interfaces
     public interface ITransactionHistoryView
     {
         //properties//properties
-        TransactionViewDto? SelectedDto { get; set; }
-        TransactionViewDto? CheckBoxChangeDto { get; }
+        TransactionHistoryDto? SelectedDto { get; set; }
+        TransactionHistoryDto? CheckBoxChangeDto { get; }
 
         //properties fields
         string EntityName { get; set; }
@@ -37,7 +38,7 @@ namespace MoneyAdministrator.Interfaces
         void SetCurrenciesList(List<Currency> datasource);
         /// <summary>Envio los datos de las transacciones al GRD de transaccionHistory</summary>
         /// <param name="datasource">DTOs para rellenar la GRD de transaccionHistory</param>
-        void GrdRefreshData(List<TransactionViewDto> datasource);
+        void GrdRefreshData(List<TransactionHistoryDto> datasource);
         /// <summary>Envio los datos de la nueva transaccion insertada</summary>
         /// <param name="datasource">DTO a insertar en la GRD de transaccionHistory</param>
         void GrdInsertRows(List<TransactionViewDto> dto);

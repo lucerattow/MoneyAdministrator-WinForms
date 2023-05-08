@@ -1,4 +1,4 @@
-﻿using MoneyAdministrator.Common.DTOs;
+﻿using MoneyAdministrator.Common.DTOs.Views;
 using MoneyAdministrator.Common.Enums;
 using MoneyAdministrator.Common.Utilities.TypeTools;
 using MoneyAdministrator.CustomControls;
@@ -26,17 +26,17 @@ namespace MoneyAdministrator.Views.UserControls
         private const int _colWidthTotal = _colWidthDate + _colWidthEntity + _colWidthInstall + _colWidthCurrency + _colWidthAmount + (_colCheckBox * 2);
 
         //fields
-        private TransactionViewDto? _selectedDto;
-        private TransactionViewDto? _checkBoxChangeDto;
+        private TransactionHistoryDto? _selectedDto;
+        private TransactionHistoryDto? _checkBoxChangeDto;
         private int _focusRow = 0;
 
         //properties
-        public TransactionViewDto? SelectedDto
+        public TransactionHistoryDto? SelectedDto
         {
             get => _selectedDto;
             set => _selectedDto = value;
         }
-        public TransactionViewDto? CheckBoxChangeDto
+        public TransactionHistoryDto? CheckBoxChangeDto
         {
             get => _checkBoxChangeDto;
         }
@@ -141,7 +141,7 @@ namespace MoneyAdministrator.Views.UserControls
             _cbCurrency.DisplayMember = "Name";
         }
 
-        public void GrdRefreshData(List<TransactionViewDto> datasource)
+        public void GrdRefreshData(List<TransactionHistoryDto> datasource)
         {
             using (new CursorWait())
             using (new DataGridViewHide(_cettogrd))
@@ -156,7 +156,7 @@ namespace MoneyAdministrator.Views.UserControls
                 foreach (var year in datasource.OrderByDescending(x => x.Date).Select(x => x.Date.Year).Distinct())
                     for (var month = 12; month >= 1; month--)
                     {
-                        List<TransactionViewDto> monthTransactions = datasource
+                        List<TransactionHistoryDto> monthTransactions = datasource
                             .Where(x => x.Date.Year == year && x.Date.Month == month).OrderByDescending(x => x.Date.Day).ThenBy(x => x.Description).ToList();
 
                         if (monthTransactions.Count == 0)
@@ -193,13 +193,13 @@ namespace MoneyAdministrator.Views.UserControls
             }
         }
 
-        public void GrdInsertRows(List<TransactionViewDto> dtos)
+        public void GrdInsertRows(List<TransactionHistoryDto> dtos)
         {
             foreach (var dto in dtos)
                 GrdInsertRow(dto);
         }
 
-        public void GrdInsertRow(TransactionViewDto dto)
+        public void GrdInsertRow(TransactionHistoryDto dto)
         {
             DateTime date = dto.Date;
 
@@ -462,7 +462,7 @@ namespace MoneyAdministrator.Views.UserControls
                 CettoDataGridViewTools.PaintSeparator(_cettogrd, row, sepAssetsBackColor, sepAssetsForeColor);
         }
 
-        private void GrdAddRow(ref int row, TransactionViewDto dto, bool insert = false)
+        private void GrdAddRow(ref int row, TransactionHistoryDto dto, bool insert = false)
         {
             if (insert)
                 row = _cettogrd.RowsInsert(row, new object[]
@@ -860,7 +860,7 @@ namespace MoneyAdministrator.Views.UserControls
             if (e.ColumnIndex == 10 || e.ColumnIndex == 11)
                 return;
 
-            _selectedDto = new TransactionViewDto
+            _selectedDto = new TransactionHistoryDto
             {
                 Id = (int)grd.Rows[e.RowIndex].Cells["id"].Value,
                 TransactionId = (int)grd.Rows[e.RowIndex].Cells["transactionId"].Value,
@@ -893,7 +893,7 @@ namespace MoneyAdministrator.Views.UserControls
             if (e.ColumnIndex != 10 && e.ColumnIndex != 11)
                 return;
 
-            _checkBoxChangeDto = new TransactionViewDto
+            _checkBoxChangeDto = new TransactionHistoryDto
             {
                 Id = (int)grd.Rows[e.RowIndex].Cells["id"].Value,
                 TransactionId = (int)grd.Rows[e.RowIndex].Cells["transactionId"].Value,

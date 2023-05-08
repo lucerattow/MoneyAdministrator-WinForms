@@ -165,7 +165,7 @@ namespace MoneyAdministrator.Presenters
                 try
                 {
                     var type = _view.IsService ? TransactionType.Service : (_view.IsInstallment ? TransactionType.Installments : TransactionType.Single);
-                    var newDetail = new TransactionViewDto
+                    var newDetail = new TransactionHistoryDto
                     {
                         TransactionType = type,
                         EntityName = _view.EntityName,

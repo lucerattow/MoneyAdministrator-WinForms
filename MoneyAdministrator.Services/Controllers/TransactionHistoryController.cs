@@ -32,13 +32,13 @@ namespace MoneyAdministrator.Services.Controllers
 
         public TransactionDetail GetDetailModelById(int id) => new TransactionDetailService(_databasePath).Get(id);
 
-        public TransactionViewDto GetDetailById(int id)
+        public TransactionHistoryDto GetDetailById(int id)
         {
             var detail = GetDetailModelById(id);
             //Si es una transaccion de cuotas, genero el string con formato "1 / 3"
             string installments = GetInstallmentValue(detail);
             //Genero el detalle
-            return new TransactionViewDto()
+            return new TransactionHistoryDto()
             {
                 Id = detail.Id,
                 TransactionId = detail.TransactionId,
@@ -55,9 +55,9 @@ namespace MoneyAdministrator.Services.Controllers
             };
         }
 
-        public List<TransactionViewDto> GetIntermediateDetailDtos()
+        public List<TransactionHistoryDto> GetIntermediateDetailDtos()
         {
-            var result = new List<TransactionViewDto>();
+            var result = new List<TransactionHistoryDto>();
 
             //Obtengo la lista de detalles
             var details = new TransactionDetailService(_databasePath).GetAll();
@@ -104,7 +104,6 @@ namespace MoneyAdministrator.Services.Controllers
                     //Si es una transaccion de cuotas, genero el string con formato "1 / 3"
                     string installments = GetInstallmentValue(detail, i);
                     //Genero el detalle
-                    result.Add(new TransactionViewDto()
                     {
                         Id = detail.Id,
                         TransactionId = detail.TransactionId,
@@ -124,7 +123,6 @@ namespace MoneyAdministrator.Services.Controllers
             return result;
         }
 
-        public int InsertNewTransaction(TransactionViewDto detailDto, int installmentMax)
         {
             //Inicializo los servicios
             var transactionService = new TransactionService(_databasePath);
@@ -177,7 +175,7 @@ namespace MoneyAdministrator.Services.Controllers
             return transactionService.CreateTransaction(dto);
         }
 
-        public int UpdateTransaction(TransactionViewDto detailDto, bool overrideNextService = false)
+        public int UpdateTransaction(TransactionHistoryDto detailDto, bool overrideNextService = false)
         {
             //Inicializo los servicios
             var entityService = new EntityService(_databasePath);
@@ -222,7 +220,7 @@ namespace MoneyAdministrator.Services.Controllers
             return detailId;
         }
 
-        public void DeleteDetail(TransactionViewDto detailDto, DateTime date)
+        public void DeleteDetail(TransactionHistoryDto detailDto, DateTime date)
         {
             //Inicializo los servicios
             var transactionService = new TransactionService(_databasePath);
@@ -292,7 +290,7 @@ namespace MoneyAdministrator.Services.Controllers
             return installments;
         }
 
-        private int UpdateSingle(TransactionViewDto detailDto)
+        private int UpdateSingle(TransactionHistoryDto detailDto)
         {
             var detail = GetDetailModelById(detailDto.Id);
             //Actualizo el detalle
@@ -304,7 +302,7 @@ namespace MoneyAdministrator.Services.Controllers
             return detailDto.Id;
         }
 
-        private int UpdateInstallment(TransactionViewDto detailDto)
+        private int UpdateInstallment(TransactionHistoryDto detailDto)
         {
             //Inicializo el servicio
             var service = new TransactionDetailService(_databasePath);
@@ -342,7 +340,7 @@ namespace MoneyAdministrator.Services.Controllers
             return detailDto.Id;
         }
 
-        private int UpdateService(TransactionViewDto detailDto, bool overrideNext)
+        private int UpdateService(TransactionHistoryDto detailDto, bool overrideNext)
         {
             //Inicializo el servicio
             var service = new TransactionDetailService(_databasePath);

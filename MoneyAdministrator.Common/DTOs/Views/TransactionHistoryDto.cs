@@ -1,8 +1,8 @@
 ﻿using MoneyAdministrator.Common.Enums;
 
-namespace MoneyAdministrator.Common.DTOs
+namespace MoneyAdministrator.Common.DTOs.Views
 {
-    public class TransactionViewDto
+    public class TransactionHistoryDto
     {
         //hide properties
         public int Id { get; set; }
