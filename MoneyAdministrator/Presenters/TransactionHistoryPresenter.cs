@@ -64,9 +64,7 @@ namespace MoneyAdministrator.Presenters
         {
             using (new CursorWait())
             {
-                var service = new CurrencyService(_databasePath);
-                var entities = service.GetAll();
-                _view.SetCurrenciesList(entities);
+                _view.SetCurrenciesList(_controller.GetCurrenciesList());
             }
         }
 
@@ -390,7 +388,7 @@ namespace MoneyAdministrator.Presenters
         private void ButtonEntitySearchClick(object? sender, EventArgs e)
         {
             var selectedId = new EntityPresenter(_databasePath).Show();
-            var entity = new EntityService(_databasePath).Get(selectedId);
+            var entity = _controller.GetEntityById(selectedId);
             if (entity != null)
                 _view.EntityName = entity.Name;
         }

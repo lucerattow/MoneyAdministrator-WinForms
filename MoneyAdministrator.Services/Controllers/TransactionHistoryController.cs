@@ -36,13 +36,22 @@ namespace MoneyAdministrator.Services.Controllers
             return new CCSummaryService(_databasePath).GetAll().Where(x => x.TransactionPayId == id).FirstOrDefault();
         }
 
+        public Entity GetEntityById(int id)
+        { 
+            return new EntityService(_databasePath).Get(id);
+        }
+
         public TransactionDetail GetDetailModelById(int id) => new TransactionDetailService(_databasePath).Get(id);
 
         public TransactionHistoryDto GetDetailById(int id)
         {
             var detail = GetDetailModelById(id);
+            if (detail is null)
+                return null;
+
             //Si es una transaccion de cuotas, genero el string con formato "1 / 3"
             string installments = GetInstallmentValue(detail);
+
             //Genero el detalle
             return new TransactionHistoryDto()
             {
@@ -309,10 +318,8 @@ namespace MoneyAdministrator.Services.Controllers
                     transactionDetailService.Delete(futureDetail);
             }
             //Elimino transaccion unica
-            else if (detail.Transaction.TransactionType == TransactionType.Single)
-            {
+            else
                 transactionDetailService.Delete(detail);
-            }
         }
 
         //private
