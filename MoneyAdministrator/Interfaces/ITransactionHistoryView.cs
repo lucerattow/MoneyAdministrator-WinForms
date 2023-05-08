@@ -41,9 +41,14 @@ namespace MoneyAdministrator.Interfaces
         void GrdRefreshData(List<TransactionHistoryDto> datasource);
         /// <summary>Envio los datos de la nueva transaccion insertada</summary>
         /// <param name="datasource">DTO a insertar en la GRD de transaccionHistory</param>
-        void GrdInsertRows(List<TransactionViewDto> dto);
+        void GrdInsertRows(List<TransactionHistoryDto> dto);
+        /// <summary>Envio los datos de la nueva transaccion insertada</summary>
+        /// <param name="datasource">DTO a insertar en la GRD de transaccionHistory</param>
+        void GrdInsertRow(TransactionHistoryDto dto);
         /// <summary>Elimina el detalle seleccionado y los relacionados</summary>
-        void GrdDeleteSelected(bool deleteSeparators = true);
+        void GrdDeleteSelected(int transactionId, bool deleteSeparators = true);
+        /// <summary>Elimina el detalle de servicio seleccionado y los relacionados</summary>
+        void GrdDeleteSelectedService(int transactionId, TransactionType type, DateTime date, bool deleteSeparators = true);
 
         //events
         event EventHandler ButtonInsertClick;

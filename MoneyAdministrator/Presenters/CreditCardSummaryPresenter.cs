@@ -278,8 +278,8 @@ namespace MoneyAdministrator.Presenters
 
         private void ButtonNewPayClick(object sender, EventArgs e)
         {
-            var creditCardPayPresenter = new CreditCardPayPresenter(_databasePath, _view.CCSummaryId);
-            creditCardPayPresenter.Show();
+            //Muestro la ventana de pagos (para modificar los datos)
+            CreditCardPayPresenter.Show(_databasePath, _view.CCSummaryId);
 
             var ccSummaryService = new CCSummaryService(_databasePath).Get(_view.CCSummaryId);
             if (ccSummaryService != null)

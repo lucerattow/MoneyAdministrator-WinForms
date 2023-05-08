@@ -1,4 +1,5 @@
 ﻿using MoneyAdministrator.Common.DTOs;
+using MoneyAdministrator.Common.DTOs.Views;
 using MoneyAdministrator.Common.Enums;
 using MoneyAdministrator.Common.Utilities.TypeTools;
 using MoneyAdministrator.Models;
@@ -25,7 +26,7 @@ namespace MoneyAdministrator.Services.Controllers
             return new CurrencyService(_databasePath).GetAll();
         }
 
-        public CCSummary IsCreditCardDetail(int id)
+        public CCSummary GetCCSummaryByTrxId(int id)
         {
             return new CCSummaryService(_databasePath).GetAll().Where(x => x.TransactionId == id).FirstOrDefault();
         }
@@ -104,6 +105,7 @@ namespace MoneyAdministrator.Services.Controllers
                     //Si es una transaccion de cuotas, genero el string con formato "1 / 3"
                     string installments = GetInstallmentValue(detail, i);
                     //Genero el detalle
+                    result.Add(new TransactionHistoryDto()
                     {
                         Id = detail.Id,
                         TransactionId = detail.TransactionId,
@@ -123,13 +125,11 @@ namespace MoneyAdministrator.Services.Controllers
             return result;
         }
 
+        public int InsertNewTransaction(TransactionHistoryDto detailDto, int installmentMax)
         {
             //Inicializo los servicios
-            var transactionService = new TransactionService(_databasePath);
             var entityService = new EntityService(_databasePath);
             var currencyService = new CurrencyService(_databasePath);
-            //Transaction Inputs
-            var transactionType = TransactionType.Single;
 
             //Si la entidad no existe la inserto
             var entity = entityService.GetByName(detailDto.EntityName);
@@ -160,19 +160,30 @@ namespace MoneyAdministrator.Services.Controllers
                 endDate = DateTime.MaxValue;
             }
 
-            var dto = new TransactionDetailDto
+            //Inserto la transaccion
+            var transaction = new Transaction()
             {
                 EntityId = entity.Id,
                 CurrencyId = currency.Id,
                 TransactionType = detailDto.TransactionType,
                 Description = detailDto.Description,
-                //details
+            };
+            new TransactionService(_databasePath).Insert(transaction);
+
+            //Inserto el detalle
+            var detail = new TransactionDetail
+            {
+                TransactionId = transaction.Id,
                 Date = detailDto.Date,
                 EndDate = endDate,
                 Amount = detailDto.Amount,
                 Frequency = detailDto.Frequency,
+                Concider = true,
+                Paid = false,
             };
-            return transactionService.CreateTransaction(dto);
+            new TransactionDetailService(_databasePath).Insert(detail);
+
+            return detail.Id;
         }
 
         public int UpdateTransaction(TransactionHistoryDto detailDto, bool overrideNextService = false)

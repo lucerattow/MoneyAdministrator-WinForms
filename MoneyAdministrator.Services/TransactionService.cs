@@ -80,35 +80,6 @@ namespace MoneyAdministrator.Services
         }
 
         //methods
-        public int CreateTransaction(TransactionDetailDto dto)
-        {
-            //Inserto la transaccion
-            var transaction = new Transaction()
-            {
-                EntityId = dto.EntityId,
-                CurrencyId = dto.CurrencyId,
-                TransactionType = dto.TransactionType,
-                Description = dto.Description,
-            };
-            Insert(transaction);
-
-            dto.TransactionId = transaction.Id;
-
-            var detail = new TransactionDetail
-            {
-                TransactionId = dto.TransactionId,
-                Date = dto.Date,
-                EndDate = dto.EndDate,
-                Amount = dto.Amount,
-                Frequency = dto.Frequency,
-                Concider = true,
-                Paid = false,
-            };
-            new TransactionDetailService(_unitOfWork).Insert(detail);
-
-            return detail.Id;
-        }
-
         private void UpdateCreditCardSummary()
         {
             //Inicializo los servicios

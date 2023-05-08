@@ -3,6 +3,7 @@ using MoneyAdministrator.Common.Enums;
 using MoneyAdministrator.Interfaces;
 using MoneyAdministrator.Models;
 using MoneyAdministrator.Services;
+using MoneyAdministrator.Services.Controllers;
 using MoneyAdministrator.Utilities.Disposable;
 using MoneyAdministrator.Views.Modals;
 using System;
@@ -10,46 +11,52 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace MoneyAdministrator.Presenters
 {
     public class CreditCardPayPresenter
     {
         private readonly string _databasePath;
-        private readonly int _summaryId;
+        private int _summaryId;
         private ICreditCardPayView _view;
+        private CreditCardPayController _controller;
 
-        public CreditCardPayPresenter(string databasePath, int summaryId)
+        public CreditCardPayPresenter(string databasePath)
         {
             using (new CursorWait())
 
             _databasePath = databasePath;
-            _summaryId = summaryId;
+            _controller = new CreditCardPayController(databasePath);
             _view = new CreditCardPayView();
+        }
 
-            //Busco el resumen
-            var ccSummaryService = new CCSummaryService(_databasePath);
-            var ccSummary = ccSummaryService.Get(summaryId);
-            if (ccSummary != null)
-            {
-                _view.TransactionOutstandingId = ccSummary.Transaction.Id;
-
-                _view.PayDay = ccSummary.Period;
-                _view.CreditCardDescription = $"{ccSummary.CreditCard.Entity.Name} {ccSummary.CreditCard.CreditCardBrand.Name} :" +
-                    $" ●●●● ●●●● ●●●● {ccSummary.CreditCard.LastFourNumbers}";
-            }
-
+        private void Initialize()
+        {
             AssosiateEvents();
             GrdRefreshData();
         }
 
         //methods
-        public void Show()
+        public static void Show(string _databasePath, int summaryId)
         {
-            if (_view == null)
-                throw new Exception("Ocurrio un error al intentar abrir el popup");
+            var presenter = new CreditCardPayPresenter(_databasePath);
+            var summary = presenter._controller.GetSummaryById(summaryId);
 
-            _view.ShowDialog();
+            if (summary is null)
+                return;
+
+            //Establezco los valores
+            presenter._view.TransactionOutstandingId = summary.TransactionId;
+            presenter._view.PayDay = summary.Period;
+            presenter._view.CreditCardDescription = $"{summary.CreditCard.Entity.Name} {summary.CreditCard.CreditCardBrand.Name} :" +
+                $" ●●●● ●●●● ●●●● {summary.CreditCard.LastFourNumbers}";
+
+            //Asigno el id del resumen
+            presenter._summaryId = summary.Id;
+
+            presenter.Initialize();
+            presenter._view.ShowDialog();
         }
 
         private void AssosiateEvents()

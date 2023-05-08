@@ -368,7 +368,7 @@ namespace MoneyAdministrator.Views.UserControls
                     0,
                     0,
                     0,
-                }, true, 0, isCollapsed);
+                }, true, 0, false);
             else
                 row = _cettogrd.RowsAdd(new object[]
                 {
@@ -520,7 +520,24 @@ namespace MoneyAdministrator.Views.UserControls
                 DataGridViewTools.PaintDecimal(_cettogrd, row, "amount");
         }
 
-        public void GrdDeleteSelected(bool deleteSeparators = true)
+        public void GrdDeleteSelected(int transactionId, bool deleteSeparators = true)
+        {
+            var indexes = new List<int>();
+            for (int index = 0; index < _cettogrd.Rows.Count; index++)
+            {
+                //Si es un separador continuo
+                if ((int)_cettogrd.Rows[index].Cells["id"].Value < 0)
+                    continue;
+
+                //Añado el row index a la lista de filas a borrar
+                if ((int)_cettogrd.Rows[index].Cells["transactionId"].Value == transactionId)
+                    indexes.Add(index);
+            }
+
+            GrdDeleteSelected(indexes, deleteSeparators);
+        }
+
+        public void GrdDeleteSelectedService(int transactionId, TransactionType type, DateTime date, bool deleteSeparators = true)
         {
             var indexes = new List<int>();
             for (int index = 0; index < _cettogrd.Rows.Count; index++)
@@ -530,18 +547,23 @@ namespace MoneyAdministrator.Views.UserControls
                     continue;
 
                 //Si elimino un servicio, solo elimino los registros desde su fecha en adelante
-                if (SelectedDto.TransactionType == TransactionType.Service)
+                if (type == TransactionType.Service)
                 {
                     DateTime currentDate = DateTimeTools.Convert(_cettogrd.Rows[index].Cells["date"].Value.ToString(), "yyyy-MM-dd");
-                    if (currentDate < SelectedDto.Date)
+                    if (currentDate < date)
                         break;
                 }
 
                 //Añado el row index a la lista de filas a borrar
-                if ((int)_cettogrd.Rows[index].Cells["transactionId"].Value == SelectedDto.TransactionId)
+                if ((int)_cettogrd.Rows[index].Cells["transactionId"].Value == transactionId)
                     indexes.Add(index);
             }
 
+            GrdDeleteSelected(indexes, deleteSeparators);
+        }
+
+        private void GrdDeleteSelected(List<int> indexes, bool deleteSeparators = true)
+        {
             //Ordeno de mayor a menor las filas y las elimino
             indexes = indexes.OrderByDescending(x => x).ToList();
             foreach (var index in indexes)
@@ -572,9 +594,10 @@ namespace MoneyAdministrator.Views.UserControls
                     //Consulto 2 culumnas arriba esta el separador de mes
                     var monthSeparatorIndex = (int)_cettogrd.Rows[previousIndex - 1].Cells["id"].Value == -1;
 
-                    //Si arriba es "Pasivos" y abajo NO es "Activos"
-                    if (_cettogrd.Rows[previousIndex].Cells["entity"].Value.ToString() == "Pasivos" &&
-                        _cettogrd.Rows[index].Cells["entity"].Value.ToString() != "Activos")
+                    //Si arriba es "Pasivos" y abajo NO es "Activos" o no hay mas filas
+                    if ((_cettogrd.Rows[previousIndex].Cells["entity"].Value.ToString() == "Pasivos" && index < _cettogrd.Rows.Count &&
+                        _cettogrd.Rows[index].Cells["entity"].Value.ToString() != "Activos") ||
+                        (_cettogrd.Rows[previousIndex].Cells["entity"].Value.ToString() == "Pasivos" && index >= _cettogrd.Rows.Count))
                     {
                         _cettogrd.RowDelete(previousIndex);
                         _cettogrd.RowDelete(previousIndex - 1);

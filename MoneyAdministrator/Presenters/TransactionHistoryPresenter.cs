@@ -1,4 +1,5 @@
 ﻿using MoneyAdministrator.Common.DTOs;
+using MoneyAdministrator.Common.DTOs.Views;
 using MoneyAdministrator.Common.Enums;
 using MoneyAdministrator.Common.Utilities.TypeTools;
 using MoneyAdministrator.Interfaces;
@@ -89,13 +90,8 @@ namespace MoneyAdministrator.Presenters
             }
         }
 
-        private void GrdUpdateValue(int detailId, DateTime date)
+        private void GrdUpdateValue(List<TransactionHistoryDto> dto, DateTime date)
         {
-            var detail = _controller.GetDetailById(detailId);
-            if (detail is null)
-                throw new Exception("No es posible mostrar el detalle modificado, intente recargar la pestaña");
-
-            var dto = _controller.GetIntermediateDetailDtos().Where(x => x.TransactionId == detail.TransactionId).ToList();
             if (dto is null)
                 throw new Exception("No es posible mostrar el detalle modificado, intente recargar la pestaña");
             else
@@ -143,19 +139,41 @@ namespace MoneyAdministrator.Presenters
         //events
         private void ButtonNewPayClick(object? sender, EventArgs e)
         {
-            var summaries = new CCSummaryService(_databasePath).GetAll();
-            var detail = new TransactionDetailService(_databasePath).Get(_view.SelectedDto.Id);
-            var summary = summaries
-                .Where(x => x.TransactionId == detail.TransactionId)
-                .FirstOrDefault();
+            if (_view.SelectedDto is null)
+                return;
 
+            //Obtengo los datos del resumen para actualizar la grilla
+            var summary = _controller.GetCCSummaryByTrxId(_view.SelectedDto.TransactionId);
             if (summary is null)
                 return;
 
-            var creditCardPayPresenter = new CreditCardPayPresenter(_databasePath, summary.Id);
-            creditCardPayPresenter.Show();
+            //Guardo la transaccion de pago por las dudas de que sea eliminada
+            var transactionId = summary.TransactionId;
+            var transactionPayId = summary.TransactionPayId;
 
-            GrdRefreshData();
+            //Muestro la ventana de pagos (para modificar los datos)
+            CreditCardPayPresenter.Show(_databasePath, summary.Id);
+
+            //Elimino los registros
+            _view.GrdDeleteSelected(transactionId);
+            _view.GrdDeleteSelected(transactionPayId);
+
+            //Actualizo el resumen para obtener el nuevo id de pago
+            summary = _controller.GetCCSummaryByTrxId(_view.SelectedDto.TransactionId);
+            if (summary is null)
+                return;
+
+            //Refresco el id de pago para insertarlo
+            transactionPayId = summary.TransactionPayId;
+
+            //Inserto los nuevos datos de ser necesario
+            var dtos = _controller.GetIntermediateDetailDtos().Where(x => x.TransactionId == transactionId).ToList();
+            if (dtos.Count > 0)
+                GrdUpdateValue(dtos, DateTime.Now);
+
+            dtos = _controller.GetIntermediateDetailDtos().Where(x => x.TransactionId == transactionPayId).ToList();
+            if (dtos.Count > 0)
+                GrdUpdateValue(dtos, DateTime.Now);
         }
 
         private void ButtonInsertClick(object? sender, EventArgs e)
@@ -256,8 +274,12 @@ namespace MoneyAdministrator.Presenters
                         }
                     }
 
-                    _view.GrdDeleteSelected(false);
-                    GrdUpdateValue(modifiedDetailId, saveCurrentDate);
+                    //Elimino y luego vuelvo a insertar los valores modificados
+                    detail = _controller.GetDetailById(modifiedDetailId);
+                    _view.GrdDeleteSelected(detail.TransactionId);
+
+                    var dtos = _controller.GetIntermediateDetailDtos().Where(x => x.TransactionId == detail.TransactionId).ToList();
+                    GrdUpdateValue(dtos, saveCurrentDate);
                 }
                 catch (Exception ex)
                 {
@@ -306,7 +328,7 @@ namespace MoneyAdministrator.Presenters
                     }
                     else if (transactionType == TransactionType.CreditCardOutstanding)
                     {
-                        var summary = _controller.IsCreditCardDetail(_view.SelectedDto.Id);
+                        var summary = _controller.GetCCSummaryByTrxId(_view.SelectedDto.TransactionId);
                         if (summary != null)
                         {
                             string descripcion = $"{summary.CreditCard.CreditCardBrand.Name} *{summary.CreditCard.LastFourNumbers}";
@@ -318,7 +340,7 @@ namespace MoneyAdministrator.Presenters
                         }
                     }
 
-                    _view.GrdDeleteSelected();
+                    //_view.GrdDeleteSelected(detail.Id);
                 }
                 catch (Exception ex)
                 {
