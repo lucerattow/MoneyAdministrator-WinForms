@@ -93,6 +93,13 @@ namespace MoneyAdministrator.Presenters
 
         private void GrdPaymentsRefreshData(int TransactionPayId)
         {
+            if (TransactionPayId == 0)
+            { 
+                //Envio una lista vacia
+                _view.GrdPaymentsRefreshData(new List<CreditCardPayDto> { });
+                return;
+            }
+
             var transactionService = new TransactionService(_databasePath);
             var transaction = transactionService.Get(TransactionPayId);
 
