@@ -160,10 +160,11 @@ namespace MoneyAdministrator.Presenters
 
             //Elimino los registros
             _view.GrdDeleteSelected(transactionId);
-            _view.GrdDeleteSelected(transactionPayId);
+            if (transactionPayId > 0)
+                _view.GrdDeleteSelected(transactionPayId);
 
             //Actualizo el resumen para obtener el nuevo id de pago
-            summary = _controller.GetCCSummaryByTrxId(_view.SelectedDto.TransactionId);
+            summary = _controller.GetCCSummaryByTrxId(summary.TransactionId);
             if (summary is null)
                 return;
 
@@ -280,7 +281,11 @@ namespace MoneyAdministrator.Presenters
 
                     //Elimino y luego vuelvo a insertar los valores modificados
                     detail = _controller.GetDetailById(modifiedDetailId);
-                    _view.GrdDeleteSelected(detail.TransactionId);
+
+                    if (detail.TransactionType == TransactionType.Service)
+                        _view.GrdDeleteSelected(detail.TransactionId);
+                    else
+                        _view.GrdDeleteSelectedService(detail.TransactionId, detail.TransactionType, detail.Date);
 
                     var dtos = _controller.GetIntermediateDetailDtos().Where(x => x.TransactionId == detail.TransactionId).ToList();
                     GrdUpdateValue(dtos, saveCurrentDate);
@@ -344,7 +349,10 @@ namespace MoneyAdministrator.Presenters
                         }
                     }
 
-                    _view.GrdDeleteSelected(_view.SelectedDto.TransactionId);
+                    if (transactionType == TransactionType.Service)
+                        _view.GrdDeleteSelected(_view.SelectedDto.TransactionId);
+                    else
+                        _view.GrdDeleteSelectedService(_view.SelectedDto.TransactionId, transactionType,_view.SelectedDto.Date);
                 }
                 catch (Exception ex)
                 {
