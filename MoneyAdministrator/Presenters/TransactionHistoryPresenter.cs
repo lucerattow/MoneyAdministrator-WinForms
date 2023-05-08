@@ -340,7 +340,7 @@ namespace MoneyAdministrator.Presenters
                         }
                     }
 
-                    //_view.GrdDeleteSelected(detail.Id);
+                    _view.GrdDeleteSelected(_view.SelectedDto.TransactionId);
                 }
                 catch (Exception ex)
                 {
