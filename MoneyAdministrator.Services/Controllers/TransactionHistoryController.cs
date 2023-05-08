@@ -236,6 +236,47 @@ namespace MoneyAdministrator.Services.Controllers
             return detailId;
         }
 
+        public void DeleteServiceMonth(TransactionHistoryDto dto, DateTime currentDate)
+        {
+            //Inicializo los servicios
+            var service = new TransactionDetailService(_databasePath);
+            var detail = service.Get(dto.Id);
+
+            var newDetailId = service.InsertIntermediateDetail(detail, currentDate);
+            var detailToDelete = service.Get(newDetailId);
+
+            //Elimino el nuevo detalle
+            service.Delete(detailToDelete);
+        }
+
+        public void UpdateCheckBoxInputs(TransactionHistoryDto dto)
+        {
+            //Inicializo los servicios
+            var service = new TransactionDetailService(_databasePath);
+
+            var detail = service.Get(dto.Id);
+
+            //Si es una transaccion simple o de tarjeta de credito
+            if (dto.TransactionType == TransactionType.Single || dto.TransactionType == TransactionType.CreditCardOutstanding)
+            {
+                detail.Concider = dto.Concider;
+                detail.Paid = dto.Paid;
+
+                service.Update(detail);
+            }
+            //Si es una transaccion servicio o en cuotas
+            else if (dto.TransactionType == TransactionType.Service || dto.TransactionType == TransactionType.Installments)
+            {
+                var newDetailId = service.InsertIntermediateDetail(detail, dto.Date);
+                var newDetail = service.Get(newDetailId);
+
+                //Modifico el detalle actual
+                newDetail.Concider = dto.Concider;
+                newDetail.Paid = dto.Paid;
+                service.Update(newDetail);
+            }
+        }
+
         public void DeleteDetail(TransactionHistoryDto detailDto, DateTime date)
         {
             //Inicializo los servicios

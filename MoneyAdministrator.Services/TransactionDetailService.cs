@@ -52,21 +52,7 @@ namespace MoneyAdministrator.Services
             UpdateSummaryOutstanding(model.TransactionId);
         }
 
-        public void Update(TransactionDetail model)
-        {
-            //Valido el modelo
-            Utilities.ModelValidator.Validate(model);
-
-            var item = _unitOfWork.TransactionDetailRepository.GetById(model.Id);
-            if (item != null)
-            {
-                _unitOfWork.TransactionDetailRepository.Update(model);
-                _unitOfWork.Save();
-                UpdateSummaryOutstanding(item.TransactionId);
-            }
-        }
-
-        public void UpdateCheckBox(TransactionDetail detail, DateTime date, bool concider, bool paid)
+        public int InsertIntermediateDetail(TransactionDetail detail, DateTime date)
         {
             var details = detail.Transaction.TransactionDetails.OrderByDescending(x => x.Date).ToList();
 
@@ -74,6 +60,7 @@ namespace MoneyAdministrator.Services
                 .Where(x => x.Date.Date <= date.Date)
                 .FirstOrDefault();
 
+            //Si el detalle seleccionado tiene como fecha inicial la actual
             if (current.Date.Date == date.Date)
             {
                 //Si el detalle del siguiente mes no existe, lo creo
@@ -107,11 +94,11 @@ namespace MoneyAdministrator.Services
                 }
 
                 //Modifico el detalle actual
-                current.Concider = concider;
-                current.Paid = paid;
                 current.EndDate = date;
                 Update(current);
+                return current.Id;
             }
+            //Si el detalle seleccionado NO tiene como fecha inicial la actual
             else
             {
                 //Si el detalle del siguiente mes no existe, lo creo
@@ -169,10 +156,25 @@ namespace MoneyAdministrator.Services
                     EndDate = date,
                     Amount = current.Amount,
                     Frequency = current.Frequency,
-                    Concider = concider,
-                    Paid = paid,
+                    Concider = true,
+                    Paid = false,
                 };
                 Insert(newCurrent);
+                return newCurrent.Id;
+            }
+        }
+
+        public void Update(TransactionDetail model)
+        {
+            //Valido el modelo
+            Utilities.ModelValidator.Validate(model);
+
+            var item = _unitOfWork.TransactionDetailRepository.GetById(model.Id);
+            if (item != null)
+            {
+                _unitOfWork.TransactionDetailRepository.Update(model);
+                _unitOfWork.Save();
+                UpdateSummaryOutstanding(item.TransactionId);
             }
         }
 

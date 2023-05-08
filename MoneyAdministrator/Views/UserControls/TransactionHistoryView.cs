@@ -537,7 +537,7 @@ namespace MoneyAdministrator.Views.UserControls
             GrdDeleteSelected(indexes, deleteSeparators);
         }
 
-        public void GrdDeleteSelectedService(int transactionId, TransactionType type, DateTime date, bool deleteSeparators = true)
+        public void GrdDeleteSelectedService(int transactionId, TransactionType type, DateTime date, bool deleteCurrentMonth = false, bool deleteSeparators = true)
         {
             var indexes = new List<int>();
             for (int index = 0; index < _cettogrd.Rows.Count; index++)
@@ -546,13 +546,17 @@ namespace MoneyAdministrator.Views.UserControls
                 if ((int)_cettogrd.Rows[index].Cells["id"].Value < 0)
                     continue;
 
-                //Si elimino un servicio, solo elimino los registros desde su fecha en adelante
-                if (type == TransactionType.Service)
-                {
-                    DateTime currentDate = DateTimeTools.Convert(_cettogrd.Rows[index].Cells["date"].Value.ToString(), "yyyy-MM-dd");
-                    if (currentDate < date)
-                        break;
-                }
+                //Obtengo la fecha del servicio
+                DateTime currentDate = DateTimeTools.Convert(_cettogrd.Rows[index].Cells["date"].Value.ToString(), "yyyy-MM-dd");
+
+                if (deleteCurrentMonth)
+                    //Ignoro meses futuros
+                    if (currentDate > date)
+                        continue;
+
+                //ignoro meses pasados
+                if (currentDate < date)
+                    break;
 
                 //Añado el row index a la lista de filas a borrar
                 if ((int)_cettogrd.Rows[index].Cells["transactionId"].Value == transactionId)
@@ -804,7 +808,6 @@ namespace MoneyAdministrator.Views.UserControls
         {
             ButtonInsertClick.Invoke(sender, e);
             Clear();
-            ButtonsLogic();
         }
 
         private void _tsbUpdate_Click(object sender, EventArgs e)
@@ -821,7 +824,6 @@ namespace MoneyAdministrator.Views.UserControls
         {
             ButtonDeleteClick.Invoke(sender, e);
             Clear();
-            ButtonsLogic();
         }
 
         private void _tsbClear_Click(object sender, EventArgs e)

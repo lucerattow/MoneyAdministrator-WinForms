@@ -283,9 +283,9 @@ namespace MoneyAdministrator.Presenters
                     detail = _controller.GetDetailById(modifiedDetailId);
 
                     if (detail.TransactionType == TransactionType.Service)
-                        _view.GrdDeleteSelected(detail.TransactionId);
-                    else
                         _view.GrdDeleteSelectedService(detail.TransactionId, detail.TransactionType, detail.Date);
+                    else
+                        _view.GrdDeleteSelected(detail.TransactionId);
 
                     var dtos = _controller.GetIntermediateDetailDtos().Where(x => x.TransactionId == detail.TransactionId).ToList();
                     GrdUpdateValue(dtos, saveCurrentDate);
@@ -318,22 +318,43 @@ namespace MoneyAdministrator.Presenters
                     var transactionType = _view.SelectedDto.TransactionType;
                     if (transactionType == TransactionType.Single)
                     {
+                        //Elimino de la db
                         _controller.DeleteDetail(detail, _view.Date);
+                        //Elimino del grd
+                        _view.GrdDeleteSelected(_view.SelectedDto.TransactionId);
                     }
                     else if (transactionType == TransactionType.Installments)
                     {
                         string message = "Al eliminar esta cuota, también se eliminarán todas las cuotas relacionadas. ¿Desea continuar con la eliminación?";
                         string title = "Confirmar eliminación de cuotas";
                         if (CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNo, title) == DialogResult.Yes)
+                        {
+                            //Elimino de la db
                             _controller.DeleteDetail(detail, _view.Date);
+                            //Elimino del grd
+                            _view.GrdDeleteSelected(_view.SelectedDto.TransactionId);
+                        }
                     }
                     else if (transactionType == TransactionType.Service)
                     {
-                        string message = "Al eliminar este servicio, se dará por finalizado y se eliminarán " +
-                            "tanto la transacción seleccionada como las futuras transacciones. ¿Desea continuar con la eliminación?";
-                        string title = "Confirmar finalización de servicio";
-                        if (CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNo, title) == DialogResult.Yes)
+                        string message = "¿Desea finalizar el servicio por completo (Sí) o eliminar solo el servicio de este mes (No)?";
+                        string title = "Confirmar eliminacion de servicio";
+
+                        var dialogResult = CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNoCancel, title);
+                        if (dialogResult == DialogResult.Yes)
+                        {
+                            //Elimino de la db
                             _controller.DeleteDetail(detail, _view.Date);
+                            //Elimino del grd
+                            _view.GrdDeleteSelectedService(_view.SelectedDto.TransactionId, transactionType, _view.SelectedDto.Date);
+                        }
+                        else if (dialogResult == DialogResult.No)
+                        {
+                            //Elimino de la db
+                            _controller.DeleteServiceMonth(detail, _view.Date);
+                            //Elimino del grd
+                            _view.GrdDeleteSelectedService(_view.SelectedDto.TransactionId, transactionType, _view.SelectedDto.Date, true);
+                        }
                     }
                     else if (transactionType == TransactionType.CreditCardOutstanding)
                     {
@@ -345,14 +366,14 @@ namespace MoneyAdministrator.Presenters
                                 $"({descripcion} : {_view.SelectedDto.Date.ToString("yyyy-MM")}). ¿Desea continuar con la eliminación?";
                             string title = "Confirmar eliminación de cuotas";
                             if (CommonMessageBox.warningMessageShow(message, MessageBoxButtons.YesNo, title) == DialogResult.Yes)
+                            {
+                                //Elimino de la db
                                 _controller.DeleteDetail(detail, _view.Date);
+                                //Elimino del grd
+                                _view.GrdDeleteSelected(_view.SelectedDto.TransactionId);
+                            }
                         }
                     }
-
-                    if (transactionType == TransactionType.Service)
-                        _view.GrdDeleteSelected(_view.SelectedDto.TransactionId);
-                    else
-                        _view.GrdDeleteSelectedService(_view.SelectedDto.TransactionId, transactionType,_view.SelectedDto.Date);
                 }
                 catch (Exception ex)
                 {
@@ -386,25 +407,7 @@ namespace MoneyAdministrator.Presenters
                 if (_view.CheckBoxChangeDto is null)
                     return;
 
-                //Inicializo los servicios
-                var detailsService = new TransactionDetailService(_databasePath);
-
-                var detail = detailsService.Get(_view.CheckBoxChangeDto.Id);
-                var type = detail.Transaction.TransactionType;
-
-                //Si es una transaccion simple o de tarjeta de credito
-                if (type == TransactionType.Single || type == TransactionType.CreditCardOutstanding)
-                {
-                    detail.Concider = _view.CheckBoxChangeDto.Concider;
-                    detail.Paid = _view.CheckBoxChangeDto.Paid;
-
-                    detailsService.Update(detail);
-                }
-                //Si es una transaccion servicio o en cuotas
-                else if (type == TransactionType.Service || type == TransactionType.Installments)
-                {
-                    detailsService.UpdateCheckBox(detail, _view.CheckBoxChangeDto.Date, _view.CheckBoxChangeDto.Concider, _view.CheckBoxChangeDto.Paid);
-                }
+                _controller.UpdateCheckBoxInputs(_view.CheckBoxChangeDto);
             }
         }
     }

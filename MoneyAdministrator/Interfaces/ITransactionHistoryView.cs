@@ -48,7 +48,7 @@ namespace MoneyAdministrator.Interfaces
         /// <summary>Elimina el detalle seleccionado y los relacionados</summary>
         void GrdDeleteSelected(int transactionId, bool deleteSeparators = true);
         /// <summary>Elimina el detalle de servicio seleccionado y los relacionados</summary>
-        void GrdDeleteSelectedService(int transactionId, TransactionType type, DateTime date, bool deleteSeparators = true);
+        void GrdDeleteSelectedService(int transactionId, TransactionType type, DateTime date, bool deleteCurrentMonth = false, bool deleteSeparators = true);
 
         //events
         event EventHandler ButtonInsertClick;
