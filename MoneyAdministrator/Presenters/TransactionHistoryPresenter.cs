@@ -145,7 +145,11 @@ namespace MoneyAdministrator.Presenters
             //Obtengo los datos del resumen para actualizar la grilla
             var summary = _controller.GetCCSummaryByTrxId(_view.SelectedDto.TransactionId);
             if (summary is null)
-                return;
+            {
+                summary = _controller.GetCCSummaryByTrxPayId(_view.SelectedDto.TransactionId);
+                if (summary is null)
+                    return;
+            }
 
             //Guardo la transaccion de pago por las dudas de que sea eliminada
             var transactionId = summary.TransactionId;

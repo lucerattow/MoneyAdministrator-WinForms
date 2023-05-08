@@ -31,6 +31,11 @@ namespace MoneyAdministrator.Services.Controllers
             return new CCSummaryService(_databasePath).GetAll().Where(x => x.TransactionId == id).FirstOrDefault();
         }
 
+        public CCSummary GetCCSummaryByTrxPayId(int id)
+        {
+            return new CCSummaryService(_databasePath).GetAll().Where(x => x.TransactionPayId == id).FirstOrDefault();
+        }
+
         public TransactionDetail GetDetailModelById(int id) => new TransactionDetailService(_databasePath).Get(id);
 
         public TransactionHistoryDto GetDetailById(int id)
