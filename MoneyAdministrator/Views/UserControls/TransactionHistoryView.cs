@@ -167,11 +167,11 @@ namespace MoneyAdministrator.Views.UserControls
                         GrdInsertMonthSeparator(ref row, separatorDate);
 
                         //Obtengo los detalles pasivos
-                        var passive = monthTransactions.Where(x => x.Amount < 0)
+                        var passive = monthTransactions.Where(x => x.Amount <= 0)
                             .OrderByDescending(x => x.TransactionType).ToList();
 
                         //Obtengo los detalles activos
-                        var assets = monthTransactions.Where(x => x.Amount >= 0)
+                        var assets = monthTransactions.Where(x => x.Amount > 0)
                             .OrderByDescending(x => x.TransactionType).ToList();
 
                         //Añado los detalles services pasivos
@@ -238,7 +238,7 @@ namespace MoneyAdministrator.Views.UserControls
                 initGroupIndex = endGroupIndex;
 
             //Determino si el dto es pasivo o activo
-            var isPasive = dto.Amount < 0;
+            var isPasive = dto.Amount <= 0;
 
             //Compruebo que existan separadores por valor
             if (initGroupIndex != endGroupIndex)
@@ -812,12 +812,8 @@ namespace MoneyAdministrator.Views.UserControls
 
         private void _tsbUpdate_Click(object sender, EventArgs e)
         {
-            var rowIndex = _cettogrd.FirstDisplayedScrollingRowIndex;
-
             ButtonUpdateClick.Invoke(sender, e);
             Clear();
-            
-            _cettogrd.FirstDisplayedScrollingRowIndex = rowIndex;
         }
 
         private void _tsbDelete_Click(object sender, EventArgs e)
