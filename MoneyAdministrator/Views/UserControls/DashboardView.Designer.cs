@@ -1,4 +1,6 @@
-﻿namespace MoneyAdministrator.Views.UserControls
+﻿using MoneyAdministrator.CustomControls;
+
+namespace MoneyAdministrator.Views.UserControls
 {
     partial class DashboardView
     {
@@ -28,7 +30,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            _grd = new DataGridView();
+            _grd = new CettoDataGridView();
             _grdHeader = new DataGridView();
             panel1 = new Panel();
             _txtSalaryUsd = new CustomControls.MoneyTextBox();
@@ -285,7 +287,7 @@
 
         #endregion
 
-        private DataGridView _grd;
+        private CettoDataGridView _grd;
         private DataGridView _grdHeader;
         private Panel panel1;
         private Panel panel2;

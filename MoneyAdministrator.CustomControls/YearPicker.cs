@@ -26,7 +26,7 @@ namespace MoneyAdministrator.CustomControls
             }
         }
         public Image? ButtonPreviousImage
-        { 
+        {
             get => _buttonPreviousImage;
             set
             {
@@ -37,8 +37,8 @@ namespace MoneyAdministrator.CustomControls
         public List<int> AvailableYears
         {
             get => _years;
-            set 
-            { 
+            set
+            {
                 _years = value;
 
                 if (_years.Count > 0 && !_years.Contains(Value))
@@ -94,7 +94,7 @@ namespace MoneyAdministrator.CustomControls
         }
         [Browsable(false)]
         public new DockStyle Dock
-        { 
+        {
             get { return base.Dock; }
             set { base.Dock = value; }
         }
@@ -150,7 +150,7 @@ namespace MoneyAdministrator.CustomControls
                 ButtonNextClick?.Invoke(this, EventArgs.Empty);
             };
             _btnYearPicker.TextChanged += delegate
-            { 
+            {
                 ValueChange?.Invoke(this, EventArgs.Empty);
             };
         }

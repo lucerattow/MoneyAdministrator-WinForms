@@ -35,25 +35,66 @@ namespace MoneyAdministrator.CustomControls
         }
 
         //methods
+        /// <summary>
+        /// Añade una columna
+        /// </summary>
+        /// <param name="col"></param>
         public void ColumnsAdd(DataGridViewColumn col)
         {
             Columns.Add(col);
         }
 
+        /// <summary>
+        /// Elimina todas las columnas
+        /// </summary>
         public void ColumnsClear()
         {
             Columns.Clear();
             SetBaseColumns();
         }
 
+        /// <summary>
+        /// Inserta una fila con los valores indicados
+        /// </summary>
+        /// <param name="row">ID donde se insertara la columna</param>
+        /// <param name="data">Array de objetos con los valores de cada columna</param>
+        /// <param name="IsGroupHeader">Indica si la fila sera un separador</param>
+        /// <param name="GroupLevel">Indica el nivel del separador</param>
+        /// <param name="IsCollapsed">Indica si el grupo esta colapsado o no</param>
+        /// <returns></returns>
         public int RowsInsert(int row, object[] data, bool IsGroupHeader, int GroupLevel, bool IsCollapsed)
         {
             return RowsAdd(data, IsGroupHeader, GroupLevel, IsCollapsed, row);
         }
 
+        /// <summary>
+        /// Añade una fila con los valores indicados
+        /// </summary>
+        /// <param name="data">Array de objetos con los valores de cada columna</param>
+        /// <param name="IsGroupHeader">Indica si la fila sera un separador</param>
+        /// <param name="GroupLevel">Indica el nivel del separador</param>
+        /// <param name="IsCollapsed">Indica si el grupo esta colapsado o no</param>
+        /// <returns></returns>
         public int RowsAdd(object[] data, bool IsGroupHeader, int GroupLevel, bool IsCollapsed)
         {
             return RowsAdd(data, IsGroupHeader, GroupLevel, IsCollapsed, -1);
+        }
+
+        /// <summary>
+        /// Elimina una fila
+        /// </summary>
+        /// <param name="rowIndex">ID de la fila que se desea eliminar</param>
+        public void RowDelete(int rowIndex)
+        {
+            this.Rows.RemoveAt(rowIndex);
+        }
+
+        /// <summary>
+        /// Limpia las filas del DataGridView
+        /// </summary>
+        public void RowsClear()
+        {
+            Rows.Clear();
         }
 
         private int RowsAdd(object[] data, bool IsGroupHeader, int GroupLevel, bool IsCollapsed, int row = -1)
@@ -80,16 +121,6 @@ namespace MoneyAdministrator.CustomControls
             UpdateRowVisibility();
 
             return row;
-        }
-
-        public void RowDelete(int rowIndex)
-        { 
-            this.Rows.RemoveAt(rowIndex);
-        }
-
-        public void RowsClear()
-        {
-            Rows.Clear();
         }
 
         private void SetBaseColumns()

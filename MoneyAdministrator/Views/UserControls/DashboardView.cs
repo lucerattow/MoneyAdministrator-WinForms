@@ -168,7 +168,7 @@ namespace MoneyAdministrator.Views.UserControls
 
                     DateTime separatorDate = new DateTime(yearDashboarDtos[0].Period.Year, yearDashboarDtos[0].Period.Month, 1);
                     //Añado un separador
-                    row = _grd.Rows.Add(new object[]
+                    row = _grd.RowsAdd(new object[]
                     {
                         yearDashboarDtos[0].Period.ToString("'Año: 'yyyy"),
                         "",
@@ -178,7 +178,7 @@ namespace MoneyAdministrator.Views.UserControls
                         "",
                         "",
                         "",
-                    });
+                    }, true, 0, false);
 
                     //Pinto el separador
                     if (year > DateTime.Now.Year)
@@ -191,7 +191,7 @@ namespace MoneyAdministrator.Views.UserControls
                     //Añado los registros a la tabla
                     foreach (var dashboardDto in yearDashboarDtos)
                     {
-                        row = _grd.Rows.Add(new object[]
+                        row = _grd.RowsAdd(new object[]
                         {
                             dashboardDto.Period.ToString("yyyy-MM"),
                             dashboardDto.UsdValue.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
@@ -201,17 +201,17 @@ namespace MoneyAdministrator.Views.UserControls
                             dashboardDto.Assets.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
                             dashboardDto.Passives.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
                             dashboardDto.Balance.ToString("#,##0.00 $", CultureInfo.GetCultureInfo("es-ES")),
-                        });
+                        }, false, 1, false);
 
                         //Pinto el monto segun corresponda
-                        for (int col = 0; col < _grd.Rows[row].Cells.Count; col++)
+                        for (int col = 4; col < _grd.Rows[row].Cells.Count; col++)
                         {
                             //Pinto el periodo actual
-                            if (col == 0)
+                            if (col == 4)
                                 DataGridViewTools.PaintCurrentDate(_grd, row, col);
 
                             //Pinto los valores de moneda
-                            if (col >= 1)
+                            if (col >= 5)
                                 DataGridViewTools.PaintDecimal(_grd, row, col);
                         }
                     }
@@ -252,6 +252,14 @@ namespace MoneyAdministrator.Views.UserControls
             DataGridViewTools.DataGridViewSetup(_grdHeader);
 
             //Configuracion de columnas
+            _grdHeader.Columns.Add(new DataGridViewColumn() //0 groupHeader
+            {
+                Name = "groupHeader",
+                HeaderText = "",
+                CellTemplate = new DataGridViewTextBoxCell(),
+                Width = 30,
+                DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
+            });
             _grdHeader.Columns.Add(new DataGridViewColumn() //0 Resumen
             {
                 Name = "resume",
@@ -276,8 +284,6 @@ namespace MoneyAdministrator.Views.UserControls
                 Width = _colWalletWidth,
                 DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft },
             });
-
-
         }
 
         private void GrdSetup()
@@ -296,7 +302,7 @@ namespace MoneyAdministrator.Views.UserControls
                 HeaderText = "Periodo",
                 Width = _colPeriodWidth,
                 ReadOnly = true,
-            }); //0 date
+            }); //4 date
             _grd.Columns.Add(new DataGridViewColumn()
             {
                 CellTemplate = new DataGridViewTextBoxCell(),
@@ -305,7 +311,7 @@ namespace MoneyAdministrator.Views.UserControls
                 HeaderText = "USD",
                 Width = _colUsdCompareWidth / groupUsdCompare,
                 ReadOnly = true,
-            }); //1 usdCompareReference
+            }); //5 usdCompareReference
             _grd.Columns.Add(new DataGridViewColumn()
             {
                 CellTemplate = new DataGridViewTextBoxCell(),
@@ -314,7 +320,7 @@ namespace MoneyAdministrator.Views.UserControls
                 HeaderText = "Sueldo",
                 Width = _colUsdCompareWidth / groupUsdCompare,
                 ReadOnly = true,
-            }); //2 usdCompareValue
+            }); //6 usdCompareValue
             _grd.Columns.Add(new DataGridViewColumn()
             {
                 CellTemplate = new DataGridViewTextBoxCell(),
@@ -323,7 +329,7 @@ namespace MoneyAdministrator.Views.UserControls
                 HeaderText = "Sueldo ARS",
                 Width = _colWalletWidth / groupWallet,
                 ReadOnly = true,
-            }); //3 walletSalaryArsWidth
+            }); //7 walletSalaryArsWidth
             _grd.Columns.Add(new DataGridViewColumn()
             {
                 CellTemplate = new DataGridViewTextBoxCell(),
@@ -332,7 +338,7 @@ namespace MoneyAdministrator.Views.UserControls
                 HeaderText = "Sueldo USD",
                 Width = _colWalletWidth / groupWallet,
                 ReadOnly = true,
-            }); //3 walletSalaryUsdWidth
+            }); //8 walletSalaryUsdWidth
             _grd.Columns.Add(new DataGridViewColumn()
             {
                 CellTemplate = new DataGridViewTextBoxCell(),
@@ -341,7 +347,7 @@ namespace MoneyAdministrator.Views.UserControls
                 HeaderText = "Activos",
                 Width = _colWalletWidth / groupWallet,
                 ReadOnly = true,
-            }); //4 walletAssetsWidth
+            }); //9 walletAssetsWidth
             _grd.Columns.Add(new DataGridViewColumn()
             {
                 CellTemplate = new DataGridViewTextBoxCell(),
@@ -350,7 +356,7 @@ namespace MoneyAdministrator.Views.UserControls
                 HeaderText = "Pasivos",
                 Width = _colWalletWidth / groupWallet,
                 ReadOnly = true,
-            }); //5 walletPassives
+            }); //10 walletPassives
             _grd.Columns.Add(new DataGridViewColumn()
             {
                 CellTemplate = new DataGridViewTextBoxCell(),
@@ -359,7 +365,7 @@ namespace MoneyAdministrator.Views.UserControls
                 HeaderText = "Balance",
                 Width = _colWalletWidth / groupWallet,
                 ReadOnly = true,
-            }); //6 walletBalance
+            }); //11 walletBalance
         }
 
         private void AssosiateEvents()
@@ -440,7 +446,7 @@ namespace MoneyAdministrator.Views.UserControls
                 DataGridViewTools.PaintCellBorder(e, cellBorder, DataGridViewBorder.TopBorder);
 
             // Pinto el borde derecho de la fecha
-            if (e.ColumnIndex == 0 || e.ColumnIndex == 2 || e.ColumnIndex == 4)
+            if (e.ColumnIndex == 4 || e.ColumnIndex == 6 || e.ColumnIndex == 9)
                 DataGridViewTools.PaintCellBorder(e, cellBorder, DataGridViewBorder.RightBorder);
 
             // Indica que hemos manejado el evento y no se requiere el dibujo predeterminado
