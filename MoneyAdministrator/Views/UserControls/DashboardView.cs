@@ -178,15 +178,15 @@ namespace MoneyAdministrator.Views.UserControls
                         "",
                         "",
                         "",
-                    }, true, 0, false);
+                    }, true, 0, year != DateTime.Now.Year);
 
                     //Pinto el separador
                     if (year > DateTime.Now.Year)
-                        DataGridViewTools.PaintSeparator(_grd, row, sepFutureBackColor, sepFutureForeColor);
+                        CettoDataGridViewTools.PaintSeparator(_grd, row, sepFutureBackColor, sepFutureForeColor);
                     else if (year == DateTime.Now.Year)
-                        DataGridViewTools.PaintSeparator(_grd, row, sepCurrentBackColor, sepCurrentForeColor);
+                        CettoDataGridViewTools.PaintSeparator(_grd, row, sepCurrentBackColor, sepCurrentForeColor);
                     else if (year < DateTime.Now.Year)
-                        DataGridViewTools.PaintSeparator(_grd, row, sepOldestBackColor, sepOldestForeColor);
+                        CettoDataGridViewTools.PaintSeparator(_grd, row, sepOldestBackColor, sepOldestForeColor);
 
                     //Añado los registros a la tabla
                     foreach (var dashboardDto in yearDashboarDtos)
@@ -438,16 +438,34 @@ namespace MoneyAdministrator.Views.UserControls
 
             Color cellBorder = Color.FromArgb(50, 50, 50);
 
+            //Consulto si la fila es un separador
+            var isSeparator = (bool)_grd.Rows[e.RowIndex].Cells["IsGroupHeader"].Value;
+
+            //Pinto linea en la columna con indicadores de grupos
+            if (e.ColumnIndex == 3)
+            {
+                // Dibuja el contenido predeterminado de la celda
+                e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.Border);
+                // Pinto el borde derecho de la fecha
+                DataGridViewTools.PaintCellBorder(e, cellBorder, DataGridViewBorder.RightBorder);
+                e.Handled = true;
+                return;
+            }
+
             // Dibuja el contenido predeterminado de la celda
             e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.Border);
 
-            // Pinto el borde superior de la fecha
-            if (e.RowIndex != 0 && _grd.Rows[e.RowIndex - 1].Cells["date"].Value.ToString().Contains("Año:"))
-                DataGridViewTools.PaintCellBorder(e, cellBorder, DataGridViewBorder.TopBorder);
-
-            // Pinto el borde derecho de la fecha
-            if (e.ColumnIndex == 4 || e.ColumnIndex == 6 || e.ColumnIndex == 9)
-                DataGridViewTools.PaintCellBorder(e, cellBorder, DataGridViewBorder.RightBorder);
+            if (isSeparator)
+            {
+                // Pinto el borde inferior
+                DataGridViewTools.PaintCellBorder(e, cellBorder, DataGridViewBorder.BottomBorder);
+            }
+            else
+            {
+                // Pinto el borde derecho de la fecha
+                if (e.ColumnIndex == 4 || e.ColumnIndex == 6 || e.ColumnIndex == 9)
+                    DataGridViewTools.PaintCellBorder(e, cellBorder, DataGridViewBorder.RightBorder);
+            }
 
             // Indica que hemos manejado el evento y no se requiere el dibujo predeterminado
             e.Handled = true;

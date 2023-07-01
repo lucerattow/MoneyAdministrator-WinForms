@@ -946,6 +946,7 @@ namespace MoneyAdministrator.Views.UserControls
             //Consulto si la fila es un separador
             var isSeparator = (int)_cettogrd.Rows[e.RowIndex].Cells["id"].Value < 0;
 
+            //Pinto linea en la columna con indicadores de grupos
             if (e.ColumnIndex == 3)
             {
                 // Dibuja el contenido predeterminado de la celda
@@ -956,11 +957,11 @@ namespace MoneyAdministrator.Views.UserControls
                 return;
             }
 
+            // Dibuja el contenido predeterminado de la celda
+            e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.Border);
+
             if (isSeparator)
             {
-                // Dibuja el contenido predeterminado de la celda
-                e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.Border);
-
                 //Evito que se muestren checkboxes en los separadores
                 if (e.ColumnIndex == 10 || e.ColumnIndex == 11)
                     e.PaintBackground(e.CellBounds, true);
@@ -971,21 +972,16 @@ namespace MoneyAdministrator.Views.UserControls
 
                 // Pinto el borde inferior
                 DataGridViewTools.PaintCellBorder(e, cellBorder, DataGridViewBorder.BottomBorder);
-
-                e.Handled = true;
             }
             else
             {
-                // Dibuja el contenido predeterminado de la celda
-                e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.Border);
-
                 // Pinto el borde derecho de la fecha
                 if (e.ColumnIndex == 4)
                     DataGridViewTools.PaintCellBorder(e, cellBorder, DataGridViewBorder.RightBorder);
-
-                // Indica que hemos manejado el evento y no se requiere el dibujo predeterminado
-                e.Handled = true;
             }
+
+            // Indica que hemos manejado el evento y no se requiere el dibujo predeterminado
+            e.Handled = true;
         }
 
         private void _grd_Resize(object sender, EventArgs e)

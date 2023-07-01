@@ -33,13 +33,13 @@ namespace MoneyAdministrator.Views.UserControls
             _grd = new CettoDataGridView();
             _grdHeader = new DataGridView();
             panel1 = new Panel();
-            _txtSalaryUsd = new CustomControls.MoneyTextBox();
+            _txtSalaryUsd = new MoneyTextBox();
             _lblSalaryUsd = new Label();
             _lblDate = new Label();
             _dtpDate = new DateTimePicker();
-            _txtSalaryArs = new CustomControls.MoneyTextBox();
+            _txtSalaryArs = new MoneyTextBox();
             _lblSalaryArs = new Label();
-            _txtUsdValue = new CustomControls.MoneyTextBox();
+            _txtUsdValue = new MoneyTextBox();
             _lblUsdValue = new Label();
             panel2 = new Panel();
             toolStrip1 = new ToolStrip();
@@ -59,6 +59,7 @@ namespace MoneyAdministrator.Views.UserControls
             // 
             _grd.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             _grd.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            _grd.ExpandColumnHeight = 30;
             _grd.Location = new Point(5, 31);
             _grd.Margin = new Padding(3, 4, 3, 4);
             _grd.Name = "_grd";
@@ -102,7 +103,7 @@ namespace MoneyAdministrator.Views.UserControls
             // 
             _txtSalaryUsd.Colored = true;
             _txtSalaryUsd.ForeColor = Color.FromArgb(80, 80, 80);
-            _txtSalaryUsd.Location = new Point(428, 26);
+            _txtSalaryUsd.Location = new Point(428, 27);
             _txtSalaryUsd.Margin = new Padding(3, 4, 3, 4);
             _txtSalaryUsd.Name = "_txtSalaryUsd";
             _txtSalaryUsd.OperatorSymbol = "-";
@@ -116,7 +117,7 @@ namespace MoneyAdministrator.Views.UserControls
             // _lblSalaryUsd
             // 
             _lblSalaryUsd.AutoSize = true;
-            _lblSalaryUsd.Location = new Point(425, 2);
+            _lblSalaryUsd.Location = new Point(425, 3);
             _lblSalaryUsd.Margin = new Padding(5, 0, 5, 0);
             _lblSalaryUsd.Name = "_lblSalaryUsd";
             _lblSalaryUsd.Size = new Size(108, 20);
