@@ -123,12 +123,10 @@ namespace MoneyAdministrator.Presenters
 
         private void GenerateInstallmentOnlySummaries()
         {
-            var creditCard = new CreditCardService(_databasePath).Get(_view.CreditCard.Id);
-            if (creditCard is null || creditCard.CCSumaries.Count() == 0)
-                return;
-
             //Recorro todos los resumenes desde el mas antiguo hasta el mas actual
-            var summaries = creditCard.CCSumaries.Where(x => x.Imported = true).OrderBy(x => x.Period).ToList();
+            var summaries = new CCSummaryService(_databasePath).GetAll()
+                .Where(x => x.CreditCardId == _view.CreditCard.Id).OrderBy(x => x.Period).ToList();
+
             foreach (var summary in summaries)
             {
                 var installments = summary.CCSummaryDetails.Where(x => x.Type == CreditCardSummaryDetailType.Installments).ToList();
@@ -177,7 +175,7 @@ namespace MoneyAdministrator.Presenters
                     //Creo el resumen de la tarjeta
                     var newSummary = new CCSummary
                     {
-                        CreditCardId = creditCard.Id,
+                        CreditCardId = _view.CreditCard.Id,
                         Period = nextPeriod,
                         Date = new DateTime(1, 1, 1),
                         DateExpiration = new DateTime(1, 1, 1),
