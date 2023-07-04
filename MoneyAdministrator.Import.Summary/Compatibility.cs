@@ -18,7 +18,7 @@ namespace MoneyAdministrator.Import.Summary
             HSBC = new Bank()
             {
                 Name = "hsbc",
-                Brands = new string[] { Brand.Mastercard }
+                Brands = new string[] { Brand.Mastercard, Brand.Visa }
             };
             Supervielle = new Bank()
             {

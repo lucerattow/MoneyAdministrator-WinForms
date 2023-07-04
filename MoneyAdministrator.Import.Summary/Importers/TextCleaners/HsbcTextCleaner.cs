@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MoneyAdministrator.Import.Summary.Utilities.TypeTools;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,13 @@ namespace MoneyAdministrator.Import.Summary.Importers.TextCleaners
 
         public List<string> CleanAllText(List<string> lines)
         {
+            return Brand.Visa == _brandName ? CleanAllTextVisa(lines) : CleanAllTextMaster(lines);
+        }
+
+        //Mastercard
+
+        private List<string> CleanAllTextMaster(List<string> lines)
+        {
             var result = new List<string>();
 
             foreach (var line in lines)
@@ -28,14 +36,14 @@ namespace MoneyAdministrator.Import.Summary.Importers.TextCleaners
                 result.Add(line);
             }
 
-            result = CleanSeparatorLines(result);
-            result = CleanUnnecesaryData(result);
-            result = CleanHeaderData(result);
+            result = CleanSeparatorLinesMaster(result);
+            result = CleanUnnecesaryDataMaster(result);
+            result = CleanHeaderDataMaster(result);
 
             return result;
         }
 
-        private List<string> CleanSeparatorLines(List<string> lines)
+        private List<string> CleanSeparatorLinesMaster(List<string> lines)
         {
             var result = new List<string>();
 
@@ -50,7 +58,7 @@ namespace MoneyAdministrator.Import.Summary.Importers.TextCleaners
             return result;
         }
 
-        private List<string> CleanUnnecesaryData(List<string> lines)
+        private List<string> CleanUnnecesaryDataMaster(List<string> lines)
         {
             var result = new List<string>();
 
@@ -100,7 +108,7 @@ namespace MoneyAdministrator.Import.Summary.Importers.TextCleaners
             return result;
         }
 
-        private List<string> CleanHeaderData(List<string> lines)
+        private List<string> CleanHeaderDataMaster(List<string> lines)
         {
             var result = new List<string>();
 
@@ -156,5 +164,164 @@ namespace MoneyAdministrator.Import.Summary.Importers.TextCleaners
 
             return result;
         }
+
+        //Visa
+
+        private List<string> CleanAllTextVisa(List<string> lines)
+        {
+            var result = new List<string>();
+
+            foreach (var line in lines)
+            {
+                if (line.Contains("Plan V: abonando el pago") || line.Contains("usted puede cancelar"))
+                    break;
+
+                result.Add(line.Trim());
+            }
+
+            result = CleanSeparatorLinesVisa(result);
+            result = CleanUnnecesaryDataVisa(result);
+            result = CleanHeaderDataVisa(result);
+
+            return result;
+        }
+
+        private List<string> CleanSeparatorLinesVisa(List<string> lines)
+        {
+            var result = new List<string>();
+
+            foreach (var line in lines)
+            {
+                if (line.Contains("-----------------------") || line.Contains("______________________"))
+                    continue;
+
+                result.Add(line);
+            }
+
+            return result;
+        }
+
+        private List<string> CleanUnnecesaryDataVisa(List<string> lines)
+        {
+            var result = new List<string>();
+
+            var summaryCopy = true;
+            foreach (var line in lines)
+            {
+                if (line.Contains("SALDO ANTERIOR") ||
+                    line.Contains("PAGINA") ||
+                    line.Contains("TITULAR DE CUENTA") ||
+                    line.Contains("PAGO MINIMO") ||
+                    line.Contains("SALDO ACTUAL"))
+                    continue;
+
+                if (line.Contains("DETALLE DE TRANSACCION"))
+                {
+                    if (!summaryCopy)
+                        continue;
+
+                    result.Add("::DETAILS::");
+                    summaryCopy = false;
+                    continue;
+                }
+
+                if (line.Contains("TARJETA 2680 Total Consumos de"))
+                {
+                    result.Add("::TAXES::");
+                    continue;
+                }
+
+                result.Add(line);
+            }
+
+            return result;
+        }
+
+        private List<string> CleanHeaderDataVisa(List<string> lines)
+        {
+            var result = new List<string>();
+
+            bool copy = false;
+            for (int i = 0; i < lines.Count; i++)
+            {
+                if (!(i == 0 || i == 2 || i == 5 || i == 7 || i == 9 || i >= 15))
+                    continue;
+
+                var line = Regex.Replace(lines[i], @"\s+", " ");
+
+                if (i == 0)
+                {
+                    //Obtengo la fecha del string
+                    Regex regex = new Regex("[0-9]{2} [A-Za-z]{3} [0-9]{2}");
+                    MatchCollection matches = regex.Matches(line);
+                    var date_exp = matches[0].Value.Replace(" ", "-");
+
+                    result.Add($"DATE_EXP:{date_exp}");
+                }
+
+                if (i == 2)
+                {
+                    //Obtengo la fecha del string
+                    Regex regex = new Regex("[0-9]{2} [A-Za-z]{3} [0-9]{2}");
+                    MatchCollection matches = regex.Matches(line);
+                    var date = matches[0].Value.Replace(" ", "-");
+
+                    result.Add($"DATE:{date}");
+                }
+
+                if (i == 5)
+                {
+                    //Obtengo el numero del string
+                    var total_ars = DecimalTools.Convert(line);
+                    result.Add($"TOTAL_ARS:{total_ars}");
+                }
+
+                if (i == 7)
+                {
+                    //Obtengo el numero del string
+                    var total_usd = DecimalTools.Convert(line);
+                    result.Add($"TOTAL_USD:{total_usd}");
+                }
+
+                if (i == 9)
+                {
+                    //Obtengo el numero del string
+                    var min_pay = DecimalTools.Convert(line);
+                    result.Add($"MIN_PAY:{min_pay}");
+                }
+
+
+                if (i == 15)
+                {
+                    //Obtengo la ultima fecha del string
+                    Regex regex = new Regex("[0-9]{2} [A-Za-z]{3} [0-9]{2}");
+                    MatchCollection matches = regex.Matches(line);
+                    var date_next = matches[matches.Count - 1].Value.Replace(" ", "-");
+
+                    result.Add($"DATE_NEXT:{date_next}");
+                }
+
+                if (i == 16)
+                {
+                    //Obtengo la ultima fecha del string
+                    Regex regex = new Regex("[0-9]{2} [A-Za-z]{3} [0-9]{2}");
+                    MatchCollection matches = regex.Matches(line);
+                    var date_next_exp = matches[matches.Count - 1].Value.Replace(" ", "-");
+
+                    result.Add($"DATE_NEXT_EXP:{date_next_exp}");
+                }
+
+                if (lines[i].Contains("::DETAILS::"))
+                    copy = true;
+
+                if (!copy)
+                    continue;
+
+                result.Add(lines[i]);
+            }
+
+            return result;
+        }
+
     }
 }

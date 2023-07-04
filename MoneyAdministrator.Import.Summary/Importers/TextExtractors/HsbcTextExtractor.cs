@@ -2,64 +2,106 @@
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf;
+using iText.Kernel.Geom;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MoneyAdministrator.Import.Summary.Importers.PdfRegions;
+using MoneyAdministrator.Import.Summary.DTOs;
 
 namespace MoneyAdministrator.Import.Summary.Importers.TextExtractors
 {
-    internal static class HsbcTextExtractor
+    internal class HsbcTextExtractor
     {
-        public static List<string> GetTextFromPDF(string filename)
+        private string _filename;
+        private string _brandname;
+
+        public HsbcTextExtractor(string filename, string brandname)
+        { 
+            _filename = filename;
+            _brandname = brandname;
+        }
+
+        public TextExtractionDto GetDataFromPDF()
+        {
+            var result = new TextExtractionDto();
+
+            if (Brand.Mastercard == _brandname)
+                result.AllText = GetTextFromPDF(GetZoneFilterMaster);
+            else 
+                result.AllText = GetTextFromPDF(GetZoneFilterVisa);
+
+            return result;
+        }
+
+        private List<string> GetTextFromPDF(Func<int, float, float, TextRegionEventFilter> getZoneFilterMaster)
         {
             var pagesText = new List<string>();
 
-            using (var pdfDocument = new PdfDocument(new PdfReader(filename)))
+            using (var pdfDocument = new PdfDocument(new PdfReader(_filename)))
             {
                 for (int i = 1; i <= pdfDocument.GetNumberOfPages(); ++i)
                 {
                     PdfPage page = pdfDocument.GetPage(i);
 
-                    if (i == 1)
-                    {
-                        var filter = new IEventFilter[1];
-                        var width = page.GetPageSize().GetWidth();
-                        var region = HsbcPdfRegion.GetPageFirst(width);
-                        filter[0] = new TextRegionEventFilter(region);
-                        var filteredTextEventListener = new FilteredTextEventListener(new LocationTextExtractionStrategy(), filter);
+                    //Inicializo el filtro de extraccion del texto
+                    var filter = new IEventFilter[1];
+                    var width = page.GetPageSize().GetWidth();
+                    var height = page.GetPageSize().GetHeight();
 
-                        pagesText.Add(PdfTextExtractor.GetTextFromPage(page, filteredTextEventListener));
-                    }
-                    else if (i % 2 == 0)
-                    {
-                        var filter = new IEventFilter[1];
-                        var width = page.GetPageSize().GetWidth();
-                        var region = HsbcPdfRegion.GetPageEven(width);
-                        filter[0] = new TextRegionEventFilter(region);
-                        var filteredTextEventListener = new FilteredTextEventListener(new LocationTextExtractionStrategy(), filter);
+                    filter[0] = getZoneFilterMaster(i, width, height);
 
-                        pagesText.Add(PdfTextExtractor.GetTextFromPage(page, filteredTextEventListener));
-                    }
-                    else if (i % 2 != 0)
-                    {
-                        var filter = new IEventFilter[1];
-                        var width = page.GetPageSize().GetWidth();
-                        var region = HsbcPdfRegion.GetPageOdd(width);
-                        filter[0] = new TextRegionEventFilter(region);
-                        var filteredTextEventListener = new FilteredTextEventListener(new LocationTextExtractionStrategy(), filter);
-
-                        pagesText.Add(PdfTextExtractor.GetTextFromPage(page, filteredTextEventListener));
-                    }
+                    var filteredTextEventListener = new FilteredTextEventListener(new LocationTextExtractionStrategy(), filter);
+                    pagesText.Add(PdfTextExtractor.GetTextFromPage(page, filteredTextEventListener));
                 }
             }
 
             return GetPagesInLines(pagesText);
         }
 
-        private static List<string> GetPagesInLines(List<string> pages)
+        private TextRegionEventFilter GetZoneFilterMaster(int page, float width, float height)
+        {
+            //Configuro la zona de extraccion de texto
+            if (page == 1)
+            {
+                //Primera pagina
+                var region = HsbcPdfRegion.GetPageMasterFirst(width);
+                return new TextRegionEventFilter(region);
+            }
+            else if (page % 2 == 0)
+            {
+                //Paginas Par
+                var region = HsbcPdfRegion.GetPageMasterEven(width);
+                return new TextRegionEventFilter(region);
+            }
+            else
+            {
+                //Paginas Impar
+                var region = HsbcPdfRegion.GetPageMasterOdd(width);
+                return new TextRegionEventFilter(region);
+            }
+        }
+
+        private TextRegionEventFilter GetZoneFilterVisa(int page, float width, float height)
+        {
+            //Configuro la zona de extraccion de texto
+            if (page == 1)
+            {
+                //Primera pagina
+                var region = HsbcPdfRegion.GetPageVisaFirst(width);
+                return new TextRegionEventFilter(region);
+            }
+            else
+            {
+                //Paginas siguientes
+                var region = HsbcPdfRegion.GetPageVisa(width);
+                return new TextRegionEventFilter(region);
+            }
+        }
+
+        private List<string> GetPagesInLines(List<string> pages)
         {
             var result = new List<string>();
 

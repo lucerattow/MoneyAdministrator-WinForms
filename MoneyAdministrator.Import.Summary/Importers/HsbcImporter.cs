@@ -15,26 +15,27 @@ namespace MoneyAdministrator.Import.Summary.Importers
     {
         public static CreditCardSummaryDto ExtractData(string filename, string brandName)
         {
-            var result = new CreditCardSummaryDto();
-            var cleanText = new HsbcTextCleaner(brandName);
-
-            var AllText = HsbcTextExtractor.GetTextFromPDF(filename);
+            //Extraigo el texto de los pdf
+            var textExtractor = new HsbcTextExtractor(filename, brandName);
+            var dto = textExtractor.GetDataFromPDF();
 
             //Compruebo si el resumen corresponde al banco HSBC
-            var bank = AllText.Where(x => x.ToLower().Contains(Compatibility.HSBC.Name)).FirstOrDefault()?.Trim().ToLower();
+            var bank = dto.AllText.Where(x => x.ToLower().Contains(Compatibility.HSBC.Name)).FirstOrDefault()?.Trim().ToLower();
             if (bank is null || Compatibility.Banks.Where(x => x.Name.Contains(bank)) == null)
                 throw new Exception("El resumen importado no es del banco HSBC");
 
             //Compruebo si el resumen corresponde a la marca seleccionada
-            var brand = AllText.Where(x => x.ToLower().Contains(brandName)).FirstOrDefault()?.Trim().ToLower();
+            var brand = dto.AllText.Where(x => x.ToLower().Contains(brandName)).FirstOrDefault()?.Trim().ToLower();
             if (brand is null)
                 throw new Exception($"El resumen importado no es de una tarjeta {brandName}");
 
-            //Obtengo los textos con los datos necesarios
-            var table = new TextExtractionDto();
-            table.AllText = cleanText.CleanAllText(AllText);
+            //Filtro texto basura o que no es relevante
+            var cleanText = new HsbcTextCleaner(brandName);
+            dto.AllText = cleanText.CleanAllText(dto.AllText);
 
-            return HsbcTextProcessor.GetSummaryData(table);
+            //Proceso toda la data y la represento en un objeto
+            var textProcessor = new HsbcTextProcessor(brandName);
+            return textProcessor.GetSummaryData(dto);
         }
     }
 }

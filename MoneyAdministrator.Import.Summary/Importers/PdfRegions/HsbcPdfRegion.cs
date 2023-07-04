@@ -9,10 +9,22 @@ namespace MoneyAdministrator.Import.Summary.Importers.PdfRegions
 {
     internal static class HsbcPdfRegion
     {
-        public static Rectangle GetPageFirst(float width) => new(0, 130, width, 480);
-        //Par
-        public static Rectangle GetPageEven(float width) => new(0, 0, width, 780);
-        //Impar
-        public static Rectangle GetPageOdd(float width) => new(0, 0, width, 620);
+        //Visa
+
+        /// <summary>Obtiene la region que se desea extraer del pdf (Esta pensado para la primera pagina de Mastercard)</summary>
+        public static Rectangle GetPageVisaFirst(float width) => new(0, 130, width, 560);
+
+        /// <summary>Obtiene la region que se desea extraer del pdf (Esta pensado para las paginas PAR de Mastercard)</summary>
+        public static Rectangle GetPageVisa(float width) => new(0, 0, width, 780);
+        //Mastercard
+
+        /// <summary>Obtiene la region que se desea extraer del pdf (Esta pensado para la primera pagina de Mastercard)</summary>
+        public static Rectangle GetPageMasterFirst(float width) => new(0, 130, width, 480);
+
+        /// <summary>Obtiene la region que se desea extraer del pdf (Esta pensado para las paginas PAR de Mastercard)</summary>
+        public static Rectangle GetPageMasterEven(float width) => new(0, 0, width, 780);
+
+        /// <summary>Obtiene la region que se desea extraer del pdf (Esta pensado para las paginas INPAR de Mastercard)</summary>
+        public static Rectangle GetPageMasterOdd(float width) => new(0, 0, width, 620);
     }
 }

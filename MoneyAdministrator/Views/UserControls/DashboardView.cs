@@ -405,7 +405,7 @@ namespace MoneyAdministrator.Views.UserControls
         {
             using (new CursorWait())
             {
-                var value = (sender as DataGridView).Rows[e.RowIndex].Cells[0].Value.ToString();
+                var value = (sender as DataGridView).Rows[e.RowIndex].Cells["date"].Value.ToString();
 
                 //Si la fecha no tiene el tamaño para "yyyy-MM"
                 if (value.Length != 7)

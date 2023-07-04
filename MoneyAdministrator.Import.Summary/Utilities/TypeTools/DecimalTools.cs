@@ -18,14 +18,14 @@ namespace MoneyAdministrator.Import.Summary.Utilities.TypeTools
             if (string.IsNullOrEmpty(input))
                 return 0;
 
+            // Verificar si el símbolo negativo está presente y eliminar los posibles símbolos negativos adicionales
+            bool isNegative = input.Contains("-");
+            input = Regex.Replace(input, "-", string.Empty);
+
             string decimalSeparator = input.Substring(input.Length - 3, 1);
             string thousandSeparator = decimalSeparator == "." ? "," : ".";
 
             input = input.Replace(thousandSeparator, string.Empty);
-
-            // Verificar si el símbolo negativo está presente y eliminar los posibles símbolos negativos adicionales
-            bool isNegative = input.StartsWith("-");
-            input = Regex.Replace(input, "-", string.Empty);
 
             if (isNegative)
             {
